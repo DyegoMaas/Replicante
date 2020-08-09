@@ -130,7 +130,7 @@ def __process_files_in_path(path, template_dir):
 
 
 def update_template(replication_instructions):
-    source_dir = replication_instructions['source_directory']
+    source_dir = replication_instructions['sample_directory']
     template_dir = './_templates/clean-ms-gen' # TODO load from replication recipe
     __clean_template_directory(template_dir)
     __process_files_in_path(source_dir, template_dir)
@@ -139,13 +139,13 @@ def update_template(replication_instructions):
 # TODO receive project dir and config file
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('-s', '--source', dest='source_directory', required=True)
+    parser.add_argument('-s', '--sample', dest='sample_directory', required=True)
     parser.add_argument('-r', '--recipe', dest='replication_recipe', required=True)
     args = parser.parse_args()
-    print(f'Will use {args.source_directory} as source for replication process.')
+    print(f'Will use {args.sample_directory} as sample for replication process.')
     print(f'Replication recipe loaded: {args.replication_recipe}')
 
     update_template({
-        'source_directory': args.source_directory,
+        'sample_directory': args.sample_directory,
         'replication_recipe_file': args.replication_recipe
     })
