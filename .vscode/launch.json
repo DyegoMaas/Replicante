@@ -10,7 +10,7 @@
             "request": "launch",
             "program": ".\\src\\replicate.py",
             "console": "integratedTerminal",
-            "args": ["--sample=D:\\projects\\template-csharp\\", "--recipe=D:\\projects\\Replicant\\examples\\sample.yaml"]
+            "args": ["--sample=D:\\projects\\template-csharp\\", "--recipe=D:\\projects\\Replicant\\examples\\sample.json"]
         }
     ]
 }

@@ -3,7 +3,7 @@
 from shutil import copyfile, rmtree
 import os, shutil, codecs
 import argparse
-import yaml
+import json
 
 def remove_bom(full_path):
     BUFSIZE = 4096
@@ -33,19 +33,20 @@ class ReplicationRecipe:
         self.source_code_replacements = source_code_replacements
 
     @staticmethod
-    def from_yaml_dict(yaml_dict):
-        template_name = yaml_dict['templateName']
+    def from_dict(data):
+        template_name = data['templateName']
 
-        def read_reclacements(array_key: str):
-            return [(item['term'], item['targetValue'])
-                for item in yaml_dict[array_key]
+        def read_replacements(array_key: str):
+            return [
+                (item['from'], item['to'])
+                for item in data[array_key]
             ]
 
         return ReplicationRecipe(
             template_name=template_name,
             template_dir=f'./src/_templates/{template_name}', # TODO review
-            file_name_replacements=read_reclacements('fileNameReplacements'),
-            source_code_replacements=read_reclacements('sourceCodeReplacements'),
+            file_name_replacements=read_replacements('fileNameReplacements'),
+            source_code_replacements=read_replacements('sourceCodeReplacements'),
         )
 
 
@@ -153,9 +154,9 @@ class Replicator:
 
 def __load_replication_config(replication_config_file_path) -> ReplicationRecipe:
     with open(replication_config_file_path, 'r') as file:
-        yaml_dict = yaml.load(file.read())
+        json_dict = json.loads(file.read())
         # print('CONFIG', yaml.dump(yaml_dict))
-        return ReplicationRecipe.from_yaml_dict(yaml_dict)
+        return ReplicationRecipe.from_dict(json_dict)
 
 
 def update_template(replication_instructions):
