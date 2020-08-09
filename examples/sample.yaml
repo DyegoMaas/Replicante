@@ -1,0 +1,6 @@
+templateName: clean-ms-gen
+fileNameReplacements:
+  - term: PrecosClientes
+    targetValue: <%= name %>
+  - term: Precos.Clientes
+    targetValue: <%= name %>
