@@ -1,8 +1,11 @@
+#!/usr/bin/env python
+
 from shutil import copyfile, rmtree
 import os, shutil, codecs
+import argparse
 
 
-def __replace_terms_in_text(text: str, replacements) -> str:    
+def __replace_terms_in_text(text: str, replacements) -> str:
     for replacement in replacements:
         old, new = replacement
         text = text.replace(old, new)
@@ -45,14 +48,14 @@ def to_template(src, dest, relative_path):
     full_src = os.path.abspath(src)
     full_dest = f'{os.path.abspath(dest)}.ejs.t'
 
-    print(f'Gerando template a partir de {full_src} em {full_dest}')
+    print(f'Generating template from {full_src} to {full_dest}')
     copyfile(full_src, full_dest) # merge two parts
     __remove_bom(full_dest)
 
     target_path = relative_path.replace('\\', '/')
     target_path = __replace_terms_in_text(target_path, replacements=[
-        ('PrecosClientes', '<%= name %>'), # vai remover o prefixo Precos dos nomes dos arquivos, resultando em namespaces mais curtos
-        ('Precos.Clientes', '<%= name %>'), # vai remover o prefixo Precos dos nomes dos arquivos, resultando em namespaces mais curtos
+        ('PrecosClientes', '<%= name %>'), # TODO parameterize
+        ('Precos.Clientes', '<%= name %>'),
     ])
     frontmatter = [
         '---',
@@ -72,7 +75,7 @@ def to_template(src, dest, relative_path):
     __prepare_file(full_dest,
         lines_to_prepend=frontmatter,
         variables=variables,
-        source_code_replacements=[
+        source_code_replacements=[ # TODO parameterize
             ('precosclientes', '<%= ChartName %>'),
             ('PrecosClientes', '<%= name %>'),
             ('Precos.Clientes', '<%= name %>'),
@@ -86,7 +89,7 @@ def to_template(src, dest, relative_path):
     )
 
 def __process_files_in_directory(path, root_path, template_dir):
-    print(f'Processando diretório {path}')
+    print(f'Processing directory {path}')
 
     for file in os.listdir(path):
         full_path = os.path.join(path, file)
@@ -99,14 +102,20 @@ def __process_files_in_directory(path, root_path, template_dir):
             continue
 
         directory = file
-        if directory in ['.git', '.idea', 'Replicant', 'docs', 'bin', 'obj']: # TODO suportar imagens para copiar pngs de documentação do docs
+        if directory in ['.git', '.idea', 'Replicant', 'docs', 'bin', 'obj']: # TODO parameterize
             continue
 
         __process_files_in_directory(full_path, root_path, template_dir)
 
 
 def __clean_template_directory(template_dir):
+    if not os.path.exists(template_dir):
+        os.mkdir(template_dir)
+
     new_command_dir = os.path.join(template_dir, 'new')
+    if not os.path.exists(new_command_dir):
+        os.mkdir(new_command_dir)
+
     for file in os.listdir(new_command_dir):
         file_name = os.path.abspath(os.path.join(new_command_dir, file))
 
@@ -120,11 +129,23 @@ def __process_files_in_path(path, template_dir):
     __process_files_in_directory(path, path, template_dir)
 
 
-def update_template():
-    template_dir = './_templates/clean-ms-gen'
+def update_template(replication_instructions):
+    source_dir = replication_instructions['source_directory']
+    template_dir = './_templates/clean-ms-gen' # TODO load from replication recipe
     __clean_template_directory(template_dir)
-    __process_files_in_path('..', template_dir)
+    __process_files_in_path(source_dir, template_dir)
 
 
+# TODO receive project dir and config file
 if __name__ == "__main__":
-    update_template()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-s', '--source', dest='source_directory', required=True)
+    parser.add_argument('-r', '--recipe', dest='replication_recipe', required=True)
+    args = parser.parse_args()
+    print(f'Will use {args.source_directory} as source for replication process.')
+    print(f'Replication recipe loaded: {args.replication_recipe}')
+
+    update_template({
+        'source_directory': args.source_directory,
+        'replication_recipe_file': args.replication_recipe
+    })

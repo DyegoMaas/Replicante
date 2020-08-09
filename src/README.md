@@ -1,12 +1,17 @@
-# Gerador de templates
+# Template generator
 
-Este script gera um template [Hygen](https://www.hygen.io) a partir do projeto atual.
+## Setup
 
-Conceitualmente, esta solution é um Projeto Vivo. Compila, tem testes funcionais, tudo certinho.
+You will need to install Hygen with the command `npm i -g hygen`, and then `hygen init self`.
 
-Quando quisermos atualizar o template para montar um novo microserviço, o processo será esse:
+## How to run the project
 
-1) Rodar `python update-template.py`, que transforma o projeto atual em um template Hygen
-2) Rodar `hygen clean-ms-gen new <NomeServico>`
+The `update-template.py` converts a project into a [Hygen](https://www.hygen.io) template.
 
-E assim, o novo serviço será gerado na pasta `/templator/<NomeServico>` (ou esse é o plano).
+Conceptually, it generates a new Project from a Living, Running Project.
+
+In order to update the template from the source living project, run `python replicator.py`. It will generate a Hygen template inside the folder _templates/clean-ms-gen/new.
+
+Then, you can generate your new project using Hygen directly: `hygen clean-ms-gen new <NewProjectName>`
+
+And so, the new service will be generated in the folder `/<NewProjectName>`.
