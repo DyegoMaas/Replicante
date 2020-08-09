@@ -2,7 +2,7 @@
   "templateName": "clean-ms-gen",
   "fileNameReplacements": [
     { "from": "PrecosClientes", "to": "<%= name %>" },
-    { "from": "Precos.Clientes", "to": "<%= name % >" }
+    { "from": "Precos.Clientes", "to": "<%= name %>" }
   ],
 "sourceCodeReplacements": [
     { "from": "precosclientes", "to": "<%= ChartName %>" },
