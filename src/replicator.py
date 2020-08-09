@@ -3,7 +3,22 @@
 from shutil import copyfile, rmtree
 import os, shutil, codecs
 import argparse
+import yaml
 
+
+class ReplicationRecipe:
+    def __init__(self, template_name, template_dir):
+        super().__init__()
+        self.template_name = template_name
+        self.template_dir = template_dir
+
+    @staticmethod
+    def from_yaml_dict(yaml_dict):
+        template_name = yaml_dict['templateName']
+        return ReplicationRecipe(
+            template_name=template_name,
+            template_dir=f'./_templates/{template_name}',
+        )
 
 def __replace_terms_in_text(text: str, replacements) -> str:
     for replacement in replacements:
@@ -88,7 +103,7 @@ def to_template(src, dest, relative_path):
         ]
     )
 
-def __process_files_in_directory(path, root_path, template_dir):
+def __process_files_in_directory(path, root_path, template_dir, replication_recipe: ReplicationRecipe):
     print(f'Processing directory {path}')
 
     for file in os.listdir(path):
@@ -105,7 +120,7 @@ def __process_files_in_directory(path, root_path, template_dir):
         if directory in ['.git', '.idea', 'Replicant', 'docs', 'bin', 'obj']: # TODO parameterize
             continue
 
-        __process_files_in_directory(full_path, root_path, template_dir)
+        __process_files_in_directory(full_path, root_path, template_dir, replication_recipe)
 
 
 def __clean_template_directory(template_dir):
@@ -125,15 +140,23 @@ def __clean_template_directory(template_dir):
             rmtree(file_name, ignore_errors=False)
 
 
-def __process_files_in_path(path, template_dir):
-    __process_files_in_directory(path, path, template_dir)
+def __process_files_in_path(path, template_dir, replication_recipe: ReplicationRecipe):
+    __process_files_in_directory(path, path, template_dir, replication_recipe)
+
+
+def __load_replication_config(replication_config_file_path) -> ReplicationRecipe:
+    with open(replication_config_file_path, 'r') as file:
+        yaml_dict = yaml.load(file.read())
+        # print('CONFIG', yaml.dump(yaml_dict))
+        return ReplicationRecipe.from_yaml_dict(yaml_dict)
 
 
 def update_template(replication_instructions):
-    source_dir = replication_instructions['sample_directory']
-    template_dir = './_templates/clean-ms-gen' # TODO load from replication recipe
-    __clean_template_directory(template_dir)
-    __process_files_in_path(source_dir, template_dir)
+    sample_dir = replication_instructions['sample_directory'] # TODO include sample_dir in config loading somehow
+    replication_recipe = __load_replication_config(replication_instructions['replication_recipe_file'])
+
+    __clean_template_directory(replication_recipe.template_dir)
+    __process_files_in_path(sample_dir, replication_recipe.template_dir, replication_recipe)
 
 
 # TODO receive project dir and config file
