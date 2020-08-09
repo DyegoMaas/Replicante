@@ -25,17 +25,27 @@ def remove_bom(full_path):
 
 
 class ReplicationRecipe:
-    def __init__(self, template_name, template_dir):
+    def __init__(self, template_name, template_dir, file_name_replacements, source_code_replacements):
         super().__init__()
         self.template_name = template_name
         self.template_dir = template_dir
+        self.file_name_replacements = file_name_replacements
+        self.source_code_replacements = source_code_replacements
 
     @staticmethod
     def from_yaml_dict(yaml_dict):
         template_name = yaml_dict['templateName']
+
+        def read_reclacements(array_key: str):
+            return [(item['term'], item['targetValue'])
+                for item in yaml_dict[array_key]
+            ]
+
         return ReplicationRecipe(
             template_name=template_name,
             template_dir=f'./src/_templates/{template_name}', # TODO review
+            file_name_replacements=read_reclacements('fileNameReplacements'),
+            source_code_replacements=read_reclacements('sourceCodeReplacements'),
         )
 
 
@@ -74,10 +84,9 @@ class Replicator:
         remove_bom(full_dest)
 
         target_path = relative_path.replace('\\', '/')
-        target_path = self.__replace_terms_in_text(target_path, replacements=[
-            ('PrecosClientes', '<%= name %>'), # TODO parameterize
-            ('Precos.Clientes', '<%= name %>'),
-        ])
+        target_path = self.__replace_terms_in_text(target_path,
+            replacements=self.replication_recipe.file_name_replacements
+        )
         frontmatter = [
             '---',
             f'to: <%= name %>/{target_path}',
@@ -91,22 +100,12 @@ class Replicator:
             + 'NameLowerDasherized = h.inflection.dasherize(NameLowerCase);'
             + 'NameCapitalized = h.inflection.capitalize(name);'
             + 'ChartName = NameLowerCase; %>'
-            # TODO pegar outras via prompt do Hygen
+            # TODO take other variables Hygen prompt
         )
         self.__prepare_file(full_dest,
             lines_to_prepend=frontmatter,
             variables=variables,
-            source_code_replacements=[ # TODO parameterize
-                ('precosclientes', '<%= ChartName %>'),
-                ('PrecosClientes', '<%= name %>'),
-                ('Precos.Clientes', '<%= name %>'),
-                ('PRECOS-CLIENTES', 'PRECOS-<%= NameUpperCase %>'),
-                ('Precos-Clientes', 'Precos-<%= name %>'),
-                ('precos-clientes', 'precos-<%= NameLowerCase %>'),
-                ('precos_clientes', 'precos_<%= NameLowerCase %>'),
-                ('clientes', '<%= NameLowerCase %>'),
-                ('Clientes', 'Preços - <%= Name %>'),
-            ]
+            source_code_replacements=self.replication_recipe.source_code_replacements
         )
 
     def __process_files_in_directory(self, path, root_path):
@@ -162,6 +161,8 @@ def __load_replication_config(replication_config_file_path) -> ReplicationRecipe
 def update_template(replication_instructions):
     sample_dir = replication_instructions['sample_directory'] # TODO include sample_dir in config loading somehow
     recipe = __load_replication_config(replication_instructions['replication_recipe_file'])
+    print(recipe.file_name_replacements)
+    print(recipe.source_code_replacements)
 
     replicator = Replicator(replication_recipe=recipe)
     replicator.clean_template_directory()

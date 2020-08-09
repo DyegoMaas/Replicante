@@ -4,3 +4,22 @@ fileNameReplacements:
     targetValue: <%= name %>
   - term: Precos.Clientes
     targetValue: <%= name %>
+sourceCodeReplacements:
+  - term: precosclientes
+    targetValue: "<%= ChartName %>"
+  - term: PrecosClientes
+    targetValue: "<%= name %>"
+  - term: Precos.Clientes
+    targetValue: "<%= name %>"
+  - term: PRECOS-CLIENTES
+    targetValue: "PRECOS-<%= NameUpperCase %>"
+  - term: Precos-Clientes
+    targetValue: "Precos-<%= name %>"
+  - term: precos-clientes
+    targetValue: "precos-<%= NameLowerCase %>"
+  - term: precos_clientes
+    targetValue: "precos_<%= NameLowerCase %>"
+  - term: clientes
+    targetValue: "<%= NameLowerCase %>"
+  - term: Clientes
+    targetValue: "Preços - <%= Name %>"
