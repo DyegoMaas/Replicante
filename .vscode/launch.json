@@ -8,7 +8,7 @@
             "name": "Python: Replicate",
             "type": "python",
             "request": "launch",
-            "program": ".\\src\\replicator.py",
+            "program": ".\\src\\replicate.py",
             "console": "integratedTerminal",
             "args": ["--sample=D:\\projects\\template-csharp\\", "--recipe=D:\\projects\\Replicant\\examples\\sample.yaml"]
         }
