@@ -49,6 +49,8 @@ From the `src` folder:
 
 After performing these two steps, you should have a new project, completely operational, plus a Hygen template that allows reuse to generate new projects from it in the future.
 
+![Replication workflow](/docs/img/workflow.jpg)
+
 ## Roadmap
 
 Our roadmap is publicly avaiable in a [Trello board](https://trello.com/b/T9khQD2v/replicant-roadmap). Feel free to comment and suggest new features.
