@@ -4,7 +4,7 @@ Ever needed to use a running application as template for a new project? Replican
 
 ## Tutorial
 
-Currently, replicating an existing application requires some steps.
+Currently, replicating an existing application requires some steps. First thing, clone this repository.
 
 ### Hygen initialization
 
