@@ -42,9 +42,10 @@ All those details above, the things we want to change, need to be captured in a 
 
 With the recipe defined, we are ready to execute the replication process.
 
-From the `src` folder:
+From the `root` folder:
+1) Run `python ./src/replicate --sample=<path-to-sample-app> --recipe=<path-to-recipe.json>`. It will generate a template inside the _templates folder.
 
-1) Run `python ./replicate --sample=<path-to-sample-app> --recipe=<path-to-recipe.json>`. It will generate a template inside the _templates folder.
+From the `src` folder:
 2) Run `hygen <templateName> new <NewName>`. The `templateName` parameter is the same informed in the recipe, and the `NewName` is the name of your new application. It will be available as the `<%= name %>` variable for the replication steps.
 
 After performing these two steps, you should have a new project, completely operational, plus a Hygen template that allows reuse to generate new projects from it in the future.
