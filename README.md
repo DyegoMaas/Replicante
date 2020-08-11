@@ -8,7 +8,7 @@ Currently, replicating an existing application requires some steps. First thing,
 
 ### Hygen initialization
 
-First, we need to install and initialize Hygen, a flexible template generator mostly agnostic of technology:
+First, we need to install and initialize [Hygen](https://www.hygen.io), a flexible template generator mostly agnostic of technology:
 
 To install it, run `npm i -g hygen`. When the installation is complete, run:
 
@@ -25,7 +25,7 @@ All those details above, the things we want to change, need to be captured in a 
 
 ```javascript
 {
-  "templateName": "MyNewShinningApplication",
+  "templateName": "NexusModel",
   "fileNameReplacements": [
     { "from": "Sample", "to": "<%= name %>" } // Sample.Domain.Customer -> NewName.Domain.Customer
     // ... any other replacement your project needs
