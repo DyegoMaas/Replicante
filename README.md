@@ -25,7 +25,7 @@ All those details above, the things we want to change, need to be captured in a 
 
 ```javascript
 {
-  "templateName": "MyNewShinningApplication",
+  "templateName": "NexusModel",
   "fileNameReplacements": [
     { "from": "Sample", "to": "<%= name %>" } // Sample.Domain.Customer -> NewName.Domain.Customer
     // ... any other replacement your project needs
