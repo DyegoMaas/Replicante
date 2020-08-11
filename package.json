@@ -1,0 +1,31 @@
+{
+  "name": "replicant",
+  "version": "0.0.1",
+  "description": "Replicant makes it easy to morph a living application into a completely new one.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "example": "examples"
+  },
+  "scripts": {
+    "test": "./node_modules/.bin/mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DyegoMaas/Replicant.git"
+  },
+  "keywords": [
+    "replicant",
+    "templates"
+  ],
+  "author": "Dyego Alekssander Maas",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/DyegoMaas/Replicant/issues"
+  },
+  "homepage": "https://github.com/DyegoMaas/Replicant#readme",
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^8.1.1"
+  }
+}
