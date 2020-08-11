@@ -25,12 +25,13 @@ def remove_bom(full_path):
 
 
 class ReplicationRecipe:
-    def __init__(self, template_name, template_dir, file_name_replacements, source_code_replacements):
+    def __init__(self, template_name, template_dir, file_name_replacements, source_code_replacements, directories_to_ignores):
         super().__init__()
         self.template_name = template_name
         self.template_dir = template_dir
         self.file_name_replacements = file_name_replacements
         self.source_code_replacements = source_code_replacements
+        self.directories_to_ignores = directories_to_ignores
 
     @staticmethod
     def from_dict(data):
@@ -47,6 +48,7 @@ class ReplicationRecipe:
             template_dir=f'./src/_templates/{template_name}', # TODO review
             file_name_replacements=read_replacements('fileNameReplacements'),
             source_code_replacements=read_replacements('sourceCodeReplacements'),
+            directories_to_ignores=data['ignoreDirectories']
         )
 
 
@@ -123,7 +125,7 @@ class Replicator:
                 continue
 
             directory = file
-            if directory in ['.git', '.idea', 'Replicant', 'docs', 'bin', 'obj']: # TODO parameterize
+            if directory in self.replication_recipe.directories_to_ignores:
                 continue
 
             self.__process_files_in_directory(full_path, root_path)
@@ -160,7 +162,7 @@ def __load_replication_config(replication_config_file_path) -> ReplicationRecipe
 
 
 def update_template(replication_instructions):
-    sample_dir = replication_instructions['sample_directory'] # TODO include sample_dir in config loading somehow
+    sample_dir = replication_instructions['sample_directory'] # TODO include sample_dir in config loading somehow?
     recipe = __load_replication_config(replication_instructions['replication_recipe_file'])
     print(recipe.file_name_replacements)
     print(recipe.source_code_replacements)

@@ -36,7 +36,8 @@ All those details above, the things we want to change, need to be captured in a 
     { "from": "SAMPLE", "to": "<%= NameUpperCase %>" } // return "SAMPLE"; -> return "NEWNAME";
     { "from": "Some Term", "to": "New Hard Coded Term" } // return "Some Term"; -> return "New Hard Coded Term";
     // ... any other replacement your project needs
-  ]
+  ],
+  "ignoreDirectories": [".git", ".idea", "bin", "obj"] // usually, binary directories
 }
 ```
 
@@ -51,6 +52,12 @@ From the `src` folder:
 After performing these two steps, you should have a new project, completely operational, plus a Hygen template that allows reuse to generate new projects from it in the future.
 
 ![Replication workflow](/docs/img/workflow.jpg)
+
+### Limitations
+
+Currently, Replicant does not support replication of samples containing binary files. So, directories containing binary files, such as images, should be excluded via the parameter `ignoreDirectories` in the recipe file.
+
+This limitation should be cared about in future releases of the tool.
 
 ## Roadmap
 

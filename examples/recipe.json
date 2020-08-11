@@ -4,7 +4,7 @@
     { "from": "PrecosClientes", "to": "<%= name %>" },
     { "from": "Precos.Clientes", "to": "<%= name %>" }
   ],
-"sourceCodeReplacements": [
+  "sourceCodeReplacements": [
     { "from": "precosclientes", "to": "<%= ChartName %>" },
     { "from": "PrecosClientes", "to": "<%= name %>" },
     { "from": "Precos.Clientes", "to": "<%= name %>" },
@@ -14,5 +14,6 @@
     { "from": "precos_clientes", "to": "precos_<%= NameLowerCase %>" },
     { "from": "clientes", "to": "<%= NameLowerCase %>" },
     { "from": "Clientes", "to": "Preços - <%= Name %>" }
-  ]
+  ],
+  "ignoreDirectories": [".git", ".idea", "Replicant", "docs", "bin", "obj"]
 }
