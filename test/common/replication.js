@@ -57,7 +57,7 @@ const readTemplateFileHeader = async function(recipe, fileName) {
     return yaml.safeLoad(header);
 }
 
-const readTemplateFileContent = async function(recipe, fileName) {
+const readTemplateFileContent = async function(recipe, fileName, options) {
     const fileStream = fs.createReadStream(`./src/_templates/${recipe.templateName}/new/${fileName}`);
     const rl = readline.createInterface({
         input: fileStream,
@@ -66,14 +66,21 @@ const readTemplateFileContent = async function(recipe, fileName) {
 
     let content = '';
     let dividerCount = 0;
+    let isFirstLineOfContent = true;
     for await (const line of rl) {
         if (line.startsWith('---')) {
             dividerCount++;
             continue;
         }
 
-        if (dividerCount == 2)
-            content += line + '\n';
+        if (dividerCount == 2) {
+            let contentLine = line;
+            if (isFirstLineOfContent && options && options.ignoreVariables) {
+                contentLine = line.slice(line.indexOf('%>') + 2);
+            }
+            content += contentLine + '\n';
+            isFirstLineOfContent = false;
+        }
     }
     return content;
 }

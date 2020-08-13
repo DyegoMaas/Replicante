@@ -56,7 +56,9 @@ describe('File name and directory tree replacements', function () {
     });
 
     it('Should insert alternative variables at the top of the content of each file', async function() {
-        const content = await readTemplateFileContent(recipe, 'Hello-There-World.js.ejs.t');
+        const content = await readTemplateFileContent(recipe, 'Hello-There-World.js.ejs.t', { 
+            ignoreVariables: false
+        });
         const firstLine = content.split('\n')[0];
         
         expect(firstLine).to.have.string('<% ');
@@ -90,9 +92,14 @@ describe('File name and directory tree replacements', function () {
         }
     });
 
-    // it('Should apply all content replacements', async function() {
-    //     const header = await readTemplateFileContent(recipe, 'Hello-There-World.js.ejs.t');
+    it('Should apply all content replacements', async function() {
+        const content = await readTemplateFileContent(recipe, 'HelloWorld.js.ejs.t', { 
+            ignoreVariables: true
+        });
 
-    //     expect(header.force).to.equal(true);
-    // });
+        let lines = content.split('\n');
+        expect(lines[0]).to.equal('console.log(\'Hi My People\');');
+        expect(lines[1]).to.equal('console.log(\'"Hi There!"\');');
+        expect(lines[2]).to.equal('console.log(\'"Just, hey world?"\');');
+    });
 });
