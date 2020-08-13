@@ -11,6 +11,20 @@
             "program": ".\\src\\replicate.py",
             "console": "integratedTerminal",
             "args": ["--sample=D:\\projects\\template-csharp\\", "--recipe=D:\\projects\\Replicant\\examples\\recipe.json"]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Mocha All",
+            "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
+            "args": [
+                "--timeout",
+                "999999",
+                "--colors",
+                "${workspaceFolder}/test"
+            ],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen"
         }
     ]
 }

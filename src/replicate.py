@@ -97,12 +97,11 @@ class Replicator:
             '---',
         ]
         variables = (
-            '<%'
+            '<% '
             + 'NameUpperCase = name.toUpperCase();'
             + 'NameLowerCase = name.toLowerCase();'
             + 'NameLowerDasherized = h.inflection.dasherize(NameLowerCase);'
-            + 'NameCapitalized = h.inflection.capitalize(name);'
-            + 'ChartName = NameLowerCase; %>'
+            + 'NameCapitalized = h.inflection.capitalize(name); %>'
             # TODO take other variables Hygen prompt
         )
         self.__prepare_file(full_dest,

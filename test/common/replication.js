@@ -57,10 +57,32 @@ const readTemplateFileHeader = async function(recipe, fileName) {
     return yaml.safeLoad(header);
 }
 
+const readTemplateFileContent = async function(recipe, fileName) {
+    const fileStream = fs.createReadStream(`./src/_templates/${recipe.templateName}/new/${fileName}`);
+    const rl = readline.createInterface({
+        input: fileStream,
+        crlfDelay: Infinity
+    });
+
+    let content = '';
+    let dividerCount = 0;
+    for await (const line of rl) {
+        if (line.startsWith('---')) {
+            dividerCount++;
+            continue;
+        }
+
+        if (dividerCount == 2)
+            content += line + '\n';
+    }
+    return content;
+}
+
 module.exports = {
     replicate: replicate,
     loadRecipe: loadRecipe,
     readTemplateForRecipe: readTemplateForRecipe,
     deleteTemplateForRecipe: deleteTemplateForRecipe,
-    readTemplateFileHeader: readTemplateFileHeader
+    readTemplateFileHeader: readTemplateFileHeader,
+    readTemplateFileContent: readTemplateFileContent
 }
