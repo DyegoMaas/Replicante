@@ -26,6 +26,7 @@
   "homepage": "https://github.com/DyegoMaas/Replicant#readme",
   "devDependencies": {
     "chai": "^4.2.0",
+    "js-yaml": "^3.14.0",
     "mocha": "^8.1.1"
   }
 }

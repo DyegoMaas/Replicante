@@ -1,5 +1,7 @@
 const { spawn, exec } = require('child_process'); // TODO refactor to use spawn instead (less memory intensive)
 const fs = require('fs');
+const readline = require('readline');
+const yaml = require('js-yaml')
 
 /**
  * Executes a shell command and return it as a Promise.
@@ -34,9 +36,31 @@ const deleteTemplateForRecipe = function(recipe) {
     return fs.rmdirSync(`./src/_templates/${recipe.templateName}`, { recursive: true });
 }
 
+const readTemplateFileHeader = async function(recipe, fileName) {
+    const fileStream = fs.createReadStream(`./src/_templates/${recipe.templateName}/new/${fileName}`);
+    const rl = readline.createInterface({
+        input: fileStream,
+        crlfDelay: Infinity
+    });
+
+    let header = '';
+    let dividerCount = 0;
+    for await (const line of rl) {
+        if (line.startsWith('---'))
+            dividerCount++;
+        else
+            header += line + '\n';
+
+        if (dividerCount == 2)
+            break;
+    }
+    return yaml.safeLoad(header);
+}
+
 module.exports = {
     replicate: replicate,
     loadRecipe: loadRecipe,
     readTemplateForRecipe: readTemplateForRecipe,
-    deleteTemplateForRecipe: deleteTemplateForRecipe
+    deleteTemplateForRecipe: deleteTemplateForRecipe,
+    readTemplateFileHeader: readTemplateFileHeader
 }
