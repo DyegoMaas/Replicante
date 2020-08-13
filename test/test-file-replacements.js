@@ -13,9 +13,9 @@ describe('File name and directory tree replacements', function () {
         readTemplateForRecipe(recipe).map(file => templateFiles.push(file));
     });
 
-    // after(function () {
-    //     deleteTemplateForRecipe(recipe);
-    // });
+    after(function () {
+        deleteTemplateForRecipe(recipe);
+    });
 
     it('Should include all files in the source file tree', function() {
         expect(templateFiles.length).to.equal(3);        
