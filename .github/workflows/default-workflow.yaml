@@ -2,6 +2,7 @@ name: Default CI workflow
 on:
   push:
     branches:
+      - master
       - feature/*
 
 jobs:
