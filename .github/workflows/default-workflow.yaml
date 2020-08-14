@@ -1,0 +1,32 @@
+name: Default CI workflow
+on:
+  push:
+    branches:
+      - feature/*
+
+jobs:
+  tests:
+    name: Run tests
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.6, 3.7, 3.8]
+        node-version: [10.x, 12.x, 13.x, 14.x]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Initialize hygen
+        run: |
+          npm install -g hygen
+          npm install
+          cd ./src && hygen init self
+      - name: Run integration tests
+        run: npm run test
