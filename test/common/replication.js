@@ -1,5 +1,6 @@
 const { spawn, exec } = require('child_process'); // TODO refactor to use spawn instead (less memory intensive)
 const fs = require('fs');
+const path = require('path');
 const readline = require('readline');
 const yaml = require('js-yaml')
 
@@ -19,8 +20,8 @@ function execShellCommand(cmd) {
     });
 }
    
-const replicate = async function(sample, recipe) {
-    return execShellCommand(`python ./src/replicate.py --sample=${sample} --recipe=${recipe}`)
+const replicate = async function(samplePath, recipePath) {
+    return execShellCommand(`python ./src/replicate.py --sample=${samplePath} --recipe=${recipePath}`)
 }
 
 const loadRecipe = function(recipe) {
@@ -85,11 +86,37 @@ const readTemplateFileContent = async function(recipe, fileName, options) {
     return content;
 }
 
+const generateReplicantFrom = async (recipe) => {
+    return execShellCommand(`cd ./src && hygen ${recipe.templateName} new ${recipe.replicantName}`)
+};
+
+const deleteReplicantFromRecipe = (recipe) => {
+    return fs.rmdirSync(`./src/${recipe.replicantName}`, { recursive: true });
+};
+
+const readReplicantFileContent = async (recipe, fileNameParts) => {
+    const filePath = path.join(...fileNameParts);
+    const fileStream = fs.createReadStream(`./src/${recipe.replicantName}/${filePath}`);
+    const rl = readline.createInterface({
+        input: fileStream,
+        crlfDelay: Infinity
+    });
+
+    let content = '';
+    for await (const line of rl) {
+        content += line + '\n';
+    }
+    return content;
+}
+
 module.exports = {
     replicate: replicate,
     loadRecipe: loadRecipe,
     readTemplateForRecipe: readTemplateForRecipe,
     deleteTemplateForRecipe: deleteTemplateForRecipe,
     readTemplateFileHeader: readTemplateFileHeader,
-    readTemplateFileContent: readTemplateFileContent
+    readTemplateFileContent: readTemplateFileContent,
+    generateReplicantFrom: generateReplicantFrom,
+    deleteReplicantFromRecipe: deleteReplicantFromRecipe,
+    readReplicantFileContent: readReplicantFileContent
 }

@@ -1,5 +1,8 @@
 var expect  = require('chai').expect;
-const { replicate, loadRecipe, readTemplateForRecipe, deleteTemplateForRecipe, readTemplateFileHeader, readTemplateFileContent } = require("./common/replication");
+const { 
+    replicate, loadRecipe, readTemplateForRecipe, deleteTemplateForRecipe,
+    readTemplateFileHeader, readTemplateFileContent,
+    generateReplicantFrom, deleteReplicantFromRecipe, readReplicantFileContent } = require("./common/replication");
 
 describe('File name and directory tree replacements', function () {
     const recipeFilePath = './test/fixtures/helloworld-to-hithere-recipe.json';
@@ -11,10 +14,14 @@ describe('File name and directory tree replacements', function () {
         console.log(`Replication output: ${output}`);
 
         readTemplateForRecipe(recipe).map(file => templateFiles.push(file));
+
+        // deleteTemplateForRecipe(recipe);
+        // deleteReplicantFromRecipe(recipe);
     });
 
     after(function () {
         deleteTemplateForRecipe(recipe);
+        deleteReplicantFromRecipe(recipe);
     });
 
     it('Should include all files in the source file tree', function() {
@@ -101,5 +108,36 @@ describe('File name and directory tree replacements', function () {
         expect(lines[0]).to.equal('console.log(\'Hi My People\');');
         expect(lines[1]).to.equal('console.log(\'"Hi There!"\');');
         expect(lines[2]).to.equal('console.log(\'"Just, hey world?"\');');
+        expect(lines[3]).to.equal('console.log(\'Name = Special<%= name %>\');');
+    });
+
+    describe('Template generations', () => {
+        before(async () => {
+            await generateReplicantFrom(recipe);
+        });
+
+        it('Should genereate files in root, with content properly replaced', async () => {
+            let content = await readReplicantFileContent(recipe, ['HiThere.js']);
+            
+            let lines = content.split('\n');
+            expect(lines[0]).to.equal('console.log(\'Hi My People\');');
+            expect(lines[1]).to.equal('console.log(\'"Hi There!"\');');
+            expect(lines[2]).to.equal('console.log(\'"Just, hey world?"\');');
+            expect(lines[3]).to.equal('console.log(\'Name = SpecialHiThere\');');
+
+
+            content = await readReplicantFileContent(recipe, ['Hi.There.Guys.js']);
+            
+            lines = content.split('\n');
+            expect(lines[0]).to.equal('console.log(\'Hi My People Guys\');');
+        });
+
+        it('Should genereate nested files, with content properly replaced', async () => {
+            let content = await readReplicantFileContent(recipe, ['Hi', 'There', 'There.js']);
+            
+            let lines = content.split('\n');
+            expect(lines[0]).to.equal('console.log(\'Hi My People\');');
+            expect(lines[1]).to.equal('console.log(\'HiThere...\');');
+        });
     });
 });

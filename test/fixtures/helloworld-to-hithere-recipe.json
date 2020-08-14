@@ -1,14 +1,15 @@
 {
+  "replicantName": "HiThere",
   "templateName": "hi-there-generator",
   "fileNameReplacements": [
-    { "from": "HelloWorld", "to": "HiThere" },
     { "from": "Hello", "to": "Hi" },
     { "from": "World", "to": "There" }
   ],
   "sourceCodeReplacements": [
     { "from": "Hello", "to": "Hi" },
     { "from": "World", "to": "My People" },
-    { "from": "hello", "to": "hey" }
+    { "from": "hello", "to": "hey" },
+    { "from": "CodeName", "to": "<%= name %>" }
   ],
   "ignoreDirectories": []
 }
