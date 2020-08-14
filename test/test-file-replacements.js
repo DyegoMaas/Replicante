@@ -4,12 +4,12 @@ const {
     readTemplateFileHeader, readTemplateFileContent,
     generateReplicantFrom, deleteReplicantFromRecipe, readReplicantFileContent } = require("./common/replication");
 
-describe('File name and directory tree replacements', function () {
+describe('File name and directory tree replacements', () => {
     const recipeFilePath = './test/fixtures/helloworld-to-hithere-recipe.json';
     const recipe = loadRecipe(recipeFilePath);
     const templateFiles = [];
 
-    before(async function () {
+    before(async () => {
         const output = await replicate('./test/fixtures/hello-world', recipeFilePath);
         console.log(`Replication output: ${output}`);
 
@@ -19,16 +19,16 @@ describe('File name and directory tree replacements', function () {
         // deleteReplicantFromRecipe(recipe);
     });
 
-    after(function () {
+    after(() => {
         deleteTemplateForRecipe(recipe);
         deleteReplicantFromRecipe(recipe);
     });
 
-    it('Should include all files in the source file tree', function() {
+    it('Should include all files in the source file tree', () => {
         expect(templateFiles.length).to.equal(3);        
     });
 
-    it('Should use virtual path structure separated by hyphen', function() {
+    it('Should use virtual path structure separated by hyphen', () => {
         // Hello
         // --There
         // ----World.js
@@ -36,7 +36,7 @@ describe('File name and directory tree replacements', function () {
         expect(templateFiles).to.contain('Hello-There-World.js.ejs.t');
     });
 
-    it('Should calculate the destiny path at root of the new project, applying file name replacements', async function() {
+    it('Should calculate the destiny path at root of the new project, applying file name replacements', async () => {
         const header1 = await readTemplateFileHeader(recipe, 'HelloWorld.js.ejs.t');
         const header2 = await readTemplateFileHeader(recipe, 'Hello.World.Guys.js.ejs.t');
         
@@ -44,25 +44,25 @@ describe('File name and directory tree replacements', function () {
         expect(header2.to).to.equal('<%= name %>/Hi.There.Guys.js');
     });
 
-    it('Should calculate the destiny path that restore original path structure, applying file name replacements', async function() {
+    it('Should calculate the destiny path that restore original path structure, applying file name replacements', async () => {
         const header = await readTemplateFileHeader(recipe, 'Hello-There-World.js.ejs.t');
 
         expect(header.to).to.equal('<%= name %>/Hi/There/There.js');
     });
 
-    it('Should use force option', async function() {
+    it('Should use force option', async () => {
         const header = await readTemplateFileHeader(recipe, 'Hello-There-World.js.ejs.t');
 
         expect(header.force).to.equal(true);
     });
 
-    it('Should use force option', async function() {
+    it('Should use force option', async () => {
         const header = await readTemplateFileHeader(recipe, 'Hello-There-World.js.ejs.t');
 
         expect(header.force).to.equal(true);
     });
 
-    it('Should insert alternative variables at the top of the content of each file', async function() {
+    it('Should insert alternative variables at the top of the content of each file', async () => {
         const content = await readTemplateFileContent(recipe, 'Hello-There-World.js.ejs.t', { 
             ignoreVariables: false
         });
@@ -99,7 +99,7 @@ describe('File name and directory tree replacements', function () {
         }
     });
 
-    it('Should apply all content replacements', async function() {
+    it('Should apply all content replacements', async () => {
         const content = await readTemplateFileContent(recipe, 'HelloWorld.js.ejs.t', { 
             ignoreVariables: true
         });

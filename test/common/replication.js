@@ -20,24 +20,24 @@ function execShellCommand(cmd) {
     });
 }
    
-const replicate = async function(samplePath, recipePath) {
+const replicate = async (samplePath, recipePath) => {
     return execShellCommand(`python ./src/replicate.py --sample=${samplePath} --recipe=${recipePath}`)
 }
 
-const loadRecipe = function(recipe) {
+const loadRecipe = (recipe) => {
     let rawData = fs.readFileSync(recipe);
     return JSON.parse(rawData);
 }
 
-const readTemplateForRecipe = function(recipe) {
+const readTemplateForRecipe = (recipe) => {
     return fs.readdirSync(`./src/_templates/${recipe.templateName}/new`);
 }
 
-const deleteTemplateForRecipe = function(recipe) {
+const deleteTemplateForRecipe = (recipe) => {
     return fs.rmdirSync(`./src/_templates/${recipe.templateName}`, { recursive: true });
 }
 
-const readTemplateFileHeader = async function(recipe, fileName) {
+const readTemplateFileHeader = async (recipe, fileName) => {
     const fileStream = fs.createReadStream(`./src/_templates/${recipe.templateName}/new/${fileName}`);
     const rl = readline.createInterface({
         input: fileStream,
@@ -58,7 +58,7 @@ const readTemplateFileHeader = async function(recipe, fileName) {
     return yaml.safeLoad(header);
 }
 
-const readTemplateFileContent = async function(recipe, fileName, options) {
+const readTemplateFileContent = async (recipe, fileName, options) => {
     const fileStream = fs.createReadStream(`./src/_templates/${recipe.templateName}/new/${fileName}`);
     const rl = readline.createInterface({
         input: fileStream,
