@@ -1,5 +1,7 @@
 # Replicant
 
+![Build](https://github.com/DyegoMaas/Replicant/workflows/Build/badge.svg)
+
 Ever needed to use a running application as template for a new project? Replicant makes it easy to morph a living application into a completely new one.
 
 ## Tutorial
