@@ -2,7 +2,8 @@ const { spawn, exec } = require('child_process'); // TODO refactor to use spawn 
 const fs = require('fs');
 const path = require('path');
 const readline = require('readline');
-const yaml = require('js-yaml')
+const yaml = require('js-yaml');
+var rimraf = require("rimraf");
 
 /**
  * Executes a shell command and return it as a Promise.
@@ -19,9 +20,13 @@ function execShellCommand(cmd) {
         });
     });
 }
-   
+
+const replicatePython = async (samplePath, recipePath) => {
+    return execShellCommand(`python ./src/replicate.py --sample=${samplePath} --recipe=${recipePath}`);
+}
+
 const replicate = async (samplePath, recipePath) => {
-    return execShellCommand(`python ./src/replicate.py --sample=${samplePath} --recipe=${recipePath}`)
+    return execShellCommand(`node ./src/replicate.js --sample=${samplePath} --recipe=${recipePath}`);
 }
 
 const loadRecipe = (recipe) => {
@@ -34,7 +39,10 @@ const readTemplateForRecipe = (recipe) => {
 }
 
 const deleteTemplateForRecipe = (recipe) => {
-    return fs.rmdirSync(`./src/_templates/${recipe.templateName}`, { recursive: true });
+    return new Promise((resolve, error) => {
+        rimraf(`./src/_templates/${recipe.templateName}`, error);
+        resolve();
+    })
 }
 
 const readTemplateFileHeader = async (recipe, fileName) => {
@@ -91,7 +99,10 @@ const generateReplicantFrom = async (recipe) => {
 };
 
 const deleteReplicantFromRecipe = (recipe) => {
-    return fs.rmdirSync(`./src/${recipe.replicantName}`, { recursive: true });
+    return new Promise((resolve, error) => {
+        rimraf(`./src/${recipe.replicantName}`, error);
+        resolve();
+    })
 };
 
 const readReplicantFileContent = async (recipe, fileNameParts) => {
@@ -110,6 +121,7 @@ const readReplicantFileContent = async (recipe, fileNameParts) => {
 }
 
 module.exports = {
+    replicatePython: replicatePython,
     replicate: replicate,
     loadRecipe: loadRecipe,
     readTemplateForRecipe: readTemplateForRecipe,

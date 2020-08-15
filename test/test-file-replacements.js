@@ -1,6 +1,7 @@
 var expect  = require('chai').expect;
-const { 
-    replicate, loadRecipe, readTemplateForRecipe, deleteTemplateForRecipe,
+const {
+    replicatePython, replicate,
+    loadRecipe, readTemplateForRecipe, deleteTemplateForRecipe,
     readTemplateFileHeader, readTemplateFileContent,
     generateReplicantFrom, deleteReplicantFromRecipe, readReplicantFileContent } = require("./common/replication");
 
@@ -10,22 +11,19 @@ describe('File name and directory tree replacements', () => {
     const templateFiles = [];
 
     before(async () => {
-        const output = await replicate('./test/fixtures/hello-world', recipeFilePath);
+        const output = await replicatePython('./test/fixtures/hello-world', recipeFilePath);
         console.log(`Replication output: ${output}`);
 
         readTemplateForRecipe(recipe).map(file => templateFiles.push(file));
-
-        // deleteTemplateForRecipe(recipe);
-        // deleteReplicantFromRecipe(recipe);
     });
 
-    after(() => {
-        deleteTemplateForRecipe(recipe);
-        deleteReplicantFromRecipe(recipe);
+    after(async () => {
+        return deleteTemplateForRecipe(recipe)
+            .then(() => deleteReplicantFromRecipe(recipe));
     });
 
     it('Should include all files in the source file tree', () => {
-        expect(templateFiles.length).to.equal(3);        
+        expect(templateFiles.length).to.equal(3);
     });
 
     it('Should use virtual path structure separated by hyphen', () => {
@@ -39,7 +37,7 @@ describe('File name and directory tree replacements', () => {
     it('Should calculate the destiny path at root of the new project, applying file name replacements', async () => {
         const header1 = await readTemplateFileHeader(recipe, 'HelloWorld.js.ejs.t');
         const header2 = await readTemplateFileHeader(recipe, 'Hello.World.Guys.js.ejs.t');
-        
+
         expect(header1.to).to.equal('<%= name %>/HiThere.js');
         expect(header2.to).to.equal('<%= name %>/Hi.There.Guys.js');
     });
@@ -67,7 +65,7 @@ describe('File name and directory tree replacements', () => {
             ignoreVariables: false
         });
         const firstLine = content.split('\n')[0];
-        
+
         expect(firstLine).to.have.string('<% ');
         expect(firstLine).to.have.string('%>');
 
@@ -118,7 +116,7 @@ describe('File name and directory tree replacements', () => {
 
         it('Should genereate files in root, with content properly replaced', async () => {
             let content = await readReplicantFileContent(recipe, ['HiThere.js']);
-            
+
             let lines = content.split('\n');
             expect(lines[0]).to.equal('console.log(\'Hi My People\');');
             expect(lines[1]).to.equal('console.log(\'"Hi There!"\');');
@@ -127,14 +125,14 @@ describe('File name and directory tree replacements', () => {
 
 
             content = await readReplicantFileContent(recipe, ['Hi.There.Guys.js']);
-            
+
             lines = content.split('\n');
             expect(lines[0]).to.equal('console.log(\'Hi My People Guys\');');
         });
 
         it('Should genereate nested files, with content properly replaced', async () => {
             let content = await readReplicantFileContent(recipe, ['Hi', 'There', 'There.js']);
-            
+
             let lines = content.split('\n');
             expect(lines[0]).to.equal('console.log(\'Hi My People\');');
             expect(lines[1]).to.equal('console.log(\'HiThere...\');');
