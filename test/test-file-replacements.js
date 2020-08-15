@@ -1,6 +1,6 @@
 var expect  = require('chai').expect;
 const {
-    replicatePython, replicate,
+    replicatePython, replicate, replicateCLI,
     loadRecipe, readTemplateForRecipe, deleteTemplateForRecipe,
     readTemplateFileHeader, readTemplateFileContent,
     generateReplicantFrom, deleteReplicantFromRecipe, readReplicantFileContent } = require("./common/replication");
@@ -12,6 +12,7 @@ describe('File name and directory tree replacements', () => {
 
     before(async () => {
         const output = await replicate('./test/fixtures/hello-world', recipeFilePath);
+        // const output = await replicateCLI('./test/fixtures/hello-world', recipeFilePath);
         // const output = await replicatePython('./test/fixtures/hello-world', recipeFilePath);
         console.log(`Replication output: ${output}`);
 
@@ -33,6 +34,10 @@ describe('File name and directory tree replacements', () => {
         // ----World.js
         // turns into Hello-There-World.js.ejs.t
         expect(templateFiles).to.contain('Hello-There-World.js.ejs.t');
+    });
+
+    it('Should ignore files marked as to be ignored', () => {
+        expect(templateFiles).to.not.contain('Bye-Guys.js.ejs.t');
     });
 
     it('Should calculate the destiny path at root of the new project, applying file name replacements', async () => {
@@ -110,7 +115,7 @@ describe('File name and directory tree replacements', () => {
         expect(lines[3]).to.equal('console.log(\'Name = Special<%= name %>\');');
     });
 
-    describe('Template generations', () => {
+    describe('Replicant generation', () => {
         before(async () => {
             await generateReplicantFrom(recipe);
         });
