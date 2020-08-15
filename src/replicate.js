@@ -24,15 +24,3 @@ generateReplicant({
     sampleDirectory: argv.sample,
     replicationRecipeFile: argv.recipe
 });
-
-// var fs = require('fs');
-// var s = fs.createReadStream(argv.file);
-
-// var lines = 0;
-// s.on('data', function (buf) {
-//     lines += buf.toString().match(/\n/g).length;
-// });
-
-// s.on('end', function () {
-//     console.log(lines);
-// });
