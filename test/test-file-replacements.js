@@ -25,7 +25,7 @@ describe('File name and directory tree replacements', () => {
     });
 
     it('Should include all files in the source file tree', () => {
-        expect(templateFiles.length).to.equal(3);
+        expect(templateFiles.length).to.equal(4);
     });
 
     it('Should use virtual path structure separated by hyphen', () => {

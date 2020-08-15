@@ -11,5 +11,5 @@
     { "from": "hello", "to": "hey" },
     { "from": "CodeName", "to": "<%= name %>" }
   ],
-  "artifactsToIgnore": ["Bye", "IgnoredFile.js"]
+  "artifactsToIgnore": ["Bye", "Butterflies.js"]
 }
