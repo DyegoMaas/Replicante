@@ -161,10 +161,8 @@ def __load_replication_config(replication_config_file_path) -> ReplicationRecipe
 
 
 def update_template(replication_instructions):
-    sample_dir = replication_instructions['sample_directory'] # TODO include sample_dir in config loading somehow?
+    sample_dir = replication_instructions['sample_directory']
     recipe = __load_replication_config(replication_instructions['replication_recipe_file'])
-    print(recipe.file_name_replacements)
-    print(recipe.source_code_replacements)
 
     replicator = Replicator(replication_recipe=recipe)
     replicator.clean_template_directory()
