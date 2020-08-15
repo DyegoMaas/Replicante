@@ -16,7 +16,7 @@ module.exports = class ReplicationRecipe {
         return new ReplicationRecipe(
             data.templateName,
             `./src/_templates/${data.templateName}`, // TODO review
-            data.file_name_replacements,
+            data.fileNameReplacements,
             data.sourceCodeReplacements,
             data.ignoreDirectories
         );

@@ -1,16 +1,6 @@
 #!/usr/bin/env node
 
-const Replicator = require('./Replicator');
-const ReplicationRecipe = require('./ReplicationRecipe');
-
-const update_template = (replicationInstructions) => {
-    const { sampleDirectory, replicationRecipeFile } = replicationInstructions;
-    const recipe = ReplicationRecipe.fromRecipeFile(replicationRecipeFile);
-
-    const replicator = new Replicator(recipe);
-    replicator.cleanTemplateDirectory();
-    replicator.processRecipeFiles(sampleDirectory)
-};
+const { generateReplicant } = require('./replication-process');
 
 var argv = require('yargs')
     .usage('Usage: $0 <command> [options]')
@@ -30,7 +20,7 @@ var argv = require('yargs')
 console.log(`Will use ${argv.sample} as sample for replication process.`);
 console.log(`Replication recipe loaded: ${argv.recipe}`);
 
-update_template({
+generateReplicant({
     sampleDirectory: argv.sample,
     replicationRecipeFile: argv.recipe
 });

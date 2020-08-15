@@ -12,6 +12,7 @@ describe('File name and directory tree replacements', () => {
 
     before(async () => {
         const output = await replicate('./test/fixtures/hello-world', recipeFilePath);
+        // const output = await replicatePython('./test/fixtures/hello-world', recipeFilePath);
         console.log(`Replication output: ${output}`);
 
         readTemplateForRecipe(recipe).map(file => templateFiles.push(file));

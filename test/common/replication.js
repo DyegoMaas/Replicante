@@ -4,6 +4,7 @@ const path = require('path');
 const readline = require('readline');
 const yaml = require('js-yaml');
 var rimraf = require("rimraf");
+const { generateReplicant } = require('../../src/replication-process');
 
 /**
  * Executes a shell command and return it as a Promise.
@@ -25,8 +26,22 @@ const replicatePython = async (samplePath, recipePath) => {
     return execShellCommand(`python ./src/replicate.py --sample=${samplePath} --recipe=${recipePath}`);
 }
 
-const replicate = async (samplePath, recipePath) => {
+const replicateCLI = async (samplePath, recipePath) => {
     return execShellCommand(`node ./src/replicate.js --sample=${samplePath} --recipe=${recipePath}`);
+}
+
+const replicate = async (samplePath, recipePath) => {
+    return new Promise((resolve, error) => {
+        try {
+            generateReplicant({
+                sampleDirectory: samplePath,
+                replicationRecipeFile: recipePath
+            });
+            resolve();
+        } catch (err) {
+            error(err);
+        }
+    });
 }
 
 const loadRecipe = (recipe) => {
@@ -122,6 +137,7 @@ const readReplicantFileContent = async (recipe, fileNameParts) => {
 
 module.exports = {
     replicatePython: replicatePython,
+    replicateCLI: replicateCLI,
     replicate: replicate,
     loadRecipe: loadRecipe,
     readTemplateForRecipe: readTemplateForRecipe,

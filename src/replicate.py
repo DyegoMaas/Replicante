@@ -71,6 +71,7 @@ class Replicator:
             original_content = original.read()
             with open(file_path, 'w', encoding='utf-8') as modified:
                 for line in lines_to_prepend:
+                    # TODO verify if this replacement is correct
                     line = self.__replace_terms_in_text(line, source_code_replacements)
                     modified.write(f'{line}\n')
 
@@ -118,6 +119,7 @@ class Replicator:
 
             if os.path.isfile(full_path):
                 relative_path = os.path.relpath(full_path, root_path)
+                print('RELATIVITY=', path, root_path, 'BASENAME=', os.path.basename(relative_path), 'RELATIVE_PATH', relative_path);
                 middle_path = relative_path.replace(os.path.basename(relative_path), '')
                 virtual_path = os.path.join(middle_path, file).replace('\\', '-').replace('/', '-')
                 self.to_template(full_path, f'{self.replication_recipe.template_dir}/new/{virtual_path}', relative_path)
@@ -125,6 +127,7 @@ class Replicator:
 
             directory = file
             if directory in self.replication_recipe.directories_to_ignores:
+                print(f'Ignoring directory {directory}')
                 continue
 
             self.__process_files_in_directory(full_path, root_path)
