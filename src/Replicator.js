@@ -1,12 +1,10 @@
 const fs = require('fs');
 const path = require('path');
 var rimraf = require("rimraf");
-const { Console } = require('console');
 
 module.exports = class Replicator {
     constructor(replicationRecipe) {
         this.replicationRecipe = replicationRecipe;
-        console.log('my recipe is', replicationRecipe);
     }
 
     cleanTemplateDirectory() {
@@ -33,19 +31,19 @@ module.exports = class Replicator {
         fs.readdirSync(currentPath).forEach(file => {
             const fullPath = path.join(currentPath, file);
 
+            if (currentPath == rootPath) {
+                if (this.replicationRecipe.artifactsToIgnore.indexOf(file) > -1) {
+                    console.log('Ignoring directory or file', file);
+                    return;
+                }
+            }
+
             if (fs.lstatSync(fullPath).isFile()) {
                 const relativePath = path.relative(rootPath, fullPath);
                 const middlePath = relativePath.replace(path.basename(relativePath), '');
                 const virtualPath = path.join(middlePath, file).replace(/\\/g, '-').replace(/\//g, '-');
-                console.log('RELATIVITY', fullPath, rootPath, 'BASENAME', path.basename(relativePath), 'RELATIVE_PATH', relativePath, 'MIDDLE_PATH', middlePath, 'VIRTUAL_PATH', virtualPath);
 
                 this.#toTemplate(fullPath, path.join(this.replicationRecipe.templateDir, 'new', virtualPath), relativePath);
-                return;
-            }
-
-            const directory = file;
-            if (this.replicationRecipe.directoriesToIgnore.indexOf(directory) > -1) {
-                console.log('Ignoring directory', directory);
                 return;
             }
 
