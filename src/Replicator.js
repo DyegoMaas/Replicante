@@ -65,7 +65,7 @@ module.exports = class Replicator {
         fs.copyFileSync(fullPathSrc, fullPathDest) // merge two parts
         // removeBom(fullPathDest) // TODO verify if it is necessary
 
-        let targetPath = relativePath.replace('\\', '/');
+        let targetPath = relativePath.replace(/\\/g, '/');
         targetPath = this.#replaceTermsInText(targetPath, this.replicationRecipe.fileNameReplacements);
         let frontmatter = [
             '---',
@@ -86,7 +86,7 @@ module.exports = class Replicator {
         let originalText = text;
         replacements.forEach(replacement => {
             const {from, to} = replacement;
-            text = text.replace(from, to);
+            text = text.split(from).join(to);
         });
         console.log('ORIGINAL_TEXT=', originalText, 'WITH_REPLACEMENTS', replacements, 'GENERATED ->', text);
         return text;
