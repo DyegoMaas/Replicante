@@ -8,17 +8,6 @@ Ever needed to use a running application as template for a new project? Replican
 
 Currently, replicating an existing application requires some steps. First thing, clone this repository.
 
-### Hygen initialization
-
-First, we need to install and initialize [Hygen](https://www.hygen.io), a flexible template generator mostly agnostic of technology:
-
-To install it, run `npm i -g hygen`. When the installation is complete, run:
-
-```sh
-cd src
-hygen init self
-```
-
 ### Defining the sample for replication
 
 If you want to turn an existing application into a new one, you will inevitably need to rename a lot of things. From file names, to folders, modules names, namespaces, package references and the source code itself, its a lot of work, and Replicant can help you with that. You just need to feed it with two things: the directory of the sample application, and the **replication recipe**.
