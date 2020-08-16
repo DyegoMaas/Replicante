@@ -47,7 +47,7 @@ All those details above, the things we want to change, need to be captured in a 
 With the recipe defined, we are ready to execute the replication process.
 
 From the `root` folder:
-1) Run `python ./src/replicate --sample=<path-to-sample-app> --recipe=<path-to-recipe.json>`. It will generate a template inside the _templates folder.
+1) Run `node ./src/replicate.js --sample=<path-to-sample-app> --recipe=<path-to-recipe.json>`. It will generate a template inside the _templates folder.
 
 From the `src` folder:
 2) Run `hygen <templateName> new <NewName>`. The `templateName` parameter is the same informed in the recipe, and the `NewName` is the name of your new application. It will be available as the `<%= name %>` variable for the replication steps.
