@@ -5,25 +5,14 @@ const readline = require('readline');
 const yaml = require('js-yaml');
 var rimraf = require("rimraf");
 const { generateReplicant } = require('../../src/replication-process');
-
-/**
- * Executes a shell command and return it as a Promise.
- * @param cmd {string}
- * @return {Promise<string>}
- */
-function execShellCommand(cmd) {
-    return new Promise((resolve, reject) => {
-        exec(cmd, (error, stdout, stderr) => {
-            if (error) {
-                console.warn(error);
-            }
-            resolve(stdout? stdout : stderr);
-        });
-    });
-}
+const execa = require('execa');
 
 const replicateCLI = async (samplePath, recipePath) => {
-    return execShellCommand(`node ./src/replicate.js --sample=${samplePath} --recipe=${recipePath}`);
+    try {
+        await execa('node', ['./src/replicate.js', `--sample=${samplePath}`, `--recipe=${recipePath}`]);
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 const replicate = async (samplePath, recipePath) => {

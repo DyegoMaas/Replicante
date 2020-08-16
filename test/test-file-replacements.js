@@ -11,8 +11,8 @@ describe('File name and directory tree replacements', () => {
     const templateFiles = [];
 
     before(async () => {
-        await replicate('./test/fixtures/hello-world', recipeFilePath);
-        // await replicateCLI('./test/fixtures/hello-world', recipeFilePath);
+        // await replicate('./test/fixtures/hello-world', recipeFilePath);
+        await replicateCLI('./test/fixtures/hello-world', recipeFilePath);
 
         readTemplateForRecipe(recipe).map(file => templateFiles.push(file));
     });
