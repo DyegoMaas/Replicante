@@ -11,10 +11,9 @@ describe('File name and directory tree replacements', () => {
     const templateFiles = [];
 
     before(async () => {
-        const output = await replicate('./test/fixtures/hello-world', recipeFilePath);
-        // const output = await replicateCLI('./test/fixtures/hello-world', recipeFilePath);
-        // const output = await replicatePython('./test/fixtures/hello-world', recipeFilePath);
-        console.log(`Replication output: ${output}`);
+        await replicate('./test/fixtures/hello-world', recipeFilePath);
+        // await replicateCLI('./test/fixtures/hello-world', recipeFilePath);
+        // await replicatePython('./test/fixtures/hello-world', recipeFilePath);
 
         readTemplateForRecipe(recipe).map(file => templateFiles.push(file));
     });
@@ -24,8 +23,8 @@ describe('File name and directory tree replacements', () => {
             .then(() => deleteReplicantFromRecipe(recipe));
     });
 
-    it('Should include all files in the source file tree', () => {
-        expect(templateFiles.length).to.equal(4);
+    it('Should include all expected files in the source file tree', () => {
+        expect(templateFiles.length).to.equal(3);
     });
 
     it('Should use virtual path structure separated by hyphen', () => {

@@ -40,7 +40,7 @@ All those details above, the things we want to change, need to be captured in a 
     { "from": "Some Term", "to": "New Hard Coded Term" } // return "Some Term"; -> return "New Hard Coded Term";
     // ... any other replacement your project needs
   ],
-  "artifactsToIgnore": [".git", ".idea", "bin", "obj", "somefile.dll"] // usually, binary directories
+  "ignoreArtifacts": [".git", ".idea", "bin", "obj", "somefile.dll"] // usually, binary directories
 }
 ```
 

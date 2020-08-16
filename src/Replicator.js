@@ -26,16 +26,13 @@ module.exports = class Replicator {
     }
 
     #processFilesInDirectoryRecursive = (currentPath, rootPath) => {
-        console.log('Processing directory', currentPath, fs.readdirSync(currentPath));
+        console.log('Processing directory', currentPath);
 
         fs.readdirSync(currentPath).forEach(file => {
             const fullPath = path.join(currentPath, file);
 
-            if (currentPath == rootPath) {
-                if (this.replicationRecipe.artifactsToIgnore.indexOf(file) > -1) {
-                    console.log('Ignoring directory or file', file);
-                    return;
-                }
+            if (this.replicationRecipe.ignoreArtifacts.indexOf(file) > -1) {
+                return;
             }
 
             if (fs.lstatSync(fullPath).isFile()) {
@@ -61,7 +58,6 @@ module.exports = class Replicator {
             fs.mkdirSync(destDir, { recursive: true });
         }
         fs.copyFileSync(fullPathSrc, fullPathDest) // merge two parts
-        // removeBom(fullPathDest) // TODO verify if it is necessary
 
         let targetPath = relativePath.replace(/\\/g, '/');
         targetPath = this.#replaceTermsInText(targetPath, this.replicationRecipe.fileNameReplacements);
@@ -81,12 +77,10 @@ module.exports = class Replicator {
     }
 
     #replaceTermsInText = (text, replacements) => {
-        let originalText = text;
         replacements.forEach(replacement => {
             const {from, to} = replacement;
             text = text.split(from).join(to);
         });
-        console.log('ORIGINAL_TEXT=', originalText, 'WITH_REPLACEMENTS', replacements, 'GENERATED ->', text);
         return text;
     };
 

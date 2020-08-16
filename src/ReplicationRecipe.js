@@ -1,12 +1,12 @@
 const fs = require('fs');
 
 module.exports = class ReplicationRecipe {
-    constructor(templateName, templateDir, fileNameReplacements, sourceCodeReplacements, artifactsToIgnore) {
+    constructor(templateName, templateDir, fileNameReplacements, sourceCodeReplacements, ignoreArtifacts) {
         this.templateName = templateName;
         this.templateDir = templateDir;
         this.fileNameReplacements = fileNameReplacements;
         this.sourceCodeReplacements = sourceCodeReplacements;
-        this.artifactsToIgnore = artifactsToIgnore;
+        this.ignoreArtifacts = ignoreArtifacts;
     }
 
     static fromRecipeFile(recipeFilePath) {
@@ -18,7 +18,7 @@ module.exports = class ReplicationRecipe {
             `./src/_templates/${data.templateName}`, // TODO review
             data.fileNameReplacements,
             data.sourceCodeReplacements,
-            data.artifactsToIgnore
+            data.ignoreArtifacts
         );
     };
 };
