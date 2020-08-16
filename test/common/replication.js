@@ -9,7 +9,7 @@ const execa = require('execa');
 
 const replicateCLI = async (samplePath, recipePath) => {
     try {
-        const { stdout } = await execa.sync('node', ['./src/replicate.js', `--sample=${samplePath}`, `--recipe=${recipePath}`]);
+        const { stdout } = await execa.sync('node', ['./src/replicante.js', 'create', `--from-sample=${samplePath}`, `--with-recipe=${recipePath}`]);
         console.log(stdout);
     } catch (error) {
         console.log(error);
@@ -21,17 +21,6 @@ const replicate = async (samplePath, recipePath) => {
         sampleDirectory: samplePath,
         replicationRecipeFile: recipePath
     });
-    // return new Promise((resolve, error) => {
-    //     try {
-    //         generateReplicant({
-    //             sampleDirectory: samplePath,
-    //             replicationRecipeFile: recipePath
-    //         });
-    //         resolve();
-    //     } catch (err) {
-    //         error(err);
-    //     }
-    // });
 }
 
 const loadRecipe = (recipe) => {
@@ -42,13 +31,6 @@ const loadRecipe = (recipe) => {
 const readTemplateForRecipe = (recipe) => {
     return fs.readdirSync(`./.replicant/_templates/${recipe.templateName}/new`);
 }
-
-// const deleteTemplateForRecipe = (recipe) => {
-//     return new Promise((resolve, error) => {
-//         rimraf(`./.replicant/_templates/${recipe.templateName}`, error);
-//         resolve();
-//     })
-// }
 
 const readTemplateFileHeader = async (recipe, fileName) => {
     const fileStream = fs.createReadStream(`./.replicant/_templates/${recipe.templateName}/new/${fileName}`);
@@ -99,17 +81,6 @@ const readTemplateFileContent = async (recipe, fileName, options) => {
     return content;
 }
 
-// const generateReplicantFrom = async (recipe) => {
-//     return execShellCommand(`cd ./src && hygen ${recipe.templateName} new ${recipe.replicantName}`)
-// };
-
-// const deleteReplicantFromRecipe = (recipe) => {
-//     return new Promise((resolve, error) => {
-//         rimraf(`./.replicant/_template/${recipe.replicantName}`, error);
-//         resolve();
-//     })
-// };
-
 const deleteReplicantDirectory = () => {
     try {
         return rimraf.sync('./.replicant');
@@ -117,10 +88,6 @@ const deleteReplicantDirectory = () => {
         console.error(e);
         return false;
     }
-    // return new Promise((resolve, error) => {
-    //     rimraf.sync('./.replicant', error);
-    //     resolve();
-    // })
 }
 
 const readReplicantFileContent = async (recipe, fileNameParts) => {
@@ -148,11 +115,8 @@ module.exports = {
     replicate: replicate,
     loadRecipe: loadRecipe,
     readTemplateForRecipe: readTemplateForRecipe,
-    // deleteTemplateForRecipe: deleteTemplateForRecipe,
     readTemplateFileHeader: readTemplateFileHeader,
     readTemplateFileContent: readTemplateFileContent,
-    // generateReplicantFrom: generateReplicantFrom,
-    // deleteReplicantFromRecipe: deleteReplicantFromRecipe,
     deleteReplicantDirectory: deleteReplicantDirectory,
     readReplicantFileContent: readReplicantFileContent
 }

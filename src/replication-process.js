@@ -17,10 +17,11 @@ const initializeTemplatesFolder = () => {
                 shell: true,
                 cwd: '.replicant'
             });
+
         if (failed)
             throw new Error('Unable to initialize Hygen:' + stderr);
         else
-        console.log('Hygen initialized:', stdout);
+            console.log('Hygen initialized:', stdout);
     } catch (error) {
         console.error('Unable to initialize Hygen');
         throw error;

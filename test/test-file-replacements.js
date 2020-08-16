@@ -14,7 +14,7 @@ describe('File name and directory tree replacements', () => {
         await deleteReplicantDirectory();
 
         await replicate('./test/fixtures/hello-world', recipeFilePath);
-        //await replicateCLI('./test/fixtures/hello-world', recipeFilePath);
+        // await replicateCLI('./test/fixtures/hello-world', recipeFilePath);
 
         readTemplateForRecipe(recipe).map(file => templateFiles.push(file));
     });

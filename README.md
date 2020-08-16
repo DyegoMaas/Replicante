@@ -46,10 +46,9 @@ All those details above, the things we want to change, need to be captured in a 
 
 With the recipe defined, we are ready to execute the replication process.
 
-From the `root` folder:
-1) Run `node ./src/replicate.js --sample=<path-to-sample-app> --recipe=<path-to-recipe.json>`. It will generate a template inside the _templates folder.
+Run `node ./src/replicante.js create --from-sample=<path-to-sample-app> --with-recipe=<path-to-recipe.json>`. Replicant generated your new project inside the folder `.replicant/<replicantName>`, with the `replicantName` defined in the recipe.
 
-Replicant generated your new project inside the folder `.replicant/<replicantName>`, with the `replicantName` defined in the recipe.
+You may also try the shorthand version `node ./src/replicante.js create -s <path-to-sample-app> -r <path-to-recipe.json>`.
 
 If you are feeling curious or need to troubleshoot something, you can always inspect the Hygen template created for you based on the sample and the recipe. You can find it in the folder `.replicant/_templates/<templateName>`.
 
