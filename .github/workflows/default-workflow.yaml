@@ -19,10 +19,5 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - name: Initialize hygen
-        run: |
-          npm install -g hygen
-          npm install
-          cd ./src && hygen init self
       - name: Run integration tests
         run: npm test
