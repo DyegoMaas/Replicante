@@ -9,24 +9,29 @@ const execa = require('execa');
 
 const replicateCLI = async (samplePath, recipePath) => {
     try {
-        await execa('node', ['./src/replicate.js', `--sample=${samplePath}`, `--recipe=${recipePath}`]);
+        const { stdout } = await execa.sync('node', ['./src/replicate.js', `--sample=${samplePath}`, `--recipe=${recipePath}`]);
+        console.log(stdout);
     } catch (error) {
         console.log(error);
     }
 }
 
 const replicate = async (samplePath, recipePath) => {
-    return new Promise((resolve, error) => {
-        try {
-            generateReplicant({
-                sampleDirectory: samplePath,
-                replicationRecipeFile: recipePath
-            });
-            resolve();
-        } catch (err) {
-            error(err);
-        }
+    await generateReplicant({
+        sampleDirectory: samplePath,
+        replicationRecipeFile: recipePath
     });
+    // return new Promise((resolve, error) => {
+    //     try {
+    //         generateReplicant({
+    //             sampleDirectory: samplePath,
+    //             replicationRecipeFile: recipePath
+    //         });
+    //         resolve();
+    //     } catch (err) {
+    //         error(err);
+    //     }
+    // });
 }
 
 const loadRecipe = (recipe) => {
@@ -35,18 +40,18 @@ const loadRecipe = (recipe) => {
 }
 
 const readTemplateForRecipe = (recipe) => {
-    return fs.readdirSync(`./src/_templates/${recipe.templateName}/new`);
+    return fs.readdirSync(`./.replicant/_templates/${recipe.templateName}/new`);
 }
 
-const deleteTemplateForRecipe = (recipe) => {
-    return new Promise((resolve, error) => {
-        rimraf(`./src/_templates/${recipe.templateName}`, error);
-        resolve();
-    })
-}
+// const deleteTemplateForRecipe = (recipe) => {
+//     return new Promise((resolve, error) => {
+//         rimraf(`./.replicant/_templates/${recipe.templateName}`, error);
+//         resolve();
+//     })
+// }
 
 const readTemplateFileHeader = async (recipe, fileName) => {
-    const fileStream = fs.createReadStream(`./src/_templates/${recipe.templateName}/new/${fileName}`);
+    const fileStream = fs.createReadStream(`./.replicant/_templates/${recipe.templateName}/new/${fileName}`);
     const rl = readline.createInterface({
         input: fileStream,
         crlfDelay: Infinity
@@ -67,7 +72,7 @@ const readTemplateFileHeader = async (recipe, fileName) => {
 }
 
 const readTemplateFileContent = async (recipe, fileName, options) => {
-    const fileStream = fs.createReadStream(`./src/_templates/${recipe.templateName}/new/${fileName}`);
+    const fileStream = fs.createReadStream(`./.replicant/_templates/${recipe.templateName}/new/${fileName}`);
     const rl = readline.createInterface({
         input: fileStream,
         crlfDelay: Infinity
@@ -94,20 +99,38 @@ const readTemplateFileContent = async (recipe, fileName, options) => {
     return content;
 }
 
-const generateReplicantFrom = async (recipe) => {
-    return execShellCommand(`cd ./src && hygen ${recipe.templateName} new ${recipe.replicantName}`)
-};
+// const generateReplicantFrom = async (recipe) => {
+//     return execShellCommand(`cd ./src && hygen ${recipe.templateName} new ${recipe.replicantName}`)
+// };
 
-const deleteReplicantFromRecipe = (recipe) => {
-    return new Promise((resolve, error) => {
-        rimraf(`./src/${recipe.replicantName}`, error);
-        resolve();
-    })
-};
+// const deleteReplicantFromRecipe = (recipe) => {
+//     return new Promise((resolve, error) => {
+//         rimraf(`./.replicant/_template/${recipe.replicantName}`, error);
+//         resolve();
+//     })
+// };
+
+const deleteReplicantDirectory = () => {
+    try {
+        return rimraf.sync('./.replicant');
+    } catch(e) {
+        console.error(e);
+        return false;
+    }
+    // return new Promise((resolve, error) => {
+    //     rimraf.sync('./.replicant', error);
+    //     resolve();
+    // })
+}
 
 const readReplicantFileContent = async (recipe, fileNameParts) => {
-    const filePath = path.join(...fileNameParts);
-    const fileStream = fs.createReadStream(`./src/${recipe.replicantName}/${filePath}`);
+    const targetFile = path.join(...fileNameParts);
+    const filePath = path.join('.replicant', recipe.replicantName, targetFile);
+    if (!fs.existsSync(filePath)) {
+        throw new Error(`Replicant file ${filePath} not found.`)
+    }
+
+    const fileStream = fs.createReadStream(filePath);
     const rl = readline.createInterface({
         input: fileStream,
         crlfDelay: Infinity
@@ -125,10 +148,11 @@ module.exports = {
     replicate: replicate,
     loadRecipe: loadRecipe,
     readTemplateForRecipe: readTemplateForRecipe,
-    deleteTemplateForRecipe: deleteTemplateForRecipe,
+    // deleteTemplateForRecipe: deleteTemplateForRecipe,
     readTemplateFileHeader: readTemplateFileHeader,
     readTemplateFileContent: readTemplateFileContent,
-    generateReplicantFrom: generateReplicantFrom,
-    deleteReplicantFromRecipe: deleteReplicantFromRecipe,
+    // generateReplicantFrom: generateReplicantFrom,
+    // deleteReplicantFromRecipe: deleteReplicantFromRecipe,
+    deleteReplicantDirectory: deleteReplicantDirectory,
     readReplicantFileContent: readReplicantFileContent
 }

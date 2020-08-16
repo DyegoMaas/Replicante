@@ -1,9 +1,9 @@
 var expect  = require('chai').expect;
 const {
-    replicate, replicateCLI,
-    loadRecipe, readTemplateForRecipe, deleteTemplateForRecipe,
-    readTemplateFileHeader, readTemplateFileContent,
-    generateReplicantFrom, deleteReplicantFromRecipe, readReplicantFileContent } = require("./common/replication");
+    replicate, replicateCLI, loadRecipe,
+    readTemplateForRecipe, readTemplateFileHeader, readTemplateFileContent,
+    deleteReplicantDirectory,
+    readReplicantFileContent } = require("./common/replication");
 
 describe('File name and directory tree replacements', () => {
     const recipeFilePath = './test/fixtures/helloworld-to-hithere-recipe.json';
@@ -11,15 +11,12 @@ describe('File name and directory tree replacements', () => {
     const templateFiles = [];
 
     before(async () => {
-        // await replicate('./test/fixtures/hello-world', recipeFilePath);
-        await replicateCLI('./test/fixtures/hello-world', recipeFilePath);
+        await deleteReplicantDirectory();
+
+        await replicate('./test/fixtures/hello-world', recipeFilePath);
+        //await replicateCLI('./test/fixtures/hello-world', recipeFilePath);
 
         readTemplateForRecipe(recipe).map(file => templateFiles.push(file));
-    });
-
-    after(async () => {
-        return deleteTemplateForRecipe(recipe)
-            .then(() => deleteReplicantFromRecipe(recipe));
     });
 
     it('Should include all expected files in the source file tree', () => {
@@ -114,10 +111,6 @@ describe('File name and directory tree replacements', () => {
     });
 
     describe('Replicant generation', () => {
-        before(async () => {
-            await generateReplicantFrom(recipe);
-        });
-
         it('Should genereate files in root, with content properly replaced', async () => {
             let content = await readReplicantFileContent(recipe, ['HiThere.js']);
 

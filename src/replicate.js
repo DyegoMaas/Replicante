@@ -20,7 +20,12 @@ var argv = require('yargs')
 console.log(`Will use ${argv.sample} as sample for replication process.`);
 console.log(`Replication recipe loaded: ${argv.recipe}`);
 
-generateReplicant({
-    sampleDirectory: argv.sample,
-    replicationRecipeFile: argv.recipe
-});
+(async () => {
+    console.log('STARTING REPLICATION PROCESS...')
+    await generateReplicant({
+        sampleDirectory: argv.sample,
+        replicationRecipeFile: argv.recipe
+    });
+})().catch(e => {
+    console.error(e);
+});;

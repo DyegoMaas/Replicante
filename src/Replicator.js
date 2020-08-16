@@ -5,19 +5,15 @@ var rimraf = require("rimraf");
 module.exports = class Replicator {
     constructor(replicationRecipe) {
         this.replicationRecipe = replicationRecipe;
+        this.replicationDirectory = path.join(replicationRecipe.templateDir, 'new'); // TODO inject via constructor
     }
 
     cleanTemplateDirectory() {
-        const templateDir = this.replicationRecipe.templateDir;
+        const templateDir = this.replicationDirectory;
+        rimraf.sync(templateDir);
+
         if (!fs.existsSync(templateDir)) {
-            fs.mkdirSync(templateDir);
-        }
-
-        const newCommandDir = path.join(templateDir, 'new');
-        rimraf.sync(newCommandDir);
-
-        if (!fs.existsSync(newCommandDir)) {
-            fs.mkdirSync(newCommandDir);
+            fs.mkdirSync(templateDir, { recursive: true });
         }
     }
 
@@ -40,7 +36,7 @@ module.exports = class Replicator {
                 const middlePath = relativePath.replace(path.basename(relativePath), '');
                 const virtualPath = path.join(middlePath, file).replace(/\\/g, '-').replace(/\//g, '-');
 
-                this.#toTemplate(fullPath, path.join(this.replicationRecipe.templateDir, 'new', virtualPath), relativePath);
+                this.#toTemplate(fullPath, path.join(this.replicationDirectory, virtualPath), relativePath);
                 return;
             }
 

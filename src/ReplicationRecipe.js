@@ -1,7 +1,8 @@
 const fs = require('fs');
 
 module.exports = class ReplicationRecipe {
-    constructor(templateName, templateDir, fileNameReplacements, sourceCodeReplacements, ignoreArtifacts) {
+    constructor(replicantName, templateName, templateDir, fileNameReplacements, sourceCodeReplacements, ignoreArtifacts) {
+        this.replicantName = replicantName;
         this.templateName = templateName;
         this.templateDir = templateDir;
         this.fileNameReplacements = fileNameReplacements;
@@ -14,8 +15,9 @@ module.exports = class ReplicationRecipe {
         let data = JSON.parse(rawData);
 
         return new ReplicationRecipe(
+            data.replicantName,
             data.templateName,
-            `./src/_templates/${data.templateName}`, // TODO review
+            `./.replicant/_templates/${data.templateName}`, // TODO review
             data.fileNameReplacements,
             data.sourceCodeReplacements,
             data.ignoreArtifacts

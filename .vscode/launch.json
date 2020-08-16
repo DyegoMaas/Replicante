@@ -5,14 +5,6 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python: Replicate",
-            "type": "python",
-            "request": "launch",
-            "program": ".\\src\\replicate.py",
-            "console": "integratedTerminal",
-            "args": ["--sample=D:\\projects\\template-csharp\\", "--recipe=D:\\projects\\Replicant\\examples\\recipe.json"]
-        },
-        {
             "type": "node",
             "request": "launch",
             "name": "Mocha All",
