@@ -1,6 +1,6 @@
 {
   "name": "replicant",
-  "version": "0.0.1",
+  "version": "0.4.0",
   "description": "Replicant makes it easy to morph a living application into a completely new one.",
   "main": "index.js",
   "directories": {
