@@ -89,7 +89,7 @@ describe('File name and directory tree replacements', () => {
             { variableName: 'NameCapitalized', value: 'h.inflection.capitalize(name)' }
         ];
         expect(variableAssignments.length).to.equal(expectedAssignments.length);
-        for (var i = 0; i < expectedAssignments.length; i++) {
+        for (let i = 0; i < expectedAssignments.length; i++) {
             let assignment = variableAssignments[i];
             let expectedAssignment = expectedAssignments[i];
 
@@ -99,7 +99,7 @@ describe('File name and directory tree replacements', () => {
     });
 
     it('Should apply all content replacements', async () => {
-        const content = await readTemplateFileContent(recipe, 'HelloWorld.js.ejs.t', { 
+        const content = await readTemplateFileContent(recipe, 'HelloWorld.js.ejs.t', {
             ignoreVariables: true
         });
 
