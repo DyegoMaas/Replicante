@@ -89,6 +89,7 @@ module.exports = class Replicator {
 
         var writeStream = fs.createWriteStream(filePath, { flags: 'w' });
         linesToPrepend.forEach(line => {
+            line = this.#replaceTermsInText(line, sourceCodeReplacements); // why?
             writeStream.write(`${line}\n`);
         });
         writeStream.write(variables.trimLeft());
