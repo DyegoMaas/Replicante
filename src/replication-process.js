@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path');
 const { exec } = require('child_process');
 const Replicator = require('./Replicator');
 const ReplicationRecipe = require('./ReplicationRecipe');
@@ -9,6 +10,12 @@ const initializeTemplatesFolder = () => {
         const dir = './.replicant';
         if (!fs.existsSync(dir)) {
             fs.mkdirSync(dir);
+        }
+
+        const hygenIsInitialized = fs.existsSync(path.join(dir, '_templates'));
+        if (hygenIsInitialized) {
+            console.log('Skipping Hygen initialization.');
+            return;
         }
 
         console.log('Initializing Hygen.');
