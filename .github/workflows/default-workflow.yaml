@@ -11,7 +11,6 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.7, 3.8]
         node-version: [12.x, 13.x, 14.x]
 
     steps:
@@ -20,14 +19,10 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
-        with:
-          python-version: ${{ matrix.python-version }}
       - name: Initialize hygen
         run: |
           npm install -g hygen
           npm install
           cd ./src && hygen init self
       - name: Run integration tests
-        run: npm run test
+        run: npm test

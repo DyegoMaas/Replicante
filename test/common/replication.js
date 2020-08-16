@@ -22,10 +22,6 @@ function execShellCommand(cmd) {
     });
 }
 
-const replicatePython = async (samplePath, recipePath) => {
-    return execShellCommand(`python ./src/replicate.py --sample=${samplePath} --recipe=${recipePath}`);
-}
-
 const replicateCLI = async (samplePath, recipePath) => {
     return execShellCommand(`node ./src/replicate.js --sample=${samplePath} --recipe=${recipePath}`);
 }
@@ -136,7 +132,6 @@ const readReplicantFileContent = async (recipe, fileNameParts) => {
 }
 
 module.exports = {
-    replicatePython: replicatePython,
     replicateCLI: replicateCLI,
     replicate: replicate,
     loadRecipe: loadRecipe,
