@@ -9,8 +9,6 @@ const cli = async cmd =>
   system.run('node ' + filesystem.path(src, 'bin', 'replicante') + ` ${cmd}`)
 
 const {
-//   replicate,
-//   replicateCLI,
   loadRecipe,
   readTemplateForRecipe,
   readTemplateFileHeader,
@@ -33,12 +31,6 @@ describe('Versioning', () => {
         expect(output).toContain('0.5.0')
     });
 });
-
-test('read dir', () => {
-    const fs = require('fs');
-    fs.readdirSync('C:/Users/Dyego Maas/.replicant/_templates/hi-there-generator/new')
-    expect(true).toEqual(true);
-})
 
 describe('File name and directory tree replacements', () => {
   let recipe = null;
