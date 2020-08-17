@@ -2,7 +2,7 @@
   "name": "replicante",
   "version": "0.5.0",
   "description": "Replicante CLI: every project can be a template for a new one",
-  "repository": "github:DyegoMaas/Replicant",
+  "repository": "github:DyegoMaas/Replicante",
   "types": "build/types/types.d.ts",
   "bin": {
     "replicante": "bin/replicante"
