@@ -4,7 +4,10 @@ import { generateReplicant } from '../../../src/replication-process'
 const command: GluegunCommand = {
   name: 'create',
   run: async toolbox => {
-    const { parameters, print: { success } } = toolbox
+    const {
+      parameters,
+      print: { success }
+    } = toolbox
 
     const sample = parameters.first
     const recipe = parameters.second

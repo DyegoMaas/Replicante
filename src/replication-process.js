@@ -7,7 +7,7 @@ const execa = require('execa');
 const { homedir } = require('os');
 
 const resolveReplicantWorkDir = () => {
-    return path.join(homedir(), '.replicant');
+    return path.join(homedir(), '.replicant').replace(/\\/g, '/');
 }
 
 const initializeTemplatesFolder = () => {

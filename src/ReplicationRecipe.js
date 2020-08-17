@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path');
 
 module.exports = class ReplicationRecipe {
     constructor(replicantName, templateName, templateDir, fileNameReplacements, sourceCodeReplacements, ignoreArtifacts) {
@@ -17,7 +18,7 @@ module.exports = class ReplicationRecipe {
         return new ReplicationRecipe(
             data.replicantName,
             data.templateName,
-            `${replicantWorkDir}/_templates/${data.templateName}`,
+            path.join(replicantWorkDir, '_templates', data.templateName),
             data.fileNameReplacements,
             data.sourceCodeReplacements,
             data.ignoreArtifacts
