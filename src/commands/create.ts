@@ -1,5 +1,5 @@
 import { GluegunCommand } from 'gluegun'
-import { generateReplicant } from '../../../src/replication-process'
+import { generateReplicant } from '../replication/replication-process'
 
 const command: GluegunCommand = {
   name: 'create',

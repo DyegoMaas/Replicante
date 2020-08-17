@@ -7,7 +7,7 @@ var rimraf = require('rimraf')
 const {
   generateReplicant,
   resolveReplicantWorkDir
-} = require('../../src/replication-process')
+} = require('../src/replication/replication-process')
 const execa = require('execa')
 
 const replicateCLI = async (samplePath, recipePath) => {

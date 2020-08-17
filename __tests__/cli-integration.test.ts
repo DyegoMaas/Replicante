@@ -17,7 +17,9 @@ const {
   readTemplateFileContent,
   deleteReplicantDirectory,
   readReplicantFileContent
-} = require('../test-infrasctructure/replication')
+} = require('../test-infrasctructure/replication');
+
+const {generateReplicant, resolveReplicantWorkDir} = require('../src/replication/replication-process');
 
 describe('Versioning', () => {
     test('It should output version', async () => {
@@ -39,28 +41,21 @@ test('read dir', () => {
 })
 
 describe('File name and directory tree replacements', () => {
-  const recipe = null;
-  const templateFiles = []
+  let recipe = null;
+  let templateFiles = []
 
-  beforeAll(async () => {
+  beforeAll((done) => {
     const samplePath = filesystem.resolve('./test-infrasctructure/fixtures/hello-world')
     const recipeFilePath = filesystem.resolve('./test-infrasctructure/fixtures/helloworld-to-hithere-recipe.json')
-    const recipe = loadRecipe(recipeFilePath)
-    const templateFiles = []
+    recipe = loadRecipe(recipeFilePath)
 
-    await deleteReplicantDirectory()
-
-    await cli(`create ${samplePath} ${recipeFilePath}`)
-    // await replicate('./test/fixtures/hello-world', recipeFilePath);
-    // await replicateCLI('./test/fixtures/hello-world', recipeFilePath);
-
-    const otherTemplateFiles = []
-    readTemplateForRecipe(recipe).forEach(file => {
-        templateFiles.push(file);
-        otherTemplateFiles.push(file);
-    });
-    info(`Templates: ${templateFiles}; Other templates: ${otherTemplateFiles}`);
-  })
+    filesystem.remove(resolveReplicantWorkDir());
+    cli(`create ${samplePath} ${recipeFilePath}`)
+      .then(() => { readTemplateForRecipe(recipe)
+        .forEach(file => templateFiles.push(file));
+      })
+      .then(done);
+  });
 
   test('Should include all expected files in the source file tree', () => {
     expect(templateFiles.length).toEqual(3)
@@ -108,21 +103,21 @@ describe('File name and directory tree replacements', () => {
       const content = await readTemplateFileContent(recipe, 'Hello-There-World.js.ejs.t', {
           ignoreVariables: false
       });
-      const firstLine = content.spltest('\n')[0];
+      const firstLine = content.split('\n')[0];
 
       expect(firstLine).toMatch(/<% /);
-      expect(firstLine).toMatch(/'%>'/);
+      expect(firstLine).toMatch(/%>/);
 
       const variableAssignments = firstLine
           .substr(0, firstLine.indexOf('%>') + 2)
           .replace('<%', '')
           .replace('%>', '')
           .replace(/ /g, '')
-          .spltest(';')
+          .split(';')
           .map(x => x.trim())
           .filter(x => x != '')
           .map(function (x) {
-              const parts = x.spltest('=');
+              const parts = x.split('=');
               return { variableName: parts[0], value: parts[1] };
           });
       const expectedAssignments = [
@@ -146,7 +141,7 @@ describe('File name and directory tree replacements', () => {
           ignoreVariables: true
       });
 
-      let lines = content.spltest('\n');
+      let lines = content.split('\n');
       expect(lines[0]).toEqual('console.log(\'Hi My People\');');
       expect(lines[1]).toEqual('console.log(\'"Hi There!"\');');
       expect(lines[2]).toEqual('console.log(\'"Just, hey world?"\');');
@@ -157,7 +152,7 @@ describe('File name and directory tree replacements', () => {
       test('Should genereate files in root, with content properly replaced', async () => {
           let content = await readReplicantFileContent(recipe, ['HiThere.js']);
 
-          let lines = content.spltest('\n');
+          let lines = content.split('\n');
           expect(lines[0]).toEqual('console.log(\'Hi My People\');');
           expect(lines[1]).toEqual('console.log(\'"Hi There!"\');');
           expect(lines[2]).toEqual('console.log(\'"Just, hey world?"\');');
@@ -165,14 +160,14 @@ describe('File name and directory tree replacements', () => {
 
           content = await readReplicantFileContent(recipe, ['Hi.There.Guys.js']);
 
-          lines = content.spltest('\n');
+          lines = content.split('\n');
           expect(lines[0]).toEqual('console.log(\'Hi My People Guys\');');
       });
 
       test('Should genereate nested files, with content properly replaced', async () => {
           let content = await readReplicantFileContent(recipe, ['Hi', 'There', 'There.js']);
 
-          let lines = content.spltest('\n');
+          let lines = content.split('\n');
           expect(lines[0]).toEqual('console.log(\'Hi My People\');');
           expect(lines[1]).toEqual('console.log(\'HiThere...\');');
       });
