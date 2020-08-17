@@ -10,14 +10,14 @@ module.exports = class ReplicationRecipe {
         this.ignoreArtifacts = ignoreArtifacts;
     }
 
-    static fromRecipeFile(recipeFilePath) {
+    static fromRecipeFile(recipeFilePath, replicantWorkDir) {
         let rawData = fs.readFileSync(recipeFilePath);
         let data = JSON.parse(rawData);
 
         return new ReplicationRecipe(
             data.replicantName,
             data.templateName,
-            `./.replicant/_templates/${data.templateName}`, // TODO review
+            `${replicantWorkDir}/_templates/${data.templateName}`,
             data.fileNameReplacements,
             data.sourceCodeReplacements,
             data.ignoreArtifacts

@@ -4,12 +4,12 @@ const path = require('path');
 const readline = require('readline');
 const yaml = require('js-yaml');
 var rimraf = require("rimraf");
-const { generateReplicant } = require('../../src/replication-process');
+const { generateReplicant, resolveReplicantWorkDir } = require('../../src/replication-process');
 const execa = require('execa');
 
 const replicateCLI = async (samplePath, recipePath) => {
     try {
-        const { stdout } = await execa.sync('node', ['./src/replicante.js', 'create', `--from-sample=${samplePath}`, `--with-recipe=${recipePath}`]);
+        const { stdout } = await execa.sync('replicante', ['create', `--from-sample=${samplePath}`, `--with-recipe=${recipePath}`]);
         console.log(stdout);
     } catch (error) {
         console.log(error);
@@ -29,11 +29,11 @@ const loadRecipe = (recipe) => {
 }
 
 const readTemplateForRecipe = (recipe) => {
-    return fs.readdirSync(`./.replicant/_templates/${recipe.templateName}/new`);
+    return fs.readdirSync(`${resolveReplicantWorkDir()}/_templates/${recipe.templateName}/new`);
 }
 
 const readTemplateFileHeader = async (recipe, fileName) => {
-    const fileStream = fs.createReadStream(`./.replicant/_templates/${recipe.templateName}/new/${fileName}`);
+    const fileStream = fs.createReadStream(`${resolveReplicantWorkDir()}/_templates/${recipe.templateName}/new/${fileName}`);
     const rl = readline.createInterface({
         input: fileStream,
         crlfDelay: Infinity
@@ -54,7 +54,7 @@ const readTemplateFileHeader = async (recipe, fileName) => {
 }
 
 const readTemplateFileContent = async (recipe, fileName, options) => {
-    const fileStream = fs.createReadStream(`./.replicant/_templates/${recipe.templateName}/new/${fileName}`);
+    const fileStream = fs.createReadStream(`${resolveReplicantWorkDir()}/_templates/${recipe.templateName}/new/${fileName}`);
     const rl = readline.createInterface({
         input: fileStream,
         crlfDelay: Infinity
@@ -83,7 +83,7 @@ const readTemplateFileContent = async (recipe, fileName, options) => {
 
 const deleteReplicantDirectory = () => {
     try {
-        return rimraf.sync('./.replicant');
+        return rimraf.sync(resolveReplicantWorkDir());
     } catch(e) {
         console.error(e);
         return false;
@@ -92,7 +92,7 @@ const deleteReplicantDirectory = () => {
 
 const readReplicantFileContent = async (recipe, fileNameParts) => {
     const targetFile = path.join(...fileNameParts);
-    const filePath = path.join('.replicant', recipe.replicantName, targetFile);
+    const filePath = path.join(resolveReplicantWorkDir(), recipe.replicantName, targetFile);
     if (!fs.existsSync(filePath)) {
         throw new Error(`Replicant file ${filePath} not found.`)
     }

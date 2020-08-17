@@ -4,12 +4,17 @@ const { exec } = require('child_process');
 const Replicator = require('./Replicator');
 const ReplicationRecipe = require('./ReplicationRecipe');
 const execa = require('execa');
+const { homedir } = require('os');
+
+const resolveReplicantWorkDir = () => {
+    return path.join(homedir(), '.replicant');
+}
 
 const initializeTemplatesFolder = () => {
     try {
-        const dir = './.replicant';
+        const dir = resolveReplicantWorkDir();
         if (!fs.existsSync(dir)) {
-            fs.mkdirSync(dir);
+            fs.mkdirSync(dir, { recursive: true });
         }
 
         const hygenIsInitialized = fs.existsSync(path.join(dir, '_templates'));
@@ -22,7 +27,7 @@ const initializeTemplatesFolder = () => {
         const { stdout, stderr, failed } = execa.commandSync(
             'npx hygen init self', {
                 shell: true,
-                cwd: '.replicant'
+                cwd: resolveReplicantWorkDir()
             });
 
         if (failed)
@@ -37,7 +42,7 @@ const initializeTemplatesFolder = () => {
 
 const buildReplicator = (replicationInstructions) => {
     const { replicationRecipeFile } = replicationInstructions;
-    const recipe = ReplicationRecipe.fromRecipeFile(replicationRecipeFile);
+    const recipe = ReplicationRecipe.fromRecipeFile(replicationRecipeFile, resolveReplicantWorkDir());
 
     const replicator = new Replicator(recipe);
     return replicator;
@@ -57,7 +62,7 @@ const generateReplicantTemplate = (replicator, replicationInstructions) => {
  */
 function execShellCommand(cmd) {
     return new Promise((resolve, reject) => {
-        exec(cmd, { cwd: '.replicant' }, (error, stdout, stderr) => {
+        exec(cmd, { cwd: resolveReplicantWorkDir() }, (error, stdout, stderr) => {
             if (error) {
                 console.warn(error);
                 reject(error);
@@ -74,11 +79,11 @@ const generateReplicantFromTemplateExperimental = (replicator) => {
     const { stdout, stderr, failed } = execa.commandSync(
         `npx hygen ${templateName} new ${replicantName}`, {
             shell: true,
-            cwd: '.replicant'
+            cwd: resolveReplicantWorkDir()
         });
 
     if (failed)
-        throw new Error('Unable to complete replication: ' + error);
+        throw new Error('Unable to complete replication: ' + stderr);
     else
         console.log('Replication process completed:', stdout);
 };
@@ -90,7 +95,6 @@ const generateReplicantFromTemplate = async (replicator) => {
 };
 
 const generateReplicant = async (replicationInstructions) => {
-    console.log('generating something');
     initializeTemplatesFolder();
 
     const replicator = buildReplicator(replicationInstructions);
@@ -100,6 +104,4 @@ const generateReplicant = async (replicationInstructions) => {
     await generateReplicantFromTemplate(replicator, replicationInstructions);
 };
 
-module.exports = {
-    generateReplicant: generateReplicant
-};
+module.exports = { generateReplicant, resolveReplicantWorkDir };

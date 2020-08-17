@@ -26,12 +26,12 @@
   "homepage": "https://github.com/DyegoMaas/Replicant#readme",
   "devDependencies": {
     "chai": "^4.2.0",
-    "execa": "^4.0.3",
-    "js-yaml": "^3.14.0",
     "mocha": "^8.1.1"
   },
   "dependencies": {
+    "execa": "^4.0.3",
     "hygen": "^6.0.4",
+    "js-yaml": "^3.14.0",
     "rimraf": "^3.0.2",
     "yargs": "^15.4.1"
   }
