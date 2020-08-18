@@ -34,6 +34,8 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 12.x
+      - name: yarn install
+        run: yarn install
       - uses: JS-DevTools/npm-publish@v1
         with:
           token: ${{ secrets.NPM_TOKEN }}
