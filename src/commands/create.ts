@@ -14,7 +14,7 @@ const command: GluegunCommand = {
 
     if (!!parameters.options.help) {
       const avaiableOptions = [
-        {name: 'target', description: 'The directory where the Replicant should be created. Default value: <USER-HOME>/.replicant/<replicant-name>'}
+        {name: 'target', description: 'The directory where the Replicant should be created. Default value: <USER-HOME>/.replicante/<replicant-name>'}
       ]
       info('Avaiable options:')
       avaiableOptions.forEach(option => {

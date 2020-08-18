@@ -37,11 +37,11 @@ With the recipe defined, we are ready to execute the replication process.
 
 `npm install -g replicante`
 
-Run `replicante create <path-to-sample-app> <path-to-recipe.json>`. You will se that Replicante generated your new project inside the folder `<USER_HOME>/.replicant/<replicantName>`, with the `replicantName` defined in the recipe.
+Run `replicante create <path-to-sample-app> <path-to-recipe.json>`. You will se that Replicante generated your new project inside the folder `<USER_HOME>/.replicante/<replicantName>`, with the `replicantName` defined in the recipe.
 
-You may also customize where your replicant you be created by adding the option `--target=<target-directory>`. The target directory is the container inside of which your replicant will be created. It will be something like this: `<target-directory>/<replicanteName>`.
+You may also customize where your replicant you be created by adding the option `--target=<target-directory>`. The target directory is the container inside of which your replicant will be created. It will be something like this: `<target-directory>/<replicantName>`.
 
-If you are feeling curious or need to troubleshoot something, you can always inspect the Hygen template created for you based on the sample and the recipe. You can find it in the folder `<USER_HOME>/.replicant/_templates/<templateName>`.
+If you are feeling curious or need to troubleshoot something, you can always inspect the Hygen template created for you based on the sample and the recipe. You can find it in the folder `<USER_HOME>/.replicante/_templates/<templateName>`.
 
 After performing these two steps, you should have a new project, completely operational, plus a Hygen template that allows reuse to generate new projects from it in the future.
 
