@@ -6,7 +6,7 @@ Ever needed to use a running application as template for a new project? Replican
 
 ## Quick Tutorial
 
-Currently, replicating an existing application requires some steps. First thing, run `npm install -g replicante` to install *replicante CLI* globally.
+First thing, run `npm install -g replicante` to install *replicante CLI* globally.
 
 ### Defining the sample for replication
 
