@@ -1,1 +1,1 @@
-console.log('I shall definately be in the template folder.');
+console.log('I shall definately be in the template folder.')
