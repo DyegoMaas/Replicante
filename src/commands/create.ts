@@ -33,9 +33,11 @@ const command: GluegunCommand = {
       return
     }
 
-    if (!!parameters.options.target && !filesystem.isDirectory(parameters.options.target)) {
-      error('Option --target must be a directory')
-      return
+    if (!!parameters.options.target) {
+      if (filesystem.exists(parameters.options.target) && !filesystem.isDirectory(parameters.options.target)) {
+        error('Option --target must be a directory')
+        return
+      }
     }
 
     info('Replication processing starting.')
@@ -47,7 +49,10 @@ const command: GluegunCommand = {
     let resultDirectory = replicantDirectory
     if (parameters.options.target) {
       const fullTargetPath = filesystem.path(parameters.options.target, recipeUsed.replicantName)
-      filesystem.copy(replicantDirectory, fullTargetPath, { overwrite: true })
+
+      // TODO move operation into replication-process.js
+      filesystem.move(replicantDirectory, fullTargetPath)
+
       resultDirectory = fullTargetPath
     }
 
