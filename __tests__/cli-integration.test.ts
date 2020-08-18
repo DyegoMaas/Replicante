@@ -22,19 +22,20 @@ const {generateReplicant, resolveReplicantWorkDir} = require('../src/replication
 describe('Versioning', () => {
     test('It should output version', async () => {
         const output = await cli('--version')
-        expect(output).toContain('0.5.1')
+        expect(output).toContain('0.5.2')
     });
 
     test('It should output help', async () => {
         // TODO improve this test
         const output = await cli('--help')
-        expect(output).toContain('0.5.1')
+        expect(output).toContain('0.5.2')
     });
 });
 
 describe('File name and directory tree replacements', () => {
   let recipe = null;
-  let templateFiles = []
+  let templateFiles = [];
+  let output = '';
 
   beforeAll((done) => {
     const samplePath = filesystem.resolve('./test-infrasctructure/fixtures/hello-world')
@@ -43,10 +44,16 @@ describe('File name and directory tree replacements', () => {
 
     filesystem.remove(resolveReplicantWorkDir());
     cli(`create ${samplePath} ${recipeFilePath}`)
-      .then(() => { readTemplateForRecipe(recipe)
-        .forEach(file => templateFiles.push(file));
-      })
-      .then(done);
+        .then((out) => { output = out; })
+        .then(() => {
+            readTemplateForRecipe(recipe)
+            .forEach(file => templateFiles.push(file));
+        })
+        .then(done);
+  });
+
+  test('It should complete the replication without errors, showing the result path', async () => {
+    expect(output).toContain('Replication process completed')
   });
 
   test('Should include all expected files in the source file tree', () => {
