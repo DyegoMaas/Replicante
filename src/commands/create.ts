@@ -1,5 +1,5 @@
 import {
-  GluegunCommand
+  GluegunCommand, filesystem
 } from 'gluegun'
 import { generateReplicant } from '../replication/replication-process'
 
@@ -12,21 +12,46 @@ const command: GluegunCommand = {
       print: { success, info, error }
     } = toolbox
 
+    if (!!parameters.options.help) {
+      const avaiableOptions = [
+        {name: 'target', description: 'The directory where the Replicant should be created. Default value: <USER-HOME>/.replicant/<replicant-name>'}
+      ]
+      info('Avaiable options:')
+      avaiableOptions.forEach(option => {
+        const {name, description} = option
+        info(`  --${name}\t${description}`)
+      })
+      return
+    }
+
     const sample = parameters.first
     const recipe = parameters.second
-
     if (!sample || !recipe) {
       error('Some parameters are missing.')
-      info('Try "replicante create <path-to-sample> <path-to-recipe>"')
+      info('Try "replicante create <path-to-sample> <path-to-recipe> [options]"')
+      info('To see avaialbe options, try "replicante create --help"')
+      return
+    }
+
+    if (!!parameters.options.target && !filesystem.isDirectory(parameters.options.target)) {
+      error('Option --target must be a directory')
       return
     }
 
     info('Replication processing starting.')
-    const result = await generateReplicant({
+    const {recipeUsed, replicantDirectory} = await generateReplicant({
       sampleDirectory: sample,
       replicationRecipeFile: recipe
     })
-    success(`Replication process completed. Replicant created at ${result.replicantDirectory}`)
+
+    let resultDirectory = replicantDirectory
+    if (parameters.options.target) {
+      const fullTargetPath = filesystem.path(parameters.options.target, recipeUsed.replicantName)
+      filesystem.copy(replicantDirectory, fullTargetPath, { overwrite: true })
+      resultDirectory = fullTargetPath
+    }
+
+    success(`Replication process completed. Replicant created at ${resultDirectory}`)
   }
 }
 

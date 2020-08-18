@@ -172,3 +172,9 @@ describe('File name and directory tree replacements', () => {
       });
   });
 })
+
+describe('Target option', () => {
+    test('Should copy the final project into the target directory', async () => {
+        expect(false).toBe(true);
+    });
+});

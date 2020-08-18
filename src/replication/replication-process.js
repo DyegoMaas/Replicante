@@ -93,7 +93,7 @@ const generateReplicantFromTemplateExperimental = (replicator) => {
 const generateReplicantFromTemplate = async (replicator) => {
     const { templateName, replicantName } = replicator.replicationRecipe;
     console.log(`Replicating sample from ${templateName}. Generating ${replicantName}.`);
-    return execShellCommand(`set HYGEN_OVERWRITE=1 && npx hygen ${templateName} new ${replicantName}`);
+    await execShellCommand(`set HYGEN_OVERWRITE=1 && npx hygen ${templateName} new ${replicantName}`);
 };
 
 const generateReplicant = async (replicationInstructions) => {
@@ -104,7 +104,7 @@ const generateReplicant = async (replicationInstructions) => {
     generateReplicantTemplate(replicator, replicationInstructions);
 
     // generateReplicantFromTemplateExperimental(replicator, replicationInstructions);
-    await generateReplicantFromTemplate(replicator, replicationInstructions);
+    await generateReplicantFromTemplate(replicator);
 
     return {
         recipeUsed: recipe,

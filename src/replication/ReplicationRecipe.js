@@ -21,7 +21,7 @@ module.exports = class ReplicationRecipe {
             path.join(replicantWorkDir, '_templates', data.templateName),
             data.fileNameReplacements,
             data.sourceCodeReplacements,
-            data.ignoreArtifacts
+            data.ignoreArtifacts,
         );
     };
 };
