@@ -4,9 +4,9 @@
 
 Ever needed to use a running application as template for a new project? Replicante makes it easy to morph a living application into a completely new one.
 
-## Tutorial
+## Quick Tutorial
 
-Currently, replicating an existing application requires some steps. First thing, clone this repository.
+Currently, replicating an existing application requires some steps. First thing, run `npm install -g replicante` to install *replicante CLI* globally.
 
 ### Defining the sample for replication
 
@@ -34,8 +34,6 @@ All those details above, the things we want to change, need to be captured in a 
 ```
 
 With the recipe defined, we are ready to execute the replication process.
-
-`npm install -g replicante`
 
 Run `replicante create <path-to-sample-app> <path-to-recipe.json>`. You will se that Replicante generated your new project inside the folder `<USER_HOME>/.replicante/<replicantName>`, with the `replicantName` defined in the recipe.
 
