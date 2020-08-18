@@ -22,11 +22,11 @@ const command: GluegunCommand = {
     }
 
     info('Replication processing starting.')
-    await generateReplicant({
+    const result = await generateReplicant({
       sampleDirectory: sample,
       replicationRecipeFile: recipe
     })
-    success(`Replication process completed.`)
+    success(`Replication process completed. Replicant created at ${result.replicantDirectory}`)
   }
 }
 

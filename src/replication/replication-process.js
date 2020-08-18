@@ -40,12 +40,14 @@ const initializeTemplatesFolder = () => {
     }
 };
 
-const buildReplicator = (replicationInstructions) => {
+const buildRecipe = (replicationInstructions) => {
     const { replicationRecipeFile } = replicationInstructions;
     const recipe = ReplicationRecipe.fromRecipeFile(replicationRecipeFile, resolveReplicantWorkDir());
+    return recipe;
+};
 
-    const replicator = new Replicator(recipe);
-    return replicator;
+const buildReplicator = (recipe) => {
+    return new Replicator(recipe);
 }
 
 const generateReplicantTemplate = (replicator, replicationInstructions) => {
@@ -97,11 +99,17 @@ const generateReplicantFromTemplate = async (replicator) => {
 const generateReplicant = async (replicationInstructions) => {
     initializeTemplatesFolder();
 
-    const replicator = buildReplicator(replicationInstructions);
+    const recipe = buildRecipe(replicationInstructions);
+    const replicator = buildReplicator(recipe);
     generateReplicantTemplate(replicator, replicationInstructions);
 
     // generateReplicantFromTemplateExperimental(replicator, replicationInstructions);
     await generateReplicantFromTemplate(replicator, replicationInstructions);
+
+    return {
+        recipeUsed: recipe,
+        replicantDirectory: path.join(resolveReplicantWorkDir(), recipe.replicantName)
+    };
 };
 
 module.exports = { generateReplicant, resolveReplicantWorkDir };
