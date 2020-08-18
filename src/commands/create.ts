@@ -1,11 +1,11 @@
 import { GluegunCommand, filesystem } from 'gluegun'
-import { generateReplicant } from '../replication/replication-process'
 
 const command: GluegunCommand = {
   name: 'create',
   description:
     'Create a REPLICANT by applying the Recipe instructions to the Sample',
   run: async toolbox => {
+    const { generateReplicant } = require('../replication/replication-process')
     const {
       parameters,
       print: { success, info, error }
