@@ -1,34 +1,20 @@
-const { spawn, exec } = require('child_process') // TODO refactor to use spawn instead (less memory intensive)
+// const { spawn, exec } = require('child_process') // TODO refactor to use spawn instead (less memory intensive)
 const fs = require('fs')
 const path = require('path')
 const readline = require('readline')
 const yaml = require('js-yaml')
 var rimraf = require('rimraf')
 const {
-  generateReplicant,
+  // generateReplicant,
   resolveReplicantWorkDir
 } = require('../src/replication/replication-process')
-const execa = require('execa')
 
-const replicateCLI = async (samplePath, recipePath) => {
-  try {
-    const { stdout } = await execa.sync('replicante', [
-      'create',
-      `--from-sample=${samplePath}`,
-      `--with-recipe=${recipePath}`
-    ])
-    console.log(stdout)
-  } catch (error) {
-    console.log(error)
-  }
-}
-
-const replicate = async (samplePath, recipePath) => {
-  await generateReplicant({
-    sampleDirectory: samplePath,
-    replicationRecipeFile: recipePath
-  })
-}
+// const replicate = async (samplePath, recipePath) => {
+//   await generateReplicant({
+//     sampleDirectory: samplePath,
+//     replicationRecipeFile: recipePath
+//   })
+// }
 
 const loadRecipe = recipe => {
   let rawData = fs.readFileSync(recipe)
@@ -60,10 +46,11 @@ const readTemplateFileHeader = async (recipe, fileName) => {
 
     if (dividerCount == 2) break
   }
+  fileStream.close()
   return yaml.safeLoad(header)
 }
 
-const readTemplateFileContent = async (recipe, fileName, options) => {
+const readTemplateFileContent = async (recipe, fileName/*, options*/) => {
   const fileStream = fs.createReadStream(
     `${resolveReplicantWorkDir()}/_templates/${
       recipe.templateName
@@ -85,13 +72,14 @@ const readTemplateFileContent = async (recipe, fileName, options) => {
 
     if (dividerCount == 2) {
       let contentLine = line
-      if (isFirstLineOfContent && options && options.ignoreVariables) {
-        contentLine = line.slice(line.indexOf('%>') + 2)
-      }
+      // if (isFirstLineOfContent && options && options.ignoreVariables) {
+      //   contentLine = line.slice(line.indexOf('%>') + 2)
+      // }
       content += contentLine + '\n'
       isFirstLineOfContent = false
     }
   }
+  fileStream.close()
   return content
 }
 
@@ -125,12 +113,11 @@ const readReplicantFileContent = async (recipe, fileNameParts) => {
   for await (const line of rl) {
     content += line + '\n'
   }
+  fileStream.close()
   return content
 }
 
 module.exports = {
-  replicateCLI: replicateCLI,
-  replicate: replicate,
   loadRecipe: loadRecipe,
   readTemplateForRecipe: readTemplateForRecipe,
   readTemplateFileHeader: readTemplateFileHeader,

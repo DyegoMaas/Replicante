@@ -8,7 +8,7 @@
     "replicante": "bin/replicante"
   },
   "scripts": {
-    "preinstall": "npm i -g hygen",
+    "preinstall": "",
     "format": "prettier --write **/*.{js,ts,tsx,json}",
     "lint": "tslint -p .",
     "clean-build": "rm -rf ./build",
@@ -34,8 +34,8 @@
   "dependencies": {
     "execa": "^4.0.3",
     "gluegun": "latest",
-    "hygen": "^6.0.4",
     "js-yaml": "^3.14.0",
+    "mustache": "^4.0.1",
     "rimraf": "^3.0.2"
   },
   "devDependencies": {

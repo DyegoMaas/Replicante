@@ -69,21 +69,12 @@ module.exports = class Replicator {
     )
     let frontmatter = [
       '---',
-      `to: <%= name %>/${targetPath}`,
-      'force: true',
+      `to: "{{ props.name }}/${targetPath}"`,
       '---'
     ]
-    let variables =
-      '<% ' +
-      'NameUpperCase = name.toUpperCase();' +
-      'NameLowerCase = name.toLowerCase();' +
-      'NameLowerDasherized = h.inflection.dasherize(NameLowerCase);' +
-      'NameCapitalized = h.inflection.capitalize(name); %>'
-    // TODO take other variables Hygen prompt
     this.#prepareFile(
       fullPathDest,
       frontmatter,
-      variables,
       this.replicationRecipe.sourceCodeReplacements
     )
   }
@@ -96,25 +87,35 @@ module.exports = class Replicator {
     return text
   }
 
+  // TODO rename to prepareFiles
   #prepareFile = (
     filePath,
-    linesToPrepend,
-    variables,
+    metadataLines,
     sourceCodeReplacements
   ) => {
     let originalContent = fs.readFileSync(filePath).toString()
 
-    var writeStream = fs.createWriteStream(filePath, { flags: 'w' })
-    linesToPrepend.forEach(line => {
+    //metadata file
+    // let writes = 0
+    let writeStream = fs.createWriteStream(filePath, { flags: 'w' })
+    metadataLines.forEach(line => {
       line = this.#replaceTermsInText(line, sourceCodeReplacements) // why?
+      // writeStream.cork()
       writeStream.write(`${line}\n`)
+      // writes++
     })
-    writeStream.write(variables.trimLeft())
 
     let adjustedContent = this.#replaceTermsInText(
       originalContent,
       sourceCodeReplacements
     )
+    // writeStream.cork()
     writeStream.write(adjustedContent)
+    // writes++
+
+    // for(let i = 0; i < writes; i++)
+    //   writeStream.uncork()
+    // writeStream.destroy()
+    writeStream.end()
   }
 }
