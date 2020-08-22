@@ -104,7 +104,7 @@ describe('CLI tests', () => {
     //   )
     // })
 
-    describe('Middleway template generation', () => {
+    describe('Intermediate template generation', () => {
       test('It should complete the replication without errors, showing the result path', async () => {
         const {output} = await createReplicant2('helloworld-to-hithere-recipe.json')
 

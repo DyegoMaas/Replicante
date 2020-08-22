@@ -1,6 +1,9 @@
-const fs = require('fs')
+// const fs = require('fs')
 const path = require('path')
-const { exec } = require('child_process')
+// const { exec } = require('child_process')
+const mustache = require('mustache')
+const yaml = require('js-yaml')
+
 const Replicator = require('./Replicator')
 const ReplicationRecipe = require('./ReplicationRecipe')
 // const execa = require('execa')
@@ -44,12 +47,12 @@ const buildReplicator = recipe => {
 //   }
 // }
 
-const generateReplicantTemplate = (replicator, replicationInstructions) => {
-  const { sampleDirectory } = replicationInstructions
+// const generateReplicantTemplate = (replicator, replicationInstructions) => {
+//   const { sampleDirectory } = replicationInstructions
 
-  // resetDirectory(replicator.replicationDirectory)
-  replicator.processRecipeFiles(sampleDirectory)
-}
+//   // resetDirectory(replicator.replicationDirectory)
+//   replicator.processRecipeFiles(sampleDirectory)
+// }
 
 // /**
 //  * Executes a shell command and return it as a Promise.
@@ -78,7 +81,104 @@ const generateReplicantTemplate = (replicator, replicationInstructions) => {
 //   )
 // }
 
-const generateReplicant = async (replicationInstructions, generateReplicantFromTemplate, toolbox) => {
+const generate = (options, toolbox) => {
+  const {readFile, writeFile, prints: {info}} = toolbox
+  const {template, target, view, directory} = options
+
+  const templateContent = readFile(path.join(directory, template))
+  var output = mustache.render(templateContent, view);
+  info(output)
+  writeFile(target, output)
+}
+
+const readTemplateFileHeader = async (filePath, toolbox) => {
+  const {readFile} = toolbox
+  await Promise.resolve()
+  // const readline = require('readline')
+  // const fs = require('fs')
+  // const fileStream = fs.createReadStream(filePath)
+  // const rl = readline.createInterface({
+  //   input: fileStream,
+  //   crlfDelay: Infinity
+  // })
+
+  // let header = ''
+  // let dividerCount = 0
+  // for await (const line of rl) {
+  //   if (line.startsWith('---')) dividerCount++
+  //   else header += line + '\n'
+
+  //   if (dividerCount == 2) break
+  // }
+  // fileStream.close()
+
+  const content = readFile(filePath)
+
+  return {
+    header: yaml.safeLoad(content),
+    originalText: content
+  }
+}
+
+const generateReplicantFromTemplate2 = async (replicator, toolbox) => {
+  const {
+    listFiles,
+    stringCases: {lowerCase, upperCase, kebabCase},
+    prints: {info}
+  } = toolbox
+
+  await Promise.resolve()
+  const { templateName, replicantName, templateDir } = replicator.replicationRecipe
+  info(`Replicating sample from ${templateName}. Generating ${replicantName}.`)
+
+  const realTemplateDir = path.join(templateDir, 'new')
+  info(realTemplateDir)
+  const fileList = listFiles(realTemplateDir)
+  const templateFiles = fileList.map(child => child.name)
+
+  const tempDir = path.join(templateDir, '_temp')
+  info(templateFiles)
+  for (let i = 0; i < templateFiles.length; i++) {
+    const fileName = templateFiles[i]
+    const filePath = path.join(realTemplateDir, fileName)
+    info(filePath)
+
+    const view = {
+      name: replicantName,
+      nameUpperCase: upperCase(replicantName),
+      nameLowerCase: lowerCase(replicantName),
+      nameLowerDasherized: lowerCase(kebabCase(replicantName))
+    }
+
+    // renders new template with header patched
+    const partialFilePath = path.join(tempDir, fileName)
+    generate({
+      template: fileName,
+      target: partialFilePath,
+      view: view,
+      directory: realTemplateDir
+    }, toolbox)
+   // generate({
+    //   template: fileName,
+    //   target: partialFilePath,
+    //   view: view,
+    //   directory: realTemplateDir
+    // }, toolbox)
+    // renders final file
+
+    const {header} = await readTemplateFileHeader(partialFilePath, toolbox)
+    // // patching.replace(partialFilePath, originalText, '')
+    info(header)
+    // generate({
+    //   template: fileName,
+    //   target: header.to.replace(/"/g, ''),
+    //   view: view,
+    //   directory: tempDir
+    // }, toolbox)
+  }
+}
+
+const generateReplicant = async (replicationInstructions, toolbox) => {
   const {resetDirectory, makeDirectory} = toolbox
 
   const recipe = buildRecipe(replicationInstructions)
@@ -95,8 +195,10 @@ const generateReplicant = async (replicationInstructions, generateReplicantFromT
   console.log(toolbox)
   // initializeTemplatesFolder()
 
-  generateReplicantTemplate(replicator, replicationInstructions)
-  await generateReplicantFromTemplate(replicator)
+  const { sampleDirectory } = replicationInstructions
+  replicator.processRecipeFiles(sampleDirectory)
+
+  await generateReplicantFromTemplate2(replicator, toolbox)
 
   return {
     recipeUsed: recipe,

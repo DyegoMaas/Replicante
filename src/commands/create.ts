@@ -1,40 +1,40 @@
 import { GluegunCommand, filesystem, strings } from 'gluegun'
 
-const readTemplateFileHeader = async (filePath) => {
-  await Promise.resolve()
-  // const readline = require('readline')
-  const yaml = require('js-yaml')
-  // const fs = require('fs')
-  // const fileStream = fs.createReadStream(filePath)
-  // const rl = readline.createInterface({
-  //   input: fileStream,
-  //   crlfDelay: Infinity
-  // })
+// const readTemplateFileHeader = async (filePath) => {
+//   await Promise.resolve()
+//   // const readline = require('readline')
+//   const yaml = require('js-yaml')
+//   // const fs = require('fs')
+//   // const fileStream = fs.createReadStream(filePath)
+//   // const rl = readline.createInterface({
+//   //   input: fileStream,
+//   //   crlfDelay: Infinity
+//   // })
 
-  // let header = ''
-  // let dividerCount = 0
-  // for await (const line of rl) {
-  //   if (line.startsWith('---')) dividerCount++
-  //   else header += line + '\n'
+//   // let header = ''
+//   // let dividerCount = 0
+//   // for await (const line of rl) {
+//   //   if (line.startsWith('---')) dividerCount++
+//   //   else header += line + '\n'
 
-  //   if (dividerCount == 2) break
-  // }
-  // fileStream.close()
+//   //   if (dividerCount == 2) break
+//   // }
+//   // fileStream.close()
 
-  const content = filesystem.read(filePath)
+//   const content = filesystem.read(filePath)
 
-  return {
-    header: yaml.safeLoad(content),
-    originalText: content
-  }
-}
+//   return {
+//     header: yaml.safeLoad(content),
+//     originalText: content
+//   }
+// }
 
 const command: GluegunCommand = {
   name: 'create',
   description:
     'Create a REPLICANT by applying the Recipe instructions to the Sample',
   run: async toolbox => {
-    const mustache = require('mustache')
+    // const mustache = require('mustache')
     const fs = require('fs')
     const { generateReplicant } = require('../replication/replication-process')
     const {
@@ -82,68 +82,68 @@ const command: GluegunCommand = {
       }
     }
 
-    const generate = (options) => {
-      const {template, target, view, directory} = options
+    // const generate = (options) => {
+    //   const {template, target, view, directory} = options
 
-      const templateContent = filesystem.read(filesystem.path(directory, template))
-      var output = mustache.render(templateContent, view);
-      info(output)
-      console.log(output)
-      filesystem.write(target, output)
-    }
+    //   const templateContent = filesystem.read(filesystem.path(directory, template))
+    //   var output = mustache.render(templateContent, view);
+    //   info(output)
+    //   console.log(output)
+    //   filesystem.write(target, output)
+    // }
 
-    const generateReplicantFromTemplate = async replicator => {
-      await Promise.resolve()
-      const { templateName, replicantName, templateDir } = replicator.replicationRecipe
-      info(`Replicating sample from ${templateName}. Generating ${replicantName}.`)
+    // const generateReplicantFromTemplate = async replicator => {
+    //   await Promise.resolve()
+    //   const { templateName, replicantName, templateDir } = replicator.replicationRecipe
+    //   info(`Replicating sample from ${templateName}. Generating ${replicantName}.`)
 
-      const realTemplateDir = filesystem.path(templateDir, 'new')
-      info(realTemplateDir)
-      const fileTree = filesystem.inspectTree(realTemplateDir)
-      const templateFiles = fileTree.children.map(child => child.name)
+    //   const realTemplateDir = filesystem.path(templateDir, 'new')
+    //   info(realTemplateDir)
+    //   const fileTree = filesystem.inspectTree(realTemplateDir)
+    //   const templateFiles = fileTree.children.map(child => child.name)
 
-      const tempDir = filesystem.path(templateDir, '_temp')
-      info(templateFiles)
-      for (let i = 0; i < templateFiles.length; i++) {
-        const fileName = templateFiles[i]
-        const filePath = filesystem.path(realTemplateDir, fileName)
-        info(filePath)
+    //   const tempDir = filesystem.path(templateDir, '_temp')
+    //   info(templateFiles)
+    //   for (let i = 0; i < templateFiles.length; i++) {
+    //     const fileName = templateFiles[i]
+    //     const filePath = filesystem.path(realTemplateDir, fileName)
+    //     info(filePath)
 
-        const view = {
-          name: replicantName,
-          nameUpperCase: strings.upperCase(replicantName),
-          nameLowerCase: strings.lowerCase(replicantName),
-          nameLowerDasherized: strings.lowerCase(strings.kebabCase(replicantName))
-        }
+    //     const view = {
+    //       name: replicantName,
+    //       nameUpperCase: strings.upperCase(replicantName),
+    //       nameLowerCase: strings.lowerCase(replicantName),
+    //       nameLowerDasherized: strings.lowerCase(strings.kebabCase(replicantName))
+    //     }
 
-        filesystem.write(filesystem.path(tempDir, `banana${i}.txt`), 'banana')
-        // renders new template with header patched
-        const partialFilePath = filesystem.path(tempDir, fileName)
-        generate({
-          template: fileName,
-          target: partialFilePath,
-          view: view,
-          directory: realTemplateDir
-        })
-       // generate({
-        //   template: fileName,
-        //   target: partialFilePath,
-        //   view: view,
-        //   directory: realTemplateDir
-        // })
-        // renders final file
+    //     filesystem.write(filesystem.path(tempDir, `banana${i}.txt`), 'banana')
+    //     // renders new template with header patched
+    //     const partialFilePath = filesystem.path(tempDir, fileName)
+    //     generate({
+    //       template: fileName,
+    //       target: partialFilePath,
+    //       view: view,
+    //       directory: realTemplateDir
+    //     })
+    //    // generate({
+    //     //   template: fileName,
+    //     //   target: partialFilePath,
+    //     //   view: view,
+    //     //   directory: realTemplateDir
+    //     // })
+    //     // renders final file
 
-        const {header} = await readTemplateFileHeader(partialFilePath)
-        // // patching.replace(partialFilePath, originalText, '')
-        info(header)
-        // generate({
-        //   template: fileName,
-        //   target: header.to.replace(/"/g, ''),
-        //   view: view,
-        //   directory: tempDir
-        // })
-      }
-    }
+    //     const {header} = await readTemplateFileHeader(partialFilePath)
+    //     // // patching.replace(partialFilePath, originalText, '')
+    //     info(header)
+    //     // generate({
+    //     //   template: fileName,
+    //     //   target: header.to.replace(/"/g, ''),
+    //     //   view: view,
+    //     //   directory: tempDir
+    //     // })
+    //   }
+    // }
 
     const customToolbox = () => {
       const resetDirectory = (directory) => {
@@ -155,9 +155,57 @@ const command: GluegunCommand = {
         fs.mkdirSync(directory, { recursive: true })
       }
 
+      // const inspectTreeRecursive = (root, file) => {
+      //   let children = (file.type == 'dir')
+      //     ? inspectTreeRecursive(root, file)
+      //     : []
+      //   return {
+      //     type: file.type,
+      //     name: file.name,
+      //     fullPath: filesystem.path(root, file.relativePath),
+      //     children: children
+      //   }
+      // }
+
+      // const inspectTree = (directory) => {
+      //   const tree = filesystem.inspectTree(directory)
+      //   return tree.children.map(file => inspectTreeRecursive(directory, file))
+      // }
+
+      const listFiles = (directory) => {
+        let tree = filesystem.inspectTree(directory)
+        if (!tree.children)
+          return []
+        return tree.children
+          .filter(file => file.type == 'file')
+          .map(file => {
+            return {
+              type: file.type,
+              name: file.name
+            }
+          })
+      }
+
+      const readFile = (filePath) => {
+        return filesystem.read(filePath)
+      }
+
+      const writeFile = (filePath, content) => {
+        return filesystem.write(filePath, content)
+      }
+
       return {
         resetDirectory,
-        makeDirectory
+        makeDirectory,
+        listFiles,
+        readFile,
+        writeFile,
+        stringCases: {
+          kebabCase: strings.kebabCase,
+          lowerCase: strings.lowerCase,
+          upperCase: strings.upperCase,
+        },
+        prints: { info, error, success }
       }
     }
 
@@ -168,7 +216,7 @@ const command: GluegunCommand = {
     }
     const { recipeUsed, replicantDirectory } = await generateReplicant(
       replicationInstructions,
-      generateReplicantFromTemplate,
+      // generateReplicantFromTemplate,
       customToolbox()
     )
 
