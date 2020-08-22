@@ -8,15 +8,6 @@ module.exports = class Replicator {
     this.replicationDirectory = path.join(replicationRecipe.templateDir, 'new') // TODO inject via constructor
   }
 
-  cleanTemplateDirectory() {
-    const templateDir = this.replicationDirectory
-    rimraf.sync(templateDir)
-
-    if (!fs.existsSync(templateDir)) {
-      fs.mkdirSync(templateDir, { recursive: true })
-    }
-  }
-
   processRecipeFiles(sampleDirectory) {
     this.#processFilesInDirectoryRecursive(sampleDirectory, sampleDirectory)
   }

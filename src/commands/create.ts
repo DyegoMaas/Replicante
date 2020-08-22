@@ -35,6 +35,7 @@ const command: GluegunCommand = {
     'Create a REPLICANT by applying the Recipe instructions to the Sample',
   run: async toolbox => {
     const mustache = require('mustache')
+    const fs = require('fs')
     const { generateReplicant } = require('../replication/replication-process')
     const {
       parameters,
@@ -144,6 +145,22 @@ const command: GluegunCommand = {
       }
     }
 
+    const customToolbox = () => {
+      const resetDirectory = (directory) => {
+        filesystem.remove(directory)
+        makeDirectory(directory)
+      }
+
+      const makeDirectory = (directory) => {
+        fs.mkdirSync(directory, { recursive: true })
+      }
+
+      return {
+        resetDirectory,
+        makeDirectory
+      }
+    }
+
     info('Replication processing starting.')
     const replicationInstructions = {
       sampleDirectory: sample,
@@ -151,7 +168,8 @@ const command: GluegunCommand = {
     }
     const { recipeUsed, replicantDirectory } = await generateReplicant(
       replicationInstructions,
-      generateReplicantFromTemplate
+      generateReplicantFromTemplate,
+      customToolbox()
     )
 
     let resultDirectory = replicantDirectory

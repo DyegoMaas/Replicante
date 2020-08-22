@@ -10,18 +10,18 @@ const resolveReplicantWorkDir = () => {
   return path.join(homedir(), '.replicante').replace(/\\/g, '/')
 }
 
-const initializeTemplatesFolder = () => {
-  const dir = resolveReplicantWorkDir()
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true })
-  }
+// const initializeTemplatesFolder = () => {
+//   const dir = resolveReplicantWorkDir()
+//   if (!fs.existsSync(dir)) {
+//     fs.mkdirSync(dir, { recursive: true })
+//   }
 
-  const hygenIsInitialized = fs.existsSync(path.join(dir, '_templates'))
-  if (hygenIsInitialized) {
-    console.log('Skipping Hygen initialization.')
-    return
-  }
-}
+//   const hygenIsInitialized = fs.existsSync(path.join(dir, '_templates'))
+//   if (hygenIsInitialized) {
+//     console.log('Skipping Hygen initialization.')
+//     return
+//   }
+// }
 
 const buildRecipe = replicationInstructions => {
   const { replicationRecipeFile } = replicationInstructions
@@ -36,10 +36,18 @@ const buildReplicator = recipe => {
   return new Replicator(recipe)
 }
 
+// const resetDirectory = (directory) => {
+//   rimraf.sync(directory)
+
+//   if (!fs.existsSync(directory)) {
+//     fs.mkdirSync(directory, { recursive: true })
+//   }
+// }
+
 const generateReplicantTemplate = (replicator, replicationInstructions) => {
   const { sampleDirectory } = replicationInstructions
 
-  replicator.cleanTemplateDirectory()
+  // resetDirectory(replicator.replicationDirectory)
   replicator.processRecipeFiles(sampleDirectory)
 }
 
@@ -70,13 +78,24 @@ const generateReplicantTemplate = (replicator, replicationInstructions) => {
 //   )
 // }
 
-const generateReplicant = async (replicationInstructions, generateReplicantFromTemplate) => {
-  initializeTemplatesFolder()
+const generateReplicant = async (replicationInstructions, generateReplicantFromTemplate, toolbox) => {
+  const {resetDirectory, makeDirectory} = toolbox
 
   const recipe = buildRecipe(replicationInstructions)
   const replicator = buildReplicator(recipe)
-  generateReplicantTemplate(replicator, replicationInstructions)
 
+  resetDirectory(replicator.replicationDirectory)
+  resetDirectory(recipe.templateDir)
+  makeDirectory(path.join(recipe.templateDir, 'new'))
+  makeDirectory(path.join(recipe.templateDir, '_temp'))
+
+  // clean template directory: _templates/name/new
+  // clean template directory: _templates/name/_temp
+  // reset template directory: _templates/name + create /new and /_temp
+  console.log(toolbox)
+  // initializeTemplatesFolder()
+
+  generateReplicantTemplate(replicator, replicationInstructions)
   await generateReplicantFromTemplate(replicator)
 
   return {
