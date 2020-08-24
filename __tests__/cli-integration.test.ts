@@ -40,34 +40,6 @@ describe('CLI tests', () => {
     })
   })
 
-  // const createReplicant = (
-  //   done,
-  //   exportResults,
-  //   fixtureRecipeToUse,
-  //   options?
-  // ) => {
-  //   const samplePath = filesystem.resolve(
-  //     './test-infrasctructure/fixtures/hello-world'
-  //   )
-  //   const recipeFilePath = filesystem.resolve(
-  //     `./test-infrasctructure/fixtures/${fixtureRecipeToUse}`
-  //   )
-
-  //   cli(`create ${samplePath} ${recipeFilePath} ${options}`)
-  //     .then(cliOutput => {
-  //       const recipe = loadRecipe(recipeFilePath)
-  //       return {
-  //         recipe,
-  //         output: cliOutput,
-  //         templateFiles: readTemplateForRecipe(recipe)
-  //       }
-  //     })
-  //     .then(exports => {
-  //       exportResults(exports)
-  //     })
-  //     .then(done)
-  // }
-
   const createReplicant2 = async (fixtureRecipeToUse, options?) => {
     const samplePath = filesystem.resolve(
       './test-infrasctructure/fixtures/hello-world'
@@ -88,21 +60,6 @@ describe('CLI tests', () => {
   }
 
   describe('Replication process', () => {
-    // let recipe = null
-    // let templateFiles = []
-    // let output = ''
-
-    // beforeAll(done => {
-    //   createReplicant(
-    //     done,
-    //     exports => {
-    //       recipe = exports.recipe
-    //       templateFiles = exports.templateFiles
-    //       output = exports.output
-    //     },
-    //     'helloworld-to-hithere-recipe.json'
-    //   )
-    // })
 
     describe('Intermediate template generation', () => {
       test('It should complete the replication without errors, showing the result path', async () => {
@@ -217,19 +174,6 @@ describe('CLI tests', () => {
     beforeAll(() => {
       targetDirectory = filesystem.path(resolveReplicantWorkDir(), 'TargetDir')
     })
-    // let recipe = null
-
-    // beforeAll(done => {
-    //   const exportResults = exports => {
-    //     recipe = exports.recipe
-    //   }
-    //   createReplicant(
-    //     done,
-    //     exportResults,
-    //     'helloworld-to-hithere-recipe-with-target.json',
-    //     `--target="${targetDirectory}"`
-    //   )
-    // })
 
     test('Should copy the final project into the target directory', async () => {
       const {recipe} = await createReplicant2('helloworld-to-hithere-recipe.json', `--target="${targetDirectory}"`)

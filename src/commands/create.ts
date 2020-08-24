@@ -1,47 +1,18 @@
 import { GluegunCommand, filesystem, strings } from 'gluegun'
 
-// const readTemplateFileHeader = async (filePath) => {
-//   await Promise.resolve()
-//   // const readline = require('readline')
-//   const yaml = require('js-yaml')
-//   // const fs = require('fs')
-//   // const fileStream = fs.createReadStream(filePath)
-//   // const rl = readline.createInterface({
-//   //   input: fileStream,
-//   //   crlfDelay: Infinity
-//   // })
-
-//   // let header = ''
-//   // let dividerCount = 0
-//   // for await (const line of rl) {
-//   //   if (line.startsWith('---')) dividerCount++
-//   //   else header += line + '\n'
-
-//   //   if (dividerCount == 2) break
-//   // }
-//   // fileStream.close()
-
-//   const content = filesystem.read(filePath)
-
-//   return {
-//     header: yaml.safeLoad(content),
-//     originalText: content
-//   }
-// }
-
 const command: GluegunCommand = {
   name: 'create',
   description:
     'Create a REPLICANT by applying the Recipe instructions to the Sample',
   run: async toolbox => {
-    // const mustache = require('mustache')
     const fs = require('fs')
+    const path = require('path')
     const { generateReplicant } = require('../replication/replication-process')
     const {
       parameters,
       print: { success, info, error },
       // template,
-      // patching
+      patching
     } = toolbox
 
     if (parameters.options.help) {
@@ -82,70 +53,7 @@ const command: GluegunCommand = {
       }
     }
 
-    // const generate = (options) => {
-    //   const {template, target, view, directory} = options
-
-    //   const templateContent = filesystem.read(filesystem.path(directory, template))
-    //   var output = mustache.render(templateContent, view);
-    //   info(output)
-    //   console.log(output)
-    //   filesystem.write(target, output)
-    // }
-
-    // const generateReplicantFromTemplate = async replicator => {
-    //   await Promise.resolve()
-    //   const { templateName, replicantName, templateDir } = replicator.replicationRecipe
-    //   info(`Replicating sample from ${templateName}. Generating ${replicantName}.`)
-
-    //   const realTemplateDir = filesystem.path(templateDir, 'new')
-    //   info(realTemplateDir)
-    //   const fileTree = filesystem.inspectTree(realTemplateDir)
-    //   const templateFiles = fileTree.children.map(child => child.name)
-
-    //   const tempDir = filesystem.path(templateDir, '_temp')
-    //   info(templateFiles)
-    //   for (let i = 0; i < templateFiles.length; i++) {
-    //     const fileName = templateFiles[i]
-    //     const filePath = filesystem.path(realTemplateDir, fileName)
-    //     info(filePath)
-
-    //     const view = {
-    //       name: replicantName,
-    //       nameUpperCase: strings.upperCase(replicantName),
-    //       nameLowerCase: strings.lowerCase(replicantName),
-    //       nameLowerDasherized: strings.lowerCase(strings.kebabCase(replicantName))
-    //     }
-
-    //     filesystem.write(filesystem.path(tempDir, `banana${i}.txt`), 'banana')
-    //     // renders new template with header patched
-    //     const partialFilePath = filesystem.path(tempDir, fileName)
-    //     generate({
-    //       template: fileName,
-    //       target: partialFilePath,
-    //       view: view,
-    //       directory: realTemplateDir
-    //     })
-    //    // generate({
-    //     //   template: fileName,
-    //     //   target: partialFilePath,
-    //     //   view: view,
-    //     //   directory: realTemplateDir
-    //     // })
-    //     // renders final file
-
-    //     const {header} = await readTemplateFileHeader(partialFilePath)
-    //     // // patching.replace(partialFilePath, originalText, '')
-    //     info(header)
-    //     // generate({
-    //     //   template: fileName,
-    //     //   target: header.to.replace(/"/g, ''),
-    //     //   view: view,
-    //     //   directory: tempDir
-    //     // })
-    //   }
-    // }
-
-    const customToolbox = () => {
+    const gluegunCustomToolbox = () => {
       const resetDirectory = (directory) => {
         filesystem.remove(directory)
         makeDirectory(directory)
@@ -154,23 +62,6 @@ const command: GluegunCommand = {
       const makeDirectory = (directory) => {
         fs.mkdirSync(directory, { recursive: true })
       }
-
-      // const inspectTreeRecursive = (root, file) => {
-      //   let children = (file.type == 'dir')
-      //     ? inspectTreeRecursive(root, file)
-      //     : []
-      //   return {
-      //     type: file.type,
-      //     name: file.name,
-      //     fullPath: filesystem.path(root, file.relativePath),
-      //     children: children
-      //   }
-      // }
-
-      // const inspectTree = (directory) => {
-      //   const tree = filesystem.inspectTree(directory)
-      //   return tree.children.map(file => inspectTreeRecursive(directory, file))
-      // }
 
       const listFiles = (directory) => {
         let tree = filesystem.inspectTree(directory)
@@ -194,12 +85,32 @@ const command: GluegunCommand = {
         return filesystem.write(filePath, content)
       }
 
+      const copyFile = (src, dest) => {
+        const destDirectory = path.dirname(dest)
+        const sourceBaseName = path.basename(src)
+        const destBaseName = path.basename(dest)
+        makeDirectory(destDirectory)
+
+        const x = filesystem.path(destDirectory, sourceBaseName)
+        filesystem.copy(src, x, {overwrite: true})
+
+        if (sourceBaseName != destBaseName) {
+          filesystem.rename(x, destBaseName)
+        }
+      }
+
+      const prependToFileAsync = async (filePath, contentToPrepend) => {
+        return await patching.prepend(filePath, contentToPrepend) // TODO await...
+      }
+
       return {
         resetDirectory,
         makeDirectory,
         listFiles,
         readFile,
         writeFile,
+        copyFile,
+        prependToFileAsync,
         stringCases: {
           kebabCase: strings.kebabCase,
           lowerCase: strings.lowerCase,
@@ -209,6 +120,7 @@ const command: GluegunCommand = {
       }
     }
 
+    const customToolbox = gluegunCustomToolbox()
     info('Replication processing starting.')
     const replicationInstructions = {
       sampleDirectory: sample,
@@ -216,8 +128,7 @@ const command: GluegunCommand = {
     }
     const { recipeUsed, replicantDirectory } = await generateReplicant(
       replicationInstructions,
-      // generateReplicantFromTemplate,
-      customToolbox()
+      customToolbox
     )
 
     let resultDirectory = replicantDirectory
@@ -228,6 +139,7 @@ const command: GluegunCommand = {
       )
 
       // TODO move operation into replication-process.js
+      customToolbox.makeDirectory(fullTargetPath)
       filesystem.copy(replicantDirectory, fullTargetPath, {overwrite: true})
 
       resultDirectory = fullTargetPath

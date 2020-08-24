@@ -1,30 +1,13 @@
-// const fs = require('fs')
+const { homedir } = require('os')
 const path = require('path')
-// const { exec } = require('child_process')
 const mustache = require('mustache')
 const yaml = require('js-yaml')
-
 const Replicator = require('./Replicator')
 const ReplicationRecipe = require('./ReplicationRecipe')
-// const execa = require('execa')
-const { homedir } = require('os')
 
 const resolveReplicantWorkDir = () => {
   return path.join(homedir(), '.replicante').replace(/\\/g, '/')
 }
-
-// const initializeTemplatesFolder = () => {
-//   const dir = resolveReplicantWorkDir()
-//   if (!fs.existsSync(dir)) {
-//     fs.mkdirSync(dir, { recursive: true })
-//   }
-
-//   const hygenIsInitialized = fs.existsSync(path.join(dir, '_templates'))
-//   if (hygenIsInitialized) {
-//     console.log('Skipping Hygen initialization.')
-//     return
-//   }
-// }
 
 const buildRecipe = replicationInstructions => {
   const { replicationRecipeFile } = replicationInstructions
@@ -34,52 +17,6 @@ const buildRecipe = replicationInstructions => {
   )
   return recipe
 }
-
-const buildReplicator = recipe => {
-  return new Replicator(recipe)
-}
-
-// const resetDirectory = (directory) => {
-//   rimraf.sync(directory)
-
-//   if (!fs.existsSync(directory)) {
-//     fs.mkdirSync(directory, { recursive: true })
-//   }
-// }
-
-// const generateReplicantTemplate = (replicator, replicationInstructions) => {
-//   const { sampleDirectory } = replicationInstructions
-
-//   // resetDirectory(replicator.replicationDirectory)
-//   replicator.processRecipeFiles(sampleDirectory)
-// }
-
-// /**
-//  * Executes a shell command and return it as a Promise.
-//  * @param cmd {string}
-//  * @return {Promise<string>}
-//  */
-// function execShellCommand(cmd) {
-//   return new Promise((resolve, reject) => {
-//     exec(cmd, { cwd: resolveReplicantWorkDir() }, (error, stdout, stderr) => {
-//       if (error) {
-//         console.warn(error)
-//         reject(error)
-//       }
-//       resolve(stdout ? stdout : stderr)
-//     })
-//   })
-// }
-
-// const generateReplicantFromTemplate = async replicator => {
-//   const { templateName, replicantName } = replicator.replicationRecipe
-//   console.log(
-//     `Replicating sample from ${templateName}. Generating ${replicantName}.`
-//   )
-//   await execShellCommand(
-//     `set HYGEN_OVERWRITE=1 && npx hygen ${templateName} new ${replicantName}`
-//   )
-// }
 
 const generate = (options, toolbox) => {
   const {readFile, writeFile, prints: {info}} = toolbox
@@ -113,9 +50,9 @@ const readTemplateFileHeader = async (filePath, toolbox) => {
   // fileStream.close()
 
   const content = readFile(filePath)
-
+  let parts = content.split('---')
   return {
-    header: yaml.safeLoad(content),
+    header: yaml.safeLoad(parts[1]),
     originalText: content
   }
 }
@@ -182,21 +119,15 @@ const generateReplicant = async (replicationInstructions, toolbox) => {
   const {resetDirectory, makeDirectory} = toolbox
 
   const recipe = buildRecipe(replicationInstructions)
-  const replicator = buildReplicator(recipe)
+  const replicator = new Replicator(recipe, toolbox)
 
   resetDirectory(replicator.replicationDirectory)
   resetDirectory(recipe.templateDir)
   makeDirectory(path.join(recipe.templateDir, 'new'))
   makeDirectory(path.join(recipe.templateDir, '_temp'))
 
-  // clean template directory: _templates/name/new
-  // clean template directory: _templates/name/_temp
-  // reset template directory: _templates/name + create /new and /_temp
-  console.log(toolbox)
-  // initializeTemplatesFolder()
-
   const { sampleDirectory } = replicationInstructions
-  replicator.processRecipeFiles(sampleDirectory)
+  await replicator.processRecipeFiles(sampleDirectory)
 
   await generateReplicantFromTemplate2(replicator, toolbox)
 

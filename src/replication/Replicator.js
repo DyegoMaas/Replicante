@@ -1,25 +1,27 @@
 const fs = require('fs')
 const path = require('path')
-var rimraf = require('rimraf')
 
-module.exports = class Replicator {
-  constructor(replicationRecipe) {
+class Replicator {
+  constructor(replicationRecipe, toolbox) {
     this.replicationRecipe = replicationRecipe
     this.replicationDirectory = path.join(replicationRecipe.templateDir, 'new') // TODO inject via constructor
+    this.toolbox = toolbox
   }
 
-  processRecipeFiles(sampleDirectory) {
-    this.#processFilesInDirectoryRecursive(sampleDirectory, sampleDirectory)
+  async processRecipeFiles(sampleDirectory) {
+    await this._processFilesInDirectoryRecursive(sampleDirectory, sampleDirectory)
   }
 
-  #processFilesInDirectoryRecursive = (currentPath, rootPath) => {
+  async _processFilesInDirectoryRecursive(currentPath, rootPath) {
     console.log('Processing directory', currentPath)
 
-    fs.readdirSync(currentPath).forEach(file => {
+    const files = fs.readdirSync(currentPath)
+    for(let i = 0; i < files.length; i = i + 1 ) {
+      const file = files[i]
       const fullPath = path.join(currentPath, file)
 
       if (this.replicationRecipe.ignoreArtifacts.indexOf(file) > -1) {
-        return
+        continue
       }
 
       if (fs.lstatSync(fullPath).isFile()) {
@@ -30,47 +32,49 @@ module.exports = class Replicator {
           .replace(/\\/g, '-')
           .replace(/\//g, '-')
 
-        this.#toTemplate(
+        await this._toTemplate(
           fullPath,
           path.join(this.replicationDirectory, virtualPath),
           relativePath
         )
-        return
+        continue
       }
 
-      this.#processFilesInDirectoryRecursive(fullPath, rootPath)
-    })
+      await this._processFilesInDirectoryRecursive(fullPath, rootPath)
+    }
   }
 
-  #toTemplate = (src, dest, relativePath) => {
+  async _toTemplate (src, dest, relativePath) {
+    const {copyFile} = this.toolbox
     const fullPathSrc = path.resolve(src)
     const fullPathDest = path.resolve(`${dest}.ejs.t`)
     console.log(`Generating template from ${fullPathSrc} to ${fullPathDest}`)
 
-    const destDir = path.dirname(fullPathDest)
-    if (!fs.existsSync(destDir)) {
-      fs.mkdirSync(destDir, { recursive: true })
-    }
-    fs.copyFileSync(fullPathSrc, fullPathDest) // merge two parts
+    // const destDir = path.dirname(fullPathDest)
+    // if (!fs.existsSync(destDir)) {
+    //   fs.mkdirSync(destDir, { recursive: true })
+    // }
+    // fs.copyFileSync(fullPathSrc, fullPathDest)
+    copyFile(fullPathSrc, fullPathDest) // merge two parts
 
     let targetPath = relativePath.replace(/\\/g, '/')
-    targetPath = this.#replaceTermsInText(
+    targetPath = this._replaceTermsInText(
       targetPath,
       this.replicationRecipe.fileNameReplacements
     )
     let frontmatter = [
       '---',
-      `to: "{{ props.name }}/${targetPath}"`,
+      `to: "{{ name }}/${targetPath}"`,
       '---'
     ]
-    this.#prepareFile(
+    await this._prepareFile(
       fullPathDest,
       frontmatter,
       this.replicationRecipe.sourceCodeReplacements
     )
   }
 
-  #replaceTermsInText = (text, replacements) => {
+  _replaceTermsInText(text, replacements) {
     replacements.forEach(replacement => {
       const { from, to } = replacement
       text = text.split(from).join(to)
@@ -79,34 +83,44 @@ module.exports = class Replicator {
   }
 
   // TODO rename to prepareFiles
-  #prepareFile = (
+  async _prepareFile (
     filePath,
     metadataLines,
     sourceCodeReplacements
-  ) => {
-    let originalContent = fs.readFileSync(filePath).toString()
+  ) {
+    const {readFile, writeFile, prependToFileAsync} = this.toolbox
+    // let originalContent = fs.readFileSync(filePath).toString()
 
     //metadata file
     // let writes = 0
-    let writeStream = fs.createWriteStream(filePath, { flags: 'w' })
-    metadataLines.forEach(line => {
-      line = this.#replaceTermsInText(line, sourceCodeReplacements) // why?
-      // writeStream.cork()
-      writeStream.write(`${line}\n`)
-      // writes++
-    })
+    // let writeStream = fs.createWriteStream(filePath, { flags: 'w' })
 
-    let adjustedContent = this.#replaceTermsInText(
+    // refactor to avoid three operations on the same file
+    const originalContent = readFile(filePath)
+    let adjustedContent = this._replaceTermsInText(
       originalContent,
       sourceCodeReplacements
     )
+    writeFile(filePath, adjustedContent)
+
+    let contentToPrepend = metadataLines
+      .map(line => {
+        return this._replaceTermsInText(line, sourceCodeReplacements) // why?
+        // writeStream.cork()
+        // writeStream.write(`${line}\n`)
+        // writes++
+      })
+      .join('\n')
+    await prependToFileAsync(filePath, contentToPrepend)
     // writeStream.cork()
-    writeStream.write(adjustedContent)
+    // writeStream.write(adjustedContent)
     // writes++
 
     // for(let i = 0; i < writes; i++)
     //   writeStream.uncork()
     // writeStream.destroy()
-    writeStream.end()
+    // writeStream.end()
   }
 }
+
+module.exports = Replicator
