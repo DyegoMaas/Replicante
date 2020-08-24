@@ -127,8 +127,8 @@ describe('CLI tests', () => {
 
         let lines = content.split('\n')
         expect(lines[0]).toEqual("console.log('Hi My People')")
-        expect(lines[1]).toEqual('console.log(\'"Hi There!"\')')
-        expect(lines[2]).toEqual('console.log(\'"Just, hey world?"\')')
+        expect(lines[1]).toEqual("console.log('Hi There!')")
+        expect(lines[2]).toEqual("console.log('Just, hey world?')")
         expect(lines[3]).toEqual("console.log('Name = Special{{ name }}')")
       })
     })

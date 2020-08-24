@@ -89,11 +89,6 @@ class Replicator {
     sourceCodeReplacements
   ) {
     const {readFile, writeFile, prependToFileAsync} = this.toolbox
-    // let originalContent = fs.readFileSync(filePath).toString()
-
-    //metadata file
-    // let writes = 0
-    // let writeStream = fs.createWriteStream(filePath, { flags: 'w' })
 
     // refactor to avoid three operations on the same file
     const originalContent = readFile(filePath)
@@ -106,20 +101,9 @@ class Replicator {
     let contentToPrepend = metadataLines
       .map(line => {
         return this._replaceTermsInText(line, sourceCodeReplacements) // why?
-        // writeStream.cork()
-        // writeStream.write(`${line}\n`)
-        // writes++
       })
       .join('\n')
-    await prependToFileAsync(filePath, contentToPrepend)
-    // writeStream.cork()
-    // writeStream.write(adjustedContent)
-    // writes++
-
-    // for(let i = 0; i < writes; i++)
-    //   writeStream.uncork()
-    // writeStream.destroy()
-    // writeStream.end()
+    await prependToFileAsync(filePath, `${contentToPrepend}\n`)
   }
 }
 

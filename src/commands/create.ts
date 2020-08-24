@@ -82,7 +82,7 @@ const command: GluegunCommand = {
       }
 
       const writeFile = (filePath, content) => {
-        return filesystem.write(filePath, content)
+        filesystem.write(filePath, content)
       }
 
       const copyFile = (src, dest) => {
