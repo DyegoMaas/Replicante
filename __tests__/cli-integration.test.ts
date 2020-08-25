@@ -134,10 +134,7 @@ describe('CLI tests', () => {
           'helloworld-to-hithere-recipe.json'
         )
 
-        const content = readTemplateFileContent(
-          recipe,
-          'HelloWorld.js.ejs.t'
-        )
+        const content = readTemplateFileContent(recipe, 'HelloWorld.js.ejs.t')
 
         let lines = content.split('\n').map(x => x.trim())
         expect(lines[0]).toEqual("console.log('Hi My People')")

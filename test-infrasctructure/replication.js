@@ -4,7 +4,9 @@ const path = require('path')
 const readline = require('readline')
 const yaml = require('js-yaml')
 var rimraf = require('rimraf')
-const {resolveReplicantWorkDir} = require('../src/replication/replication-process')
+const {
+  resolveReplicantWorkDir
+} = require('../src/replication/replication-process')
 
 const loadRecipe = recipe => {
   let rawData = fs.readFileSync(recipe)
@@ -40,7 +42,7 @@ const readTemplateFileHeader = async (recipe, fileName) => {
   return yaml.safeLoad(header)
 }
 
-const readFileDiscardingHeader = (fullPath) => {
+const readFileDiscardingHeader = fullPath => {
   const fullContent = filesystem.read(fullPath)
   const parts = fullContent.split('---\n')
   const templateContent = parts[2]
