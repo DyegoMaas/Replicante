@@ -145,6 +145,7 @@ describe('CLI tests', () => {
     })
 
     describe('Replicant generation', () => {
+
       test('Should genereate files in root, with content properly replaced', async () => {
         const { recipe } = await createReplicant(
           'helloworld-to-hithere-recipe.json'

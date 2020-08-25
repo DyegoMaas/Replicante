@@ -18,33 +18,29 @@ const buildRecipe = replicationInstructions => {
   return recipe
 }
 
-const generate = (options, toolbox) => {
-  const {
-    readFile,
-    writeFile,
-    prints: { info }
-  } = toolbox
+const generateFileFromTemplate = (options, toolbox) => {
+  const {readFile, writeFile} = toolbox
   const { template, target, view, directory } = options
 
   const templateContent = readFile(path.join(directory, template))
   var output = mustache.render(templateContent, view)
-  info(output)
   writeFile(target, output)
 }
 
-const readTemplateFileHeader = (filePath, toolbox) => {
+const decomposeTemplateFile = (filePath, toolbox) => {
   const { readFile } = toolbox
 
   const content = readFile(filePath)
-  let parts = content.split('---')
+  let parts = content.split('---\n')
   return {
     header: yaml.safeLoad(parts[1]),
-    originalText: content
+    content: parts[2].trimEnd()
   }
 }
 
 const generateReplicantFromTemplate2 = async (replicator, toolbox) => {
   const {
+    writeFile,
     listFiles,
     stringCases: { lowerCase, upperCase, kebabCase },
     prints: { info }
@@ -63,23 +59,21 @@ const generateReplicantFromTemplate2 = async (replicator, toolbox) => {
   const fileList = listFiles(realTemplateDir)
   const templateFiles = fileList.map(child => child.name)
 
+  const view = {
+    name: replicantName,
+    nameUpperCase: upperCase(replicantName),
+    nameLowerCase: lowerCase(replicantName),
+    nameLowerDasherized: lowerCase(kebabCase(replicantName))
+  }
+
   const tempDir = path.join(templateDir, '_temp')
   info(templateFiles)
   for (let i = 0; i < templateFiles.length; i++) {
     const fileName = templateFiles[i]
-    const filePath = path.join(realTemplateDir, fileName)
-    info(filePath)
-
-    const view = {
-      name: replicantName,
-      nameUpperCase: upperCase(replicantName),
-      nameLowerCase: lowerCase(replicantName),
-      nameLowerDasherized: lowerCase(kebabCase(replicantName))
-    }
 
     // renders new template with header patched
     const partialFilePath = path.join(tempDir, fileName)
-    generate(
+    generateFileFromTemplate(
       {
         template: fileName,
         target: partialFilePath,
@@ -89,20 +83,12 @@ const generateReplicantFromTemplate2 = async (replicator, toolbox) => {
       toolbox
     )
 
-    const { header } = readTemplateFileHeader(partialFilePath, toolbox)
+    const { header, content } = decomposeTemplateFile(partialFilePath, toolbox)
     const newTarget = path.join(
       resolveReplicantWorkDir(),
       header.to.replace(/"/g, '')
     )
-    generate(
-      {
-        template: fileName,
-        target: newTarget,
-        view: view,
-        directory: tempDir
-      },
-      toolbox
-    )
+    writeFile(newTarget, content)
   }
 }
 

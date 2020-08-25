@@ -72,7 +72,7 @@ const readReplicantFileContent = (recipe, fileNameParts) => {
     recipe.replicantName,
     targetFile
   )
-  return readFileDiscardingHeader(filePath)
+  return filesystem.read(filePath)
 }
 
 module.exports = {
