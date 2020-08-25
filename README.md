@@ -2,7 +2,7 @@
 
 ![Build](https://github.com/DyegoMaas/Replicante/workflows/Build/badge.svg)
 
-Ever needed to use a running application as template for a new project? Replicante makes it easy to morph a living application into a completely new one.
+> Ever needed to use a running application as template for a new project? **Replicante** makes it easy to morph a living application into a completely new one.
 
 ## Quick Tutorial
 
