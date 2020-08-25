@@ -30,13 +30,13 @@ describe('CLI tests', () => {
   describe('Versioning', () => {
     test('It should output version', async () => {
       const output = await cli('--version')
-      expect(output).toContain('0.6.1')
+      expect(output).toContain('0.7.0')
     })
 
     test('It should output help', async () => {
       // TODO improve this test
       const output = await cli('--help')
-      expect(output).toContain('0.6.1')
+      expect(output).toContain('0.7.0')
     })
   })
 
