@@ -40,7 +40,7 @@ describe('CLI tests', () => {
     })
   })
 
-  const createReplicant2 = async (fixtureRecipeToUse, options?) => {
+  const createReplicant = async (fixtureRecipeToUse, options?) => {
     const samplePath = filesystem.resolve(
       './test-infrasctructure/fixtures/hello-world'
     )
@@ -63,7 +63,7 @@ describe('CLI tests', () => {
   describe('Replication process', () => {
     describe('Intermediate template generation', () => {
       test('It should complete the replication without errors, showing the result path', async () => {
-        const { output } = await createReplicant2(
+        const { output } = await createReplicant(
           'helloworld-to-hithere-recipe.json'
         )
 
@@ -71,7 +71,7 @@ describe('CLI tests', () => {
       })
 
       test('Should include all expected files in the source file tree', async () => {
-        const { templateFiles } = await createReplicant2(
+        const { templateFiles } = await createReplicant(
           'helloworld-to-hithere-recipe.json'
         )
 
@@ -79,7 +79,7 @@ describe('CLI tests', () => {
       })
 
       test('Should use virtual path structure separated by hyphen', async () => {
-        const { templateFiles } = await createReplicant2(
+        const { templateFiles } = await createReplicant(
           'helloworld-to-hithere-recipe.json'
         )
 
@@ -91,7 +91,7 @@ describe('CLI tests', () => {
       })
 
       test('Should ignore files marked as to be ignored', async () => {
-        const { templateFiles } = await createReplicant2(
+        const { templateFiles } = await createReplicant(
           'helloworld-to-hithere-recipe.json'
         )
 
@@ -99,7 +99,7 @@ describe('CLI tests', () => {
       })
 
       test('Should calculate the destiny path at root of the new project, applying file name replacements', async () => {
-        const { recipe } = await createReplicant2(
+        const { recipe } = await createReplicant(
           'helloworld-to-hithere-recipe.json'
         )
 
@@ -117,7 +117,7 @@ describe('CLI tests', () => {
       })
 
       test('Should calculate the destiny path that restore original path structure, applying file name replacements', async () => {
-        const { recipe } = await createReplicant2(
+        const { recipe } = await createReplicant(
           'helloworld-to-hithere-recipe.json'
         )
 
@@ -130,7 +130,7 @@ describe('CLI tests', () => {
       })
 
       test('Should apply all content replacements', async () => {
-        const { recipe } = await createReplicant2(
+        const { recipe } = await createReplicant(
           'helloworld-to-hithere-recipe.json'
         )
 
@@ -149,7 +149,7 @@ describe('CLI tests', () => {
 
     describe('Replicant generation', () => {
       test('Should genereate files in root, with content properly replaced', async () => {
-        const { recipe } = await createReplicant2(
+        const { recipe } = await createReplicant(
           'helloworld-to-hithere-recipe.json'
         )
 
@@ -168,7 +168,7 @@ describe('CLI tests', () => {
       })
 
       test('Should genereate nested files, with content properly replaced', async () => {
-        const { recipe } = await createReplicant2(
+        const { recipe } = await createReplicant(
           'helloworld-to-hithere-recipe.json'
         )
 
@@ -193,7 +193,7 @@ describe('CLI tests', () => {
     })
 
     test('Should copy the final project into the target directory', async () => {
-      const { recipe } = await createReplicant2(
+      const { recipe } = await createReplicant(
         'helloworld-to-hithere-recipe.json',
         `--target="${targetDirectory}"`
       )

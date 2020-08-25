@@ -11,7 +11,6 @@ const command: GluegunCommand = {
     const {
       parameters,
       print: { success, info, error },
-      // template,
       patching
     } = toolbox
 

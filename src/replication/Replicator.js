@@ -53,11 +53,6 @@ class Replicator {
     const fullPathDest = path.resolve(`${dest}.ejs.t`)
     console.log(`Generating template from ${fullPathSrc} to ${fullPathDest}`)
 
-    // const destDir = path.dirname(fullPathDest)
-    // if (!fs.existsSync(destDir)) {
-    //   fs.mkdirSync(destDir, { recursive: true })
-    // }
-    // fs.copyFileSync(fullPathSrc, fullPathDest)
     copyFile(fullPathSrc, fullPathDest) // merge two parts
 
     let targetPath = relativePath.replace(/\\/g, '/')
