@@ -88,11 +88,11 @@ const command: GluegunCommand = {
         const destBaseName = path.basename(dest)
         makeDirectory(destDirectory)
 
-        const x = filesystem.path(destDirectory, sourceBaseName)
-        filesystem.copy(src, x, { overwrite: true })
+        const finalPath = filesystem.path(destDirectory, sourceBaseName)
+        filesystem.copy(src, finalPath, { overwrite: true })
 
         if (sourceBaseName !== destBaseName) {
-          filesystem.rename(x, destBaseName)
+          filesystem.rename(finalPath, destBaseName)
         }
       }
 
