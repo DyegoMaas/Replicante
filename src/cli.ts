@@ -12,13 +12,7 @@ async function run(argv) {
     .help() // provides default for help, h, --help, -h
     .version() // provides default for version, v, --version, -v
     .defaultCommand()
-    .exclude([
-      'strings',
-      'semver',
-      'prompt',
-      'http',
-      'package-manager'
-    ])
+    .exclude(['strings', 'semver', 'prompt', 'http', 'package-manager'])
     .create()
   // enable the following method if you'd like to skip loading one of these core extensions
   // this can improve performance if they're not necessary for your project:

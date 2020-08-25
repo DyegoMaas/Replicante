@@ -48,34 +48,40 @@ describe('CLI tests', () => {
       `./test-infrasctructure/fixtures/${fixtureRecipeToUse}`
     )
 
-    return await cli(`create ${samplePath} ${recipeFilePath} ${options}`)
-      .then(cliOutput => {
+    return await cli(`create ${samplePath} ${recipeFilePath} ${options}`).then(
+      cliOutput => {
         const recipe = loadRecipe(recipeFilePath)
         return {
           recipe,
           output: cliOutput,
           templateFiles: readTemplateForRecipe(recipe)
         }
-      })
+      }
+    )
   }
 
   describe('Replication process', () => {
-
     describe('Intermediate template generation', () => {
       test('It should complete the replication without errors, showing the result path', async () => {
-        const {output} = await createReplicant2('helloworld-to-hithere-recipe.json')
+        const { output } = await createReplicant2(
+          'helloworld-to-hithere-recipe.json'
+        )
 
         expect(output).toContain('Replication process completed')
       })
 
       test('Should include all expected files in the source file tree', async () => {
-        const {templateFiles} = await createReplicant2('helloworld-to-hithere-recipe.json')
+        const { templateFiles } = await createReplicant2(
+          'helloworld-to-hithere-recipe.json'
+        )
 
         expect(templateFiles.length).toEqual(3)
       })
 
       test('Should use virtual path structure separated by hyphen', async () => {
-        const {templateFiles} = await createReplicant2('helloworld-to-hithere-recipe.json')
+        const { templateFiles } = await createReplicant2(
+          'helloworld-to-hithere-recipe.json'
+        )
 
         // Hello
         // --There
@@ -85,13 +91,17 @@ describe('CLI tests', () => {
       })
 
       test('Should ignore files marked as to be ignored', async () => {
-        const {templateFiles} = await createReplicant2('helloworld-to-hithere-recipe.json')
+        const { templateFiles } = await createReplicant2(
+          'helloworld-to-hithere-recipe.json'
+        )
 
         expect(templateFiles).not.toContain('Bye-Guys.js.ejs.t')
       })
 
       test('Should calculate the destiny path at root of the new project, applying file name replacements', async () => {
-        const {recipe} = await createReplicant2('helloworld-to-hithere-recipe.json')
+        const { recipe } = await createReplicant2(
+          'helloworld-to-hithere-recipe.json'
+        )
 
         const header1 = await readTemplateFileHeader(
           recipe,
@@ -107,7 +117,9 @@ describe('CLI tests', () => {
       })
 
       test('Should calculate the destiny path that restore original path structure, applying file name replacements', async () => {
-        const {recipe} = await createReplicant2('helloworld-to-hithere-recipe.json')
+        const { recipe } = await createReplicant2(
+          'helloworld-to-hithere-recipe.json'
+        )
 
         const header = await readTemplateFileHeader(
           recipe,
@@ -118,14 +130,16 @@ describe('CLI tests', () => {
       })
 
       test('Should apply all content replacements', async () => {
-        const {recipe} = await createReplicant2('helloworld-to-hithere-recipe.json')
+        const { recipe } = await createReplicant2(
+          'helloworld-to-hithere-recipe.json'
+        )
 
-        const content = await readTemplateFileContent(
+        const content = readTemplateFileContent(
           recipe,
           'HelloWorld.js.ejs.t'
         )
 
-        let lines = content.split('\n')
+        let lines = content.split('\n').map(x => x.trim())
         expect(lines[0]).toEqual("console.log('Hi My People')")
         expect(lines[1]).toEqual("console.log('Hi There!')")
         expect(lines[2]).toEqual("console.log('Just, hey world?')")
@@ -134,34 +148,37 @@ describe('CLI tests', () => {
     })
 
     describe('Replicant generation', () => {
-
       test('Should genereate files in root, with content properly replaced', async () => {
-        const {recipe} = await createReplicant2('helloworld-to-hithere-recipe.json')
+        const { recipe } = await createReplicant2(
+          'helloworld-to-hithere-recipe.json'
+        )
 
-        let content = await readReplicantFileContent(recipe, ['HiThere.js'])
+        let content = readReplicantFileContent(recipe, ['HiThere.js'])
 
-        let lines = content.split('\n')
+        let lines = content.split('\n').map(x => x.trim())
         expect(lines[0]).toEqual("console.log('Hi My People')")
-        expect(lines[1]).toEqual('console.log(\'"Hi There!"\')')
-        expect(lines[2]).toEqual('console.log(\'"Just, hey world?"\')')
+        expect(lines[1]).toEqual("console.log('Hi There!')")
+        expect(lines[2]).toEqual("console.log('Just, hey world?')")
         expect(lines[3]).toEqual("console.log('Name = SpecialHiThere')")
 
-        content = await readReplicantFileContent(recipe, ['Hi.There.Guys.js'])
+        content = readReplicantFileContent(recipe, ['Hi.There.Guys.js'])
 
-        lines = content.split('\n')
+        lines = content.split('\n').map(x => x.trim())
         expect(lines[0]).toEqual("console.log('Hi My People Guys')")
       })
 
       test('Should genereate nested files, with content properly replaced', async () => {
-        const {recipe} = await createReplicant2('helloworld-to-hithere-recipe.json')
+        const { recipe } = await createReplicant2(
+          'helloworld-to-hithere-recipe.json'
+        )
 
-        let content = await readReplicantFileContent(recipe, [
+        let content = readReplicantFileContent(recipe, [
           'Hi',
           'There',
           'There.js'
         ])
 
-        let lines = content.split('\n')
+        let lines = content.split('\n').map(x => x.trim())
         expect(lines[0]).toEqual("console.log('Hi My People')")
         expect(lines[1]).toEqual("console.log('HiThere...')")
       })
@@ -176,7 +193,10 @@ describe('CLI tests', () => {
     })
 
     test('Should copy the final project into the target directory', async () => {
-      const {recipe} = await createReplicant2('helloworld-to-hithere-recipe.json', `--target="${targetDirectory}"`)
+      const { recipe } = await createReplicant2(
+        'helloworld-to-hithere-recipe.json',
+        `--target="${targetDirectory}"`
+      )
 
       let targetedReplicantDir = filesystem.path(
         targetDirectory,

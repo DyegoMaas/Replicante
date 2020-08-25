@@ -9,14 +9,17 @@ class Replicator {
   }
 
   async processRecipeFiles(sampleDirectory) {
-    await this._processFilesInDirectoryRecursive(sampleDirectory, sampleDirectory)
+    await this._processFilesInDirectoryRecursive(
+      sampleDirectory,
+      sampleDirectory
+    )
   }
 
   async _processFilesInDirectoryRecursive(currentPath, rootPath) {
     console.log('Processing directory', currentPath)
 
     const files = fs.readdirSync(currentPath)
-    for(let i = 0; i < files.length; i = i + 1 ) {
+    for (let i = 0; i < files.length; i = i + 1) {
       const file = files[i]
       const fullPath = path.join(currentPath, file)
 
@@ -44,8 +47,8 @@ class Replicator {
     }
   }
 
-  async _toTemplate (src, dest, relativePath) {
-    const {copyFile} = this.toolbox
+  async _toTemplate(src, dest, relativePath) {
+    const { copyFile } = this.toolbox
     const fullPathSrc = path.resolve(src)
     const fullPathDest = path.resolve(`${dest}.ejs.t`)
     console.log(`Generating template from ${fullPathSrc} to ${fullPathDest}`)
@@ -62,11 +65,7 @@ class Replicator {
       targetPath,
       this.replicationRecipe.fileNameReplacements
     )
-    let frontmatter = [
-      '---',
-      `to: "{{ name }}/${targetPath}"`,
-      '---'
-    ]
+    let frontmatter = ['---', `to: "{{ name }}/${targetPath}"`, '---']
     await this._prepareFile(
       fullPathDest,
       frontmatter,
@@ -83,12 +82,8 @@ class Replicator {
   }
 
   // TODO rename to prepareFiles
-  async _prepareFile (
-    filePath,
-    metadataLines,
-    sourceCodeReplacements
-  ) {
-    const {readFile, writeFile, prependToFileAsync} = this.toolbox
+  async _prepareFile(filePath, metadataLines, sourceCodeReplacements) {
+    const { readFile, writeFile, prependToFileAsync } = this.toolbox
 
     // refactor to avoid three operations on the same file
     const originalContent = readFile(filePath)

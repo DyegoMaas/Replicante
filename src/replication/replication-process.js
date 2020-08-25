@@ -19,35 +19,21 @@ const buildRecipe = replicationInstructions => {
 }
 
 const generate = (options, toolbox) => {
-  const {readFile, writeFile, prints: {info}} = toolbox
-  const {template, target, view, directory} = options
+  const {
+    readFile,
+    writeFile,
+    prints: { info }
+  } = toolbox
+  const { template, target, view, directory } = options
 
   const templateContent = readFile(path.join(directory, template))
-  var output = mustache.render(templateContent, view);
+  var output = mustache.render(templateContent, view)
   info(output)
   writeFile(target, output)
 }
 
-const readTemplateFileHeader = async (filePath, toolbox) => {
-  const {readFile} = toolbox
-  await Promise.resolve()
-  // const readline = require('readline')
-  // const fs = require('fs')
-  // const fileStream = fs.createReadStream(filePath)
-  // const rl = readline.createInterface({
-  //   input: fileStream,
-  //   crlfDelay: Infinity
-  // })
-
-  // let header = ''
-  // let dividerCount = 0
-  // for await (const line of rl) {
-  //   if (line.startsWith('---')) dividerCount++
-  //   else header += line + '\n'
-
-  //   if (dividerCount == 2) break
-  // }
-  // fileStream.close()
+const readTemplateFileHeader = (filePath, toolbox) => {
+  const { readFile } = toolbox
 
   const content = readFile(filePath)
   let parts = content.split('---')
@@ -60,12 +46,16 @@ const readTemplateFileHeader = async (filePath, toolbox) => {
 const generateReplicantFromTemplate2 = async (replicator, toolbox) => {
   const {
     listFiles,
-    stringCases: {lowerCase, upperCase, kebabCase},
-    prints: {info}
+    stringCases: { lowerCase, upperCase, kebabCase },
+    prints: { info }
   } = toolbox
 
   await Promise.resolve()
-  const { templateName, replicantName, templateDir } = replicator.replicationRecipe
+  const {
+    templateName,
+    replicantName,
+    templateDir
+  } = replicator.replicationRecipe
   info(`Replicating sample from ${templateName}. Generating ${replicantName}.`)
 
   const realTemplateDir = path.join(templateDir, 'new')
@@ -89,34 +79,35 @@ const generateReplicantFromTemplate2 = async (replicator, toolbox) => {
 
     // renders new template with header patched
     const partialFilePath = path.join(tempDir, fileName)
-    generate({
-      template: fileName,
-      target: partialFilePath,
-      view: view,
-      directory: realTemplateDir
-    }, toolbox)
-   // generate({
-    //   template: fileName,
-    //   target: partialFilePath,
-    //   view: view,
-    //   directory: realTemplateDir
-    // }, toolbox)
-    // renders final file
+    generate(
+      {
+        template: fileName,
+        target: partialFilePath,
+        view: view,
+        directory: realTemplateDir
+      },
+      toolbox
+    )
 
-    const {header} = await readTemplateFileHeader(partialFilePath, toolbox)
-    // // patching.replace(partialFilePath, originalText, '')
-    info(header)
-    // generate({
-    //   template: fileName,
-    //   target: header.to.replace(/"/g, ''),
-    //   view: view,
-    //   directory: tempDir
-    // }, toolbox)
+    const { header } = readTemplateFileHeader(partialFilePath, toolbox)
+    const newTarget = path.join(
+      resolveReplicantWorkDir(),
+      header.to.replace(/"/g, '')
+    )
+    generate(
+      {
+        template: fileName,
+        target: newTarget,
+        view: view,
+        directory: tempDir
+      },
+      toolbox
+    )
   }
 }
 
 const generateReplicant = async (replicationInstructions, toolbox) => {
-  const {resetDirectory, makeDirectory} = toolbox
+  const { resetDirectory, makeDirectory } = toolbox
 
   const recipe = buildRecipe(replicationInstructions)
   const replicator = new Replicator(recipe, toolbox)

@@ -54,21 +54,20 @@ const command: GluegunCommand = {
     }
 
     const gluegunCustomToolbox = () => {
-      const resetDirectory = (directory) => {
+      const resetDirectory = directory => {
         filesystem.remove(directory)
         makeDirectory(directory)
       }
 
-      const makeDirectory = (directory) => {
+      const makeDirectory = directory => {
         fs.mkdirSync(directory, { recursive: true })
       }
 
-      const listFiles = (directory) => {
+      const listFiles = directory => {
         let tree = filesystem.inspectTree(directory)
-        if (!tree.children)
-          return []
+        if (!tree.children) return []
         return tree.children
-          .filter(file => file.type == 'file')
+          .filter(file => file.type === 'file')
           .map(file => {
             return {
               type: file.type,
@@ -77,10 +76,9 @@ const command: GluegunCommand = {
           })
       }
 
-      const readFile = (filePath) => {
+      const readFile = filePath => {
         return filesystem.read(filePath)
       }
-
       const writeFile = (filePath, content) => {
         filesystem.write(filePath, content)
       }
@@ -92,15 +90,15 @@ const command: GluegunCommand = {
         makeDirectory(destDirectory)
 
         const x = filesystem.path(destDirectory, sourceBaseName)
-        filesystem.copy(src, x, {overwrite: true})
+        filesystem.copy(src, x, { overwrite: true })
 
-        if (sourceBaseName != destBaseName) {
+        if (sourceBaseName !== destBaseName) {
           filesystem.rename(x, destBaseName)
         }
       }
 
       const prependToFileAsync = async (filePath, contentToPrepend) => {
-        return await patching.prepend(filePath, contentToPrepend) // TODO await...
+        return patching.prepend(filePath, contentToPrepend)
       }
 
       return {
@@ -114,7 +112,7 @@ const command: GluegunCommand = {
         stringCases: {
           kebabCase: strings.kebabCase,
           lowerCase: strings.lowerCase,
-          upperCase: strings.upperCase,
+          upperCase: strings.upperCase
         },
         prints: { info, error, success }
       }
@@ -140,7 +138,7 @@ const command: GluegunCommand = {
 
       // TODO move operation into replication-process.js
       customToolbox.makeDirectory(fullTargetPath)
-      filesystem.copy(replicantDirectory, fullTargetPath, {overwrite: true})
+      filesystem.copy(replicantDirectory, fullTargetPath, { overwrite: true })
 
       resultDirectory = fullTargetPath
     }

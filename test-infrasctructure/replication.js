@@ -1,4 +1,4 @@
-// const { spawn, exec } = require('child_process') // TODO refactor to use spawn instead (less memory intensive)
+const { filesystem } = require('gluegun')
 const fs = require('fs')
 const path = require('path')
 const readline = require('readline')
@@ -50,37 +50,41 @@ const readTemplateFileHeader = async (recipe, fileName) => {
   return yaml.safeLoad(header)
 }
 
-const readTemplateFileContent = async (recipe, fileName/*, options*/) => {
-  const fileStream = fs.createReadStream(
-    `${resolveReplicantWorkDir()}/_templates/${
-      recipe.templateName
-    }/new/${fileName}`
-  )
-  const rl = readline.createInterface({
-    input: fileStream,
-    crlfDelay: Infinity
-  })
+const readTemplateFileContent = (recipe, fileName /*, options*/) => {
+  const filePath = `${resolveReplicantWorkDir()}/_templates/${
+    recipe.templateName
+  }/new/${fileName}`
+  const fullContent = filesystem.read(filePath)
+  const parts = fullContent.split('---\n')
+  const templateContent = parts[2]
+  return templateContent
 
-  let content = ''
-  let dividerCount = 0
-  let isFirstLineOfContent = true
-  for await (const line of rl) {
-    if (line.startsWith('---')) {
-      dividerCount++
-      continue
-    }
+  // const fileStream = fs.createReadStream(filePath)
+  // const rl = readline.createInterface({
+  //   input: fileStream,
+  //   crlfDelay: Infinity
+  // })
 
-    if (dividerCount == 2) {
-      let contentLine = line
-      // if (isFirstLineOfContent && options && options.ignoreVariables) {
-      //   contentLine = line.slice(line.indexOf('%>') + 2)
-      // }
-      content += contentLine + '\n'
-      isFirstLineOfContent = false
-    }
-  }
-  fileStream.close()
-  return content
+  // let content = ''
+  // let dividerCount = 0
+  // let isFirstLineOfContent = true
+  // for await (const line of rl) {
+  //   if (line.startsWith('---')) {
+  //     dividerCount++
+  //     continue
+  //   }
+
+  //   if (dividerCount == 2) {
+  //     let contentLine = line
+  //     // if (isFirstLineOfContent && options && options.ignoreVariables) {
+  //     //   contentLine = line.slice(line.indexOf('%>') + 2)
+  //     // }
+  //     content += contentLine + '\n'
+  //     isFirstLineOfContent = false
+  //   }
+  // }
+  // fileStream.close()
+  // return content
 }
 
 const deleteReplicantDirectory = () => {
@@ -92,29 +96,34 @@ const deleteReplicantDirectory = () => {
   }
 }
 
-const readReplicantFileContent = async (recipe, fileNameParts) => {
+const readReplicantFileContent = (recipe, fileNameParts) => {
   const targetFile = path.join(...fileNameParts)
   const filePath = path.join(
     resolveReplicantWorkDir(),
     recipe.replicantName,
     targetFile
   )
-  if (!fs.existsSync(filePath)) {
-    throw new Error(`Replicant file ${filePath} not found.`)
-  }
+  const fullContent = filesystem.read(filePath)
+  const parts = fullContent.split('---\n')
+  const templateContent = parts[2]
+  return templateContent
 
-  const fileStream = fs.createReadStream(filePath)
-  const rl = readline.createInterface({
-    input: fileStream,
-    crlfDelay: Infinity
-  })
+  // if (!fs.existsSync(filePath)) {
+  //   throw new Error(`Replicant file ${filePath} not found.`)
+  // }
 
-  let content = ''
-  for await (const line of rl) {
-    content += line + '\n'
-  }
-  fileStream.close()
-  return content
+  // const fileStream = fs.createReadStream(filePath)
+  // const rl = readline.createInterface({
+  //   input: fileStream,
+  //   crlfDelay: Infinity
+  // })
+
+  // let content = ''
+  // for await (const line of rl) {
+  //   content += line + '\n'
+  // }
+  // fileStream.close()
+  // return content
 }
 
 module.exports = {
