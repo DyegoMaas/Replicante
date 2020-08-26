@@ -1,9 +1,43 @@
 import { GluegunCommand, filesystem, strings } from 'gluegun'
 
+const printHelp = (toolbox) => {
+  const { print: { info, table } } = toolbox
+
+  const printInstructionLines = (instructions) => {
+    instructions.forEach(instructionLine => info(instructionLine))
+  }
+
+  printInstructionLines([
+    'You can run "replicante create <path-to-sample> <path-to-recipe> [options]" to create your replicant.',
+    '',
+    'These are the available options:'
+  ])
+
+  table([
+    ['Option', 'Description'],
+    ['--target', 'The directory where the Replicant should be created. Default value: <USER-HOME>/.replicante/<replicant-name>']
+  ], { format: 'markdown' })
+
+  printInstructionLines([
+    '',
+    'A quick glossary:',
+    '- sample: the project folder you want to replicate, with some adjustments',
+    '- recipe: contains instructions on which terms from recipe files to replace by new terms',
+    '- replicant: the resulting project, with all terms defined in the recipe replaced',
+    '',
+    'Some common use cases  you may find "replicante" useful for:',
+    '- Replacing import paths in Python or Javascript projects',
+    '- Ajusting C# namespaces or Java packages',
+    '- Replacing the project name, that repeats itself in many ways in configuration files',
+    '',
+    'For more information on how to use "replicante", visit: https://github.com/DyegoMaas/Replicante'
+  ])
+}
+
 const command: GluegunCommand = {
   name: 'create',
   description:
-    'Create a REPLICANT by applying the Recipe instructions to the Sample',
+    'Create a REPLICANT by applying the RECIPE instructions to the SAMPLE',
   run: async toolbox => {
     const fs = require('fs')
     const path = require('path')
@@ -15,19 +49,7 @@ const command: GluegunCommand = {
     } = toolbox
 
     if (parameters.options.help) {
-      const avaiableOptions = [
-        {
-          name: 'target',
-          description:
-            'The directory where the Replicant should be created. ' +
-            'Default value: <USER-HOME>/.replicante/<replicant-name>'
-        }
-      ]
-      info('Avaiable options:')
-      avaiableOptions.forEach(option => {
-        const { name, description } = option
-        info(`  --${name}\t${description}`)
-      })
+      printHelp(toolbox)
       return
     }
 
@@ -38,7 +60,7 @@ const command: GluegunCommand = {
       info(
         'Try "replicante create <path-to-sample> <path-to-recipe> [options]"'
       )
-      info('To see avaialbe options, try "replicante create --help"')
+      info('To see available options, try "replicante create --help"')
       return
     }
 
