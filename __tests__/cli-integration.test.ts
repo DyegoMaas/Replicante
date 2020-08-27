@@ -42,9 +42,9 @@ describe('CLI tests', () => {
     })
   })
 
-  const createReplicant = async (fixtureRecipeToUse, options?) => {
+  const createReplicant = async (sampleDirectory, fixtureRecipeToUse, options?) => {
     const samplePath = filesystem.resolve(
-      './test-infrasctructure/fixtures/hello-world'
+      `./test-infrasctructure/fixtures/${sampleDirectory}`
     )
     const recipeFilePath = filesystem.resolve(
       `./test-infrasctructure/fixtures/${fixtureRecipeToUse}`
@@ -63,9 +63,12 @@ describe('CLI tests', () => {
   }
 
   describe('Replication process', () => {
+
     describe('Intermediate template generation', () => {
+
       test('It should complete the replication without errors, showing the result path', async () => {
         const { output } = await createReplicant(
+          'hello-world',
           'helloworld-to-hithere-recipe.json'
         )
 
@@ -74,6 +77,7 @@ describe('CLI tests', () => {
 
       test('Should include all expected files in the source file tree', async () => {
         const { templateFiles } = await createReplicant(
+          'hello-world',
           'helloworld-to-hithere-recipe.json'
         )
 
@@ -82,6 +86,7 @@ describe('CLI tests', () => {
 
       test('Should use virtual path structure separated by hyphen', async () => {
         const { templateFiles } = await createReplicant(
+          'hello-world',
           'helloworld-to-hithere-recipe.json'
         )
 
@@ -94,6 +99,7 @@ describe('CLI tests', () => {
 
       test('Should ignore files marked as to be ignored', async () => {
         const { templateFiles } = await createReplicant(
+          'hello-world',
           'helloworld-to-hithere-recipe.json'
         )
 
@@ -102,6 +108,7 @@ describe('CLI tests', () => {
 
       test('Should calculate the destiny path at root of the new project, applying file name replacements', async () => {
         const { recipe } = await createReplicant(
+          'hello-world',
           'helloworld-to-hithere-recipe.json'
         )
 
@@ -114,12 +121,13 @@ describe('CLI tests', () => {
           'Hello.World.Guys.js.ejs.t'
         )
 
-        expect(header1.to).toEqual('{{ name }}/HiThere.js')
-        expect(header2.to).toEqual('{{ name }}/Hi.There.Guys.js')
+        expect(header1.to).toEqual('<<: name :>>/HiThere.js')
+        expect(header2.to).toEqual('<<: name :>>/Hi.There.Guys.js')
       })
 
       test('Should calculate the destiny path that restore original path structure, applying file name replacements', async () => {
         const { recipe } = await createReplicant(
+          'hello-world',
           'helloworld-to-hithere-recipe.json'
         )
 
@@ -128,11 +136,12 @@ describe('CLI tests', () => {
           'Hello-There-World.js.ejs.t'
         )
 
-        expect(header.to).toEqual('{{ name }}/Hi/There/There.js')
+        expect(header.to).toEqual('<<: name :>>/Hi/There/There.js')
       })
 
       test('Should apply all content replacements', async () => {
         const { recipe } = await createReplicant(
+          'hello-world',
           'helloworld-to-hithere-recipe.json'
         )
 
@@ -142,7 +151,7 @@ describe('CLI tests', () => {
         expect(lines[0]).toEqual("console.log('Hi My People')")
         expect(lines[1]).toEqual("console.log('Hi There!')")
         expect(lines[2]).toEqual("console.log('Just, hey world?')")
-        expect(lines[3]).toEqual("console.log('Name = Special{{ name }}')")
+        expect(lines[3]).toEqual("console.log('Name = Special<<: name :>>')")
       })
     })
 
@@ -150,6 +159,7 @@ describe('CLI tests', () => {
 
       test('Should genereate files in root, with content properly replaced', async () => {
         const { recipe } = await createReplicant(
+          'hello-world',
           'helloworld-to-hithere-recipe.json'
         )
 
@@ -169,6 +179,7 @@ describe('CLI tests', () => {
 
       test('Should genereate nested files, with content properly replaced', async () => {
         const { recipe } = await createReplicant(
+          'hello-world',
           'helloworld-to-hithere-recipe.json'
         )
 
@@ -194,6 +205,7 @@ describe('CLI tests', () => {
 
     test('Should copy the final project into the target directory', async () => {
       const { recipe } = await createReplicant(
+        'hello-world',
         'helloworld-to-hithere-recipe.json',
         `--target="${targetDirectory}"`
       )
@@ -211,6 +223,26 @@ describe('CLI tests', () => {
 
       const filesAndFolders = fileTree.children.map(child => child.name)
       expect(filesAndFolders).toEqual(['Hi', 'Hi.There.Guys.js', 'HiThere.js'])
+    })
+  })
+
+  describe('Handling template files in samples should not cause inception problems', () => {
+
+    test('Should copy the final project into the target directory', async () => {
+      const { recipe } = await createReplicant(
+        'template-inception',
+        'template-incepction-recipe.json'
+      )
+
+      let content = readReplicantFileContent(recipe, ['template-big-mustache.t'])
+
+      let lines = content.split('\n').map(x => x.trimEnd())
+      expect(lines[0]).toEqual("This is a {{ adjective }} file inception;")
+      expect(lines[1]).toEqual("")
+      expect(lines[2]).toEqual("Some compliments for you:")
+      expect(lines[3]).toEqual("{{#compliments}}")
+      expect(lines[4]).toEqual(" - The compliment is {{.}}")
+      expect(lines[5]).toEqual("{{/compliments}}")
     })
   })
 })

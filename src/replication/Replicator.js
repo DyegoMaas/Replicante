@@ -60,7 +60,7 @@ class Replicator {
       targetPath,
       this.replicationRecipe.fileNameReplacements
     )
-    let frontmatter = ['---', `to: "{{ name }}/${targetPath}"`, '---']
+    let frontmatter = ['---', `to: "<<: name :>>/${targetPath}"`, '---'] // TODO parameterize delimiters
     await this._prepareFile(
       fullPathDest,
       frontmatter,
@@ -89,8 +89,9 @@ class Replicator {
     writeFile(filePath, adjustedContent)
 
     let contentToPrepend = metadataLines
-      .map(line => {
-        return this._replaceTermsInText(line, sourceCodeReplacements) // why?
+      .map(line => { 
+        return line
+        // return this._replaceTermsInText(line, sourceCodeReplacements) // why?
       })
       .join('\n')
     await prependToFileAsync(filePath, `${contentToPrepend}\n`)

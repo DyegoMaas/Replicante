@@ -23,6 +23,8 @@ const generateFileFromTemplate = (options, toolbox) => {
   const { template, target, view, directory } = options
 
   const templateContent = readFile(path.join(directory, template))
+  mustache.tags = ['<<:', ':>>']
+  // TODO mustache.parse() ?
   var output = mustache.render(templateContent, view)
   writeFile(target, output)
 }
