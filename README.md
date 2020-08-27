@@ -16,20 +16,21 @@ All those details above, the things we want to change, need to be captured in a 
 
 ```javascript
 {
-  "replicantName": "NewProjectModel", // will replace {{ name }}
+  "replicantName": "NewProjectModel", // will replace <<: name :>>
   "templateName": "NexusModel", // temporary work directory
   "fileNameReplacements": [
-    { "from": "Sample", "to": "{{ name }}" } // Sample.Domain.Customer -> NewName.Domain.Customer
+    { "from": "Sample", "to": "<<: name :>>" } // Sample.Domain.Customer -> NewName.Domain.Customer
     // ... any other replacement your project needs
   ],
   "sourceCodeReplacements": [
-    { "from": "Sample", "to": "{{ name }}" }, // using Sample.Domain; -> using NewName.Domain;
-    { "from": "sample", "to": "{{ nameLowerCase }}" }, // return GetDatabase("sample"); -> return GetDatabase("newname");
-    { "from": "SAMPLE", "to": "{{ nameUpperCase }}" } // return "SAMPLE"; -> return "NEWNAME";
+    { "from": "Sample", "to": "<<: name :>>" }, // using Sample.Domain; -> using NewName.Domain;
+    { "from": "sample", "to": "<<: nameLowerCase :>>" }, // return GetDatabase("sample"); -> return GetDatabase("newname");
+    { "from": "SAMPLE", "to": "<<: nameUpperCase :>>" } // return "SAMPLE"; -> return "NEWNAME";
     { "from": "Some Term", "to": "New Hard Coded Term" } // return "Some Term"; -> return "New Hard Coded Term";
     // ... any other replacement your project needs
   ],
-  "ignoreArtifacts": [".git", ".idea", "bin", "obj", "somefile.dll"] // usually, binary directories
+  "ignoreArtifacts": [".git", ".idea", "bin", "obj", "somefile.dll"], // usually, binary directories
+  "customDelimiters": ["<<:", ":>>"] // [optional] you can customize the delimiter to avoid interference with template files in your sample apps
 }
 ```
 

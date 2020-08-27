@@ -1,6 +1,6 @@
 {
-  "replicantName": "HiThereWithTarget",
-  "templateName": "hi-there-generator-with-target",
+  "replicantName": "HiThere",
+  "templateName": "hi-there-generator",
   "fileNameReplacements": [
     { "from": "Hello", "to": "Hi" },
     { "from": "World", "to": "There" }
@@ -9,7 +9,8 @@
     { "from": "Hello", "to": "Hi" },
     { "from": "World", "to": "My People" },
     { "from": "hello", "to": "hey" },
-    { "from": "CodeName", "to": "<<: name :>>" }
+    { "from": "CodeName", "to": "<!!! name !!!>" }
   ],
-  "ignoreArtifacts": ["Bye", "Butterflies.js"]
+  "ignoreArtifacts": ["Bye", "Butterflies.js"],
+  "customDelimiters": ["<!!!", "!!!>"]
 }
