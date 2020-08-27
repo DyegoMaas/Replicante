@@ -60,7 +60,9 @@ class Replicator {
       targetPath,
       this.replicationRecipe.fileNameReplacements
     )
-    let frontmatter = ['---', `to: "<<: name :>>/${targetPath}"`, '---'] // TODO parameterize delimiters
+
+    let delimiters = this.replicationRecipe.delimiters
+    let frontmatter = ['---', `to: "${delimiters[0]} name ${delimiters[1]}/${targetPath}"`, '---']
     await this._prepareFile(
       fullPathDest,
       frontmatter,

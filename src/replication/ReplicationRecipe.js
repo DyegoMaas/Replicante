@@ -8,7 +8,8 @@ module.exports = class ReplicationRecipe {
     templateDir,
     fileNameReplacements,
     sourceCodeReplacements,
-    ignoreArtifacts
+    ignoreArtifacts,
+    delimiters
   ) {
     this.replicantName = replicantName
     this.templateName = templateName
@@ -16,6 +17,7 @@ module.exports = class ReplicationRecipe {
     this.fileNameReplacements = fileNameReplacements
     this.sourceCodeReplacements = sourceCodeReplacements
     this.ignoreArtifacts = ignoreArtifacts
+    this.delimiters = delimiters
   }
 
   static fromRecipeFile(recipeFilePath, replicantWorkDir) {
@@ -28,7 +30,8 @@ module.exports = class ReplicationRecipe {
       path.join(replicantWorkDir, '_templates', data.templateName),
       data.fileNameReplacements,
       data.sourceCodeReplacements,
-      data.ignoreArtifacts
+      data.ignoreArtifacts,
+      data.delimiters = data.customDelimiters || ['<<:', ':>>'] // TODO validate delimiters
     )
   }
 }

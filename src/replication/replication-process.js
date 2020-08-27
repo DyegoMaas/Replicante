@@ -19,11 +19,11 @@ const buildRecipe = replicationInstructions => {
 }
 
 const generateFileFromTemplate = (options, toolbox) => {
-  const {readFile, writeFile} = toolbox
-  const { template, target, view, directory } = options
+  const { readFile, writeFile } = toolbox
+  const { template, target, view, directory, delimiters } = options
 
   const templateContent = readFile(path.join(directory, template))
-  mustache.tags = ['<<:', ':>>']
+  mustache.tags = delimiters
   // TODO mustache.parse() ?
   var output = mustache.render(templateContent, view)
   writeFile(target, output)
@@ -52,7 +52,8 @@ const generateReplicantFromTemplate2 = async (replicator, toolbox) => {
   const {
     templateName,
     replicantName,
-    templateDir
+    templateDir,
+    delimiters
   } = replicator.replicationRecipe
   info(`Replicating sample from ${templateName}. Generating ${replicantName}.`)
 
@@ -80,7 +81,8 @@ const generateReplicantFromTemplate2 = async (replicator, toolbox) => {
         template: fileName,
         target: partialFilePath,
         view: view,
-        directory: realTemplateDir
+        directory: realTemplateDir,
+        delimiters: delimiters
       },
       toolbox
     )

@@ -226,6 +226,24 @@ describe('CLI tests', () => {
     })
   })
 
+  describe('Custom delimiter configuration', () => {
+
+    test('Should use the custom delimiter from the recipeto avoid template inception, if informed', async () => {
+      const { recipe } = await createReplicant(
+        'hello-world',
+        'helloworld-to-hithere-recipe-with-custom-delimiter.json'
+      )
+
+      let content = readTemplateFileContent(recipe, 'HelloWorld.js.ejs.t')
+      let lines = content.split('\n').map(x => x.trim())
+      expect(lines[3]).toEqual("console.log('Name = Special<!!! name !!!>')")
+
+      content = readReplicantFileContent(recipe, ['HiThere.js'])
+      lines = content.split('\n').map(x => x.trim())
+      expect(lines[3]).toEqual("console.log('Name = SpecialHiThere')")
+    })
+  })
+
   describe('Handling template files in samples should not cause inception problems', () => {
 
     test('Should copy the final project into the target directory', async () => {
