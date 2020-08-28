@@ -145,28 +145,34 @@ const command: GluegunCommand = {
       sampleDirectory: sample,
       replicationRecipeFile: recipe
     }
-    const { recipeUsed, replicantDirectory } = await generateReplicant(
-      replicationInstructions,
-      customToolbox
-    )
 
-    let resultDirectory = replicantDirectory
-    if (parameters.options.target) {
-      const fullTargetPath = filesystem.path(
-        parameters.options.target,
-        recipeUsed.replicantName
+    try {
+      const { recipeUsed, replicantDirectory } = await generateReplicant(
+        replicationInstructions,
+        customToolbox
       )
 
-      // TODO move operation into replication-process.js
-      customToolbox.makeDirectory(fullTargetPath)
-      filesystem.copy(replicantDirectory, fullTargetPath, { overwrite: true })
+      let resultDirectory = replicantDirectory
+      if (parameters.options.target) {
+        const fullTargetPath = filesystem.path(
+          parameters.options.target,
+          recipeUsed.replicantName
+        )
 
-      resultDirectory = fullTargetPath
+        // TODO move operation into replication-process.js
+        customToolbox.makeDirectory(fullTargetPath)
+        filesystem.copy(replicantDirectory, fullTargetPath, { overwrite: true })
+
+        resultDirectory = fullTargetPath
+      }
+
+      success(
+        `Replication process completed. Replicant created at ${resultDirectory}`
+      )
+    } catch (err) {
+      error('An error has ocurred:')
+      error(err)
     }
-
-    success(
-      `Replication process completed. Replicant created at ${resultDirectory}`
-    )
   }
 }
 

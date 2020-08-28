@@ -9,10 +9,18 @@ const resolveReplicantWorkDir = () => {
   return path.join(homedir(), '.replicante').replace(/\\/g, '/')
 }
 
-const buildRecipe = replicationInstructions => {
+const buildRecipe = (replicationInstructions, toolbox) => {
   const { replicationRecipeFile } = replicationInstructions
-  const recipe = ReplicationRecipe.fromRecipeFile(
-    replicationRecipeFile,
+  const { readFile } = toolbox
+
+  let rawData = readFile(replicationRecipeFile)
+  let data = JSON.parse(rawData)
+
+  if (data.customDelimiters && data.customDelimiters.length !== 2)
+    throw new Error('Custom delimiters should have length of 2. Example: [\'{{\', \'}}\']')
+
+  const recipe = ReplicationRecipe.fromRecipeJson(
+    data,
     resolveReplicantWorkDir()
   )
   return recipe
@@ -20,11 +28,9 @@ const buildRecipe = replicationInstructions => {
 
 const generateFileFromTemplate = (options, toolbox) => {
   const { readFile, writeFile } = toolbox
-  const { template, target, view, directory, delimiters } = options
+  const { template, target, view, directory } = options
 
   const templateContent = readFile(path.join(directory, template))
-  mustache.tags = delimiters
-  // TODO mustache.parse() ?
   var output = mustache.render(templateContent, view)
   writeFile(target, output)
 }
@@ -40,15 +46,14 @@ const decomposeTemplateFile = (filePath, toolbox) => {
   }
 }
 
-const generateReplicantFromTemplate2 = async (replicator, toolbox) => {
+const generateReplicantFromTemplate = (replicator, toolbox) => {
   const {
     writeFile,
     listFiles,
-    stringCases: { lowerCase, upperCase, kebabCase },
+    stringCases: { lowerCase, kebabCase },
     prints: { info }
   } = toolbox
 
-  await Promise.resolve()
   const {
     templateName,
     replicantName,
@@ -58,7 +63,6 @@ const generateReplicantFromTemplate2 = async (replicator, toolbox) => {
   info(`Replicating sample from ${templateName}. Generating ${replicantName}.`)
 
   const realTemplateDir = path.join(templateDir, 'new')
-  info(realTemplateDir)
   const fileList = listFiles(realTemplateDir)
   const templateFiles = fileList.map(child => child.name)
 
@@ -69,6 +73,8 @@ const generateReplicantFromTemplate2 = async (replicator, toolbox) => {
     nameLowerDasherized: kebabCase(lowerCase(replicantName)),
     nameUpperDasherized: kebabCase(lowerCase(replicantName)).toUpperCase(),
   }
+
+  mustache.tags = delimiters
   const tempDir = path.join(templateDir, '_temp')
   for (let i = 0; i < templateFiles.length; i++) {
     const fileName = templateFiles[i]
@@ -80,8 +86,7 @@ const generateReplicantFromTemplate2 = async (replicator, toolbox) => {
         template: fileName,
         target: partialFilePath,
         view: view,
-        directory: realTemplateDir,
-        delimiters: delimiters
+        directory: realTemplateDir
       },
       toolbox
     )
@@ -98,7 +103,7 @@ const generateReplicantFromTemplate2 = async (replicator, toolbox) => {
 const generateReplicant = async (replicationInstructions, toolbox) => {
   const { resetDirectory, makeDirectory } = toolbox
 
-  const recipe = buildRecipe(replicationInstructions)
+  const recipe = buildRecipe(replicationInstructions, toolbox)
   const replicator = new Replicator(recipe, toolbox)
 
   resetDirectory(replicator.replicationDirectory)
@@ -109,7 +114,7 @@ const generateReplicant = async (replicationInstructions, toolbox) => {
   const { sampleDirectory } = replicationInstructions
   await replicator.processRecipeFiles(sampleDirectory)
 
-  await generateReplicantFromTemplate2(replicator, toolbox)
+  generateReplicantFromTemplate(replicator, toolbox)
 
   return {
     recipeUsed: recipe,

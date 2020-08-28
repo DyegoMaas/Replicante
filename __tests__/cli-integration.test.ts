@@ -258,6 +258,16 @@ describe('CLI tests', () => {
       lines = content.split('\n').map(x => x.trim())
       expect(lines[3]).toEqual("console.log('Name = SpecialHiThere')")
     })
+
+    test('Should warn use that custom delimiters must be of length two', async () => {
+      const { output } = await createReplicant(
+        'hello-world',
+        'helloworld-to-hithere-recipe-with-invalid-delimiter.json'
+      )
+     
+      expect(output).toContain("An error has ocurred")
+      expect(output).toContain("Custom delimiters should have length of 2")
+    })
   })
 
   describe('Handling template files in samples should not cause inception problems', () => {

@@ -14,9 +14,10 @@ const loadRecipe = recipe => {
 }
 
 const readTemplateForRecipe = recipe => {
-  return fs.readdirSync(
-    `${resolveReplicantWorkDir()}/_templates/${recipe.templateName}/new`
-  )
+  const templatePath = `${resolveReplicantWorkDir()}/_templates/${recipe.templateName}/new`
+  if (fs.existsSync(templatePath))
+    return fs.readdirSync(templatePath)
+  return ''
 }
 
 const readTemplateFileHeader = async (recipe, fileName) => {

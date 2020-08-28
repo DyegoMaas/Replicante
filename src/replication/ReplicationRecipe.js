@@ -1,4 +1,3 @@
-const fs = require('fs')
 const path = require('path')
 
 module.exports = class ReplicationRecipe {
@@ -20,18 +19,15 @@ module.exports = class ReplicationRecipe {
     this.delimiters = delimiters
   }
 
-  static fromRecipeFile(recipeFilePath, replicantWorkDir) {
-    let rawData = fs.readFileSync(recipeFilePath)
-    let data = JSON.parse(rawData)
-
+  static fromRecipeJson(data, replicantWorkDir) {
     return new ReplicationRecipe(
       data.replicantName,
       data.templateName,
       path.join(replicantWorkDir, '_templates', data.templateName),
       data.fileNameReplacements,
       data.sourceCodeReplacements,
-      data.ignoreArtifacts,
-      data.delimiters = data.customDelimiters || ['<<:', ':>>'] // TODO validate delimiters
+      data.ignoreArtifacts || [],
+      data.delimiters = data.customDelimiters || ['<<:', ':>>']
     )
   }
 }
