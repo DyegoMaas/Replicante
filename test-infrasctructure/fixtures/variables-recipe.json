@@ -8,6 +8,5 @@
     { "from": "SOMENAME", "to": "<<: nameUpperCase :>>" },
     { "from": "some-name", "to": "<<: nameLowerDasherized :>>" },
     { "from": "SOME-NAME", "to": "<<: nameUpperDasherized :>>" }
-  ],
-  "ignoreArtifacts": []
+  ]
 }

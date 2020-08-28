@@ -7,6 +7,5 @@
   "sourceCodeReplacements": [
     { "from": "template", "to": "file <<: nameLowerCase :>>" },
     { "from": "insult", "to": "compliment" }    
-  ],
-  "ignoreArtifacts": []
+  ]
 }
