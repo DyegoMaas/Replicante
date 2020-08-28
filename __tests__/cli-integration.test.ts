@@ -28,7 +28,7 @@ describe('CLI tests', () => {
   })
 
   describe('Versioning', () => {
-    const expectedVersion = '0.8.0'
+    const expectedVersion = '0.9.0'
 
     test('It should output version', async () => {
       const output = await cli('--version')
