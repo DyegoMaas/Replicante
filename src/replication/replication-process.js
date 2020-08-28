@@ -64,13 +64,12 @@ const generateReplicantFromTemplate2 = async (replicator, toolbox) => {
 
   const view = {
     name: replicantName,
-    nameUpperCase: upperCase(replicantName),
-    nameLowerCase: lowerCase(replicantName),
-    nameLowerDasherized: lowerCase(kebabCase(replicantName))
+    nameUpperCase: replicantName.toUpperCase(),
+    nameLowerCase: replicantName.toLowerCase(),
+    nameLowerDasherized: kebabCase(lowerCase(replicantName)),
+    nameUpperDasherized: kebabCase(lowerCase(replicantName)).toUpperCase(),
   }
-
   const tempDir = path.join(templateDir, '_temp')
-  info(templateFiles)
   for (let i = 0; i < templateFiles.length; i++) {
     const fileName = templateFiles[i]
 

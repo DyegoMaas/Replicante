@@ -1,0 +1,13 @@
+{
+  "replicantName": "TheTitanic",
+  "templateName": "the-titanic-generator",
+  "fileNameReplacements": [],
+  "sourceCodeReplacements": [
+    { "from": "SomeName", "to": "<<: name :>>" },
+    { "from": "somename", "to": "<<: nameLowerCase :>>" },
+    { "from": "SOMENAME", "to": "<<: nameUpperCase :>>" },
+    { "from": "some-name", "to": "<<: nameLowerDasherized :>>" },
+    { "from": "SOME-NAME", "to": "<<: nameUpperDasherized :>>" }
+  ],
+  "ignoreArtifacts": []
+}

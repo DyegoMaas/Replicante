@@ -1,0 +1,5 @@
+console.log('SomeName')
+console.log('somename')
+console.log('SOMENAME')
+console.log('some-name')
+console.log('SOME-NAME')

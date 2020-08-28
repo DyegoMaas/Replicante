@@ -193,6 +193,22 @@ describe('CLI tests', () => {
         expect(lines[0]).toEqual("console.log('Hi My People')")
         expect(lines[1]).toEqual("console.log('HiThere...')")
       })
+      
+      test('Should replace all default variables', async () => {
+        const { recipe } = await createReplicant(
+          'variables',
+          'variables-recipe.json'
+        )
+
+        let content = readReplicantFileContent(recipe, ['all-the-variables.js'])
+
+        let lines = content.split('\n').map(x => x.trim())
+        expect(lines[0]).toEqual("console.log('TheTitanic')")
+        expect(lines[1]).toEqual("console.log('thetitanic')")
+        expect(lines[2]).toEqual("console.log('THETITANIC')")
+        expect(lines[3]).toEqual("console.log('the-titanic')")
+        expect(lines[4]).toEqual("console.log('THE-TITANIC')")
+      })
     })
   })
 
@@ -249,7 +265,7 @@ describe('CLI tests', () => {
     test('Should copy the final project into the target directory', async () => {
       const { recipe } = await createReplicant(
         'template-inception',
-        'template-incepction-recipe.json'
+        'template-inception-recipe.json'
       )
 
       let content = readReplicantFileContent(recipe, ['template-big-mustache.t'])
