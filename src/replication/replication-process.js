@@ -17,7 +17,9 @@ const buildRecipe = (replicationInstructions, toolbox) => {
   let data = JSON.parse(rawData)
 
   if (data.customDelimiters && data.customDelimiters.length !== 2)
-    throw new Error('Custom delimiters should have length of 2. Example: [\'{{\', \'}}\']')
+    throw new Error(
+      "Custom delimiters should have length of 2. Example: ['{{', '}}']"
+    )
 
   const recipe = ReplicationRecipe.fromRecipeJson(
     data,
@@ -71,7 +73,7 @@ const generateReplicantFromTemplate = (replicator, toolbox) => {
     nameUpperCase: replicantName.toUpperCase(),
     nameLowerCase: replicantName.toLowerCase(),
     nameLowerDasherized: kebabCase(lowerCase(replicantName)),
-    nameUpperDasherized: kebabCase(lowerCase(replicantName)).toUpperCase(),
+    nameUpperDasherized: kebabCase(lowerCase(replicantName)).toUpperCase()
   }
 
   mustache.tags = delimiters

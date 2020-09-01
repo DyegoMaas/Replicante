@@ -9,15 +9,42 @@ const {
 } = require('../src/replication/replication-process')
 
 const loadRecipe = recipe => {
-  let rawData = fs.readFileSync(recipe)
-  return JSON.parse(rawData)
+  const rawData = fs.readFileSync(recipe)
+  let recipeJson = JSON.parse(rawData)
+
+  if (recipeJson.templateName === undefined) {
+    // this transformation relies on the fact that default template name is {replicanteName_timestamp}
+    const candidates = fs.readdirSync(`${resolveReplicantWorkDir()}/_templates`, { withFileTypes: true })
+        .filter(dir => dir.isDirectory())
+        .map(dir => path.basename(dir.name))
+        .filter(dir => dir.startsWith(recipeJson.replicantName))
+        .sort()
+        .reverse()
+    if (candidates) {
+      recipeJson.templateName = path.basename(candidates[0])
+    }
+    else
+      throw new Error(`Template not found for replicante ${replicantName} with timestamped directory`)
+  }
+
+  return recipeJson
 }
 
 const readTemplateForRecipe = recipe => {
-  const templatePath = `${resolveReplicantWorkDir()}/_templates/${recipe.templateName}/new`
+  const templatePath = `${resolveReplicantWorkDir()}/_templates/${
+    recipe.templateName
+  }/new`
+
   if (fs.existsSync(templatePath))
     return fs.readdirSync(templatePath)
   return ''
+}
+
+const templateFileExists =  (recipe, fileName) => {
+  const filePath = `${resolveReplicantWorkDir()}/_templates/${
+    recipe.templateName
+  }/new/${fileName}`
+  return filesystem.exists(filePath)
 }
 
 const readTemplateFileHeader = async (recipe, fileName) => {
@@ -81,6 +108,7 @@ module.exports = {
   readTemplateForRecipe: readTemplateForRecipe,
   readTemplateFileHeader: readTemplateFileHeader,
   readTemplateFileContent: readTemplateFileContent,
+  templateFileExists: templateFileExists,
   deleteReplicantDirectory: deleteReplicantDirectory,
   readReplicantFileContent: readReplicantFileContent
 }

@@ -1,11 +1,9 @@
 {
   "replicantName": "Inception",
   "templateName": "inception-generator",
-  "fileNameReplacements": [
-    { "from": "mustache", "to": "big-mustache" }
-  ],
+  "fileNameReplacements": [{ "from": "mustache", "to": "big-mustache" }],
   "sourceCodeReplacements": [
     { "from": "template", "to": "file <<: nameLowerCase :>>" },
-    { "from": "insult", "to": "compliment" }    
+    { "from": "insult", "to": "compliment" }
   ]
 }

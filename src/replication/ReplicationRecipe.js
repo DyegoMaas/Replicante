@@ -20,14 +20,21 @@ module.exports = class ReplicationRecipe {
   }
 
   static fromRecipeJson(data, replicantWorkDir) {
+    const timestamp = new Date()
+      .toISOString()
+      .replace(/T/, '_')
+      .replace(/\..+/, '')
+      .replace(/:/g, '-')
+    const templateName = data.templateName || `${data.replicantName}_${timestamp}`
+
     return new ReplicationRecipe(
       data.replicantName,
-      data.templateName,
-      path.join(replicantWorkDir, '_templates', data.templateName),
+      templateName,
+      path.join(replicantWorkDir, '_templates', templateName),
       data.fileNameReplacements,
       data.sourceCodeReplacements,
       data.ignoreArtifacts || [],
-      data.delimiters = data.customDelimiters || ['<<:', ':>>']
+      data.customDelimiters || ['<<:', ':>>']
     )
   }
 }

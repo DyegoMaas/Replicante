@@ -1,9 +1,11 @@
 import { GluegunCommand, filesystem, strings } from 'gluegun'
 
-const printHelp = (toolbox) => {
-  const { print: { info, table } } = toolbox
+const printHelp = toolbox => {
+  const {
+    print: { info, table }
+  } = toolbox
 
-  const printInstructionLines = (instructions) => {
+  const printInstructionLines = instructions => {
     instructions.forEach(instructionLine => info(instructionLine))
   }
 
@@ -13,10 +15,16 @@ const printHelp = (toolbox) => {
     'These are the available options:'
   ])
 
-  table([
-    ['Option', 'Description'],
-    ['--target', 'The directory where the Replicant should be created. Default value: <USER-HOME>/.replicante/<replicant-name>']
-  ], { format: 'markdown' })
+  table(
+    [
+      ['Option', 'Description'],
+      [
+        '--target',
+        'The directory where the Replicant should be created. Default value: <USER-HOME>/.replicante/<replicant-name>'
+      ]
+    ],
+    { format: 'markdown' }
+  )
 
   printInstructionLines([
     '',
