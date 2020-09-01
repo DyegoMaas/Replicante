@@ -4,6 +4,7 @@ on:
     branches:
       - master
       - feature/*
+      - dependabot/*
 
 jobs:
   tests:
