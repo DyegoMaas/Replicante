@@ -1,41 +1,24 @@
-const {
+var {
   system,
   filesystem,
   print: { info }
 } = require('gluegun')
-const src = filesystem.path(__dirname, '..')
+var src = filesystem.path(__dirname, '..')
 
-const cli = async cmd =>
+var cli = async cmd =>
   system.run('node ' + filesystem.path(src, 'bin', 'replicante') + ` ${cmd}`)
 
-const {
-  loadRecipe,
-  readTemplateForRecipe,
-  readTemplateFileHeader,
-  readTemplateFileContent,
-  templateFileExists,
-  deleteReplicantDirectory,
-  readReplicantFileContent
-} = require('../test-infrasctructure/replication')
+describe('Versioning', () => {
+  const expectedVersion = '0.10.0'
 
-const {
-  generateReplicant,
-  resolveReplicantWorkDir
-} = require('../src/replication/replication-process')
+  test('It should output version', async () => {
+    const output = await cli('--version')
+    expect(output).toContain(expectedVersion)
+  })
 
-describe('CLI tests', () => {
-    describe('Versioning', () => {
-    const expectedVersion = '0.10.0'
-
-    test('It should output version', async () => {
-      const output = await cli('--version')
-      expect(output).toContain(expectedVersion)
-    })
-
-    test('It should output help', async () => {
-      // TODO improve this test
-      const output = await cli('--help')
-      expect(output).toContain(expectedVersion)
-    })
+  test('It should output help', async () => {
+    // TODO improve this test
+    const output = await cli('--help')
+    expect(output).toContain(expectedVersion)
   })
 })
