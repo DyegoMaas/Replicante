@@ -24,11 +24,7 @@ const {
 } = require('../src/replication/replication-process')
 
 describe('CLI tests', () => {
-  beforeAll(() => {
-    filesystem.remove(resolveReplicantWorkDir())
-  })
-
-  describe('Versioning', () => {
+    describe('Versioning', () => {
     const expectedVersion = '0.10.0'
 
     test('It should output version', async () => {
@@ -48,6 +44,8 @@ describe('CLI tests', () => {
     fixtureRecipeToUse,
     options?
   ) => {
+    await filesystem.removeAsync(resolveReplicantWorkDir())
+
     let samplePath = filesystem.resolve(
       `./test-infrasctructure/fixtures/${sampleDirectory}`
     )
