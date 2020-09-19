@@ -1,4 +1,4 @@
-const { filesystem } = require('gluegun')
+var { system, filesystem } = require('gluegun')
 const fs = require('fs')
 const path = require('path')
 const readline = require('readline')
@@ -8,7 +8,7 @@ const {
   resolveReplicantWorkDir
 } = require('../src/replication/replication-process')
 
-const loadRecipe = recipe => {
+let loadRecipe = recipe => {
   const rawData = fs.readFileSync(recipe)
   let recipeJson = JSON.parse(rawData)
 
@@ -24,7 +24,7 @@ const loadRecipe = recipe => {
       recipeJson.templateName = path.basename(candidates[0])
     }
     else
-      throw new Error(`Template not found for replicante ${replicantName} with timestamped directory`)
+      throw new Error(`Template not found for replicante ${recipeJson.replicantName} with timestamped directory`)
   }
 
   return recipeJson
@@ -103,12 +103,45 @@ const readReplicantFileContent = (recipe, fileNameParts) => {
   return filesystem.read(filePath)
 }
 
-module.exports = {
-  loadRecipe: loadRecipe,
-  readTemplateForRecipe: readTemplateForRecipe,
-  readTemplateFileHeader: readTemplateFileHeader,
-  readTemplateFileContent: readTemplateFileContent,
-  templateFileExists: templateFileExists,
-  deleteReplicantDirectory: deleteReplicantDirectory,
-  readReplicantFileContent: readReplicantFileContent
+
+let cli = cmd => {
+  let src = filesystem.path(__dirname, '..')
+  return system.run('node ' + filesystem.path(src, 'bin', 'replicante') + ` ${cmd}`)
+}
+
+let createReplicant = async (
+  sampleDirectory,
+  fixtureRecipeToUse,
+  options?
+) => {
+  await filesystem.removeAsync(resolveReplicantWorkDir())
+
+  let samplePath = filesystem.resolve(
+    `./test-infrasctructure/fixtures/${sampleDirectory}`
+  )
+  let recipeFilePath = filesystem.resolve(
+    `./test-infrasctructure/fixtures/${fixtureRecipeToUse}`
+  )
+  return await cli(`create ${samplePath} ${recipeFilePath} ${options}`).then(
+    cliOutput => {
+      const recipe = loadRecipe(recipeFilePath)
+      return {
+        recipe,
+        output: cliOutput,
+        templateFiles: readTemplateForRecipe(recipe)
+      }
+    }
+  )
+}
+
+export {
+  cli,
+  createReplicant,
+  loadRecipe,
+  readTemplateForRecipe,
+  readTemplateFileHeader,
+  readTemplateFileContent,
+  templateFileExists,
+  deleteReplicantDirectory,
+  readReplicantFileContent
 }

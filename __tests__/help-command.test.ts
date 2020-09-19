@@ -1,12 +1,4 @@
-var {
-  system,
-  filesystem,
-  print: { info }
-} = require('gluegun')
-var src = filesystem.path(__dirname, '..')
-
-var cli = async cmd =>
-  system.run('node ' + filesystem.path(src, 'bin', 'replicante') + ` ${cmd}`)
+let { cli } = require('../test-infrasctructure/replication')
 
 describe('Versioning', () => {
   const expectedVersion = '0.10.0'
