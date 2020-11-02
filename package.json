@@ -17,7 +17,7 @@
     "copy-replication-js": "cp -a ./src/replication ./build/",
     "build": "yarn format && yarn lint && yarn clean-build && yarn compile && yarn copy-templates && yarn copy-replication-js",
     "prepublishOnly": "yarn build",
-    "test": "jest",
+    "test": "jest --runInBand",
     "watch": "jest --watch",
     "snapupdate": "jest --updateSnapshot",
     "coverage": "jest --coverage"
