@@ -1,36 +1,9 @@
-
-// var cli = async cmd =>
-//   system.run('node ' + filesystem.path(src, 'bin', 'replicante') + ` ${cmd}`)
-
 import {
   createReplicant,
-  readReplicantFileContent
+  readReplicantFileContent,
+  readReplicantBinaryFile,
+  readSampleBinaryFile
 } from '../test-infrasctructure/replication'
-
-// var createReplicant = async (
-//   sampleDirectory,
-//   fixtureRecipeToUse,
-//   options?
-// ) => {
-//   await filesystem.removeAsync(resolveReplicantWorkDir())
-
-//   let samplePath = filesystem.resolve(
-//     `./test-infrasctructure/fixtures/${sampleDirectory}`
-//   )
-//   let recipeFilePath = filesystem.resolve(
-//     `./test-infrasctructure/fixtures/${fixtureRecipeToUse}`
-//   )
-//   return await cli(`create ${samplePath} ${recipeFilePath} ${options}`).then(
-//     cliOutput => {
-//       const recipe = loadRecipe(recipeFilePath)
-//       return {
-//         recipe,
-//         output: cliOutput,
-//         templateFiles: readTemplateForRecipe(recipe)
-//       }
-//     }
-//   )
-// }
 
 describe('Replicant generation', () => {
   test('Should genereate files in root, with content properly replaced', async () => {
@@ -84,5 +57,29 @@ describe('Replicant generation', () => {
     expect(lines[2]).toEqual("console.log('THETITANIC')")
     expect(lines[3]).toEqual("console.log('the-titanic')")
     expect(lines[4]).toEqual("console.log('THE-TITANIC')")
+  })
+
+  test('Should just copy the binary files', async () => {
+    const { recipe } = await createReplicant(
+      'project-with-binary-files',
+      'project-with-binary-files.json'
+    )
+
+    const shouldProcessTextFilesNormally = () => {
+      let content = readReplicantFileContent(recipe, ['DeckardStory.txt'])
+      
+      let lines = content.split('\n').map(x => x.trim())
+      expect(lines[0]).toEqual("This is the story of Replicant.")
+    }
+    shouldProcessTextFilesNormally()
+
+    const shouldJustCopyTheBinaryFile = (fileNameParts) => {
+      let content = readSampleBinaryFile(recipe, fileNameParts)
+      let contentTwo = readReplicantBinaryFile(recipe, fileNameParts)
+
+      expect(content).toBe(contentTwo)
+    }
+    shouldJustCopyTheBinaryFile(['project-with-binary-files', 'unicorn.jpg'])
+    shouldJustCopyTheBinaryFile(['project-with-binary-files', 'some-folder', 'deckard.jpg'])
   })
 })

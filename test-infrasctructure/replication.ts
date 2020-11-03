@@ -93,7 +93,7 @@ const deleteReplicantDirectory = () => {
   }
 }
 
-const readReplicantFileContent = (recipe, fileNameParts) => {
+const readReplicantFileContent = (recipe, fileNameParts) : string => {
   const targetFile = path.join(...fileNameParts)
   const filePath = path.join(
     resolveReplicantWorkDir(),
@@ -101,6 +101,27 @@ const readReplicantFileContent = (recipe, fileNameParts) => {
     targetFile
   )
   return filesystem.read(filePath)
+}
+
+const readSampleBinaryFile = (recipe, fileNameParts) : Buffer => {
+  const targetFile = path.join(...fileNameParts)
+  const filePath = path.join(
+    `test-infrasctructure`,
+    `fixtures`,
+    targetFile
+  )
+  const fullPath = path.resolve(filePath)
+  return fs.readFileSync(fullPath, { encoding:null })
+}
+
+const readReplicantBinaryFile = (recipe, fileNameParts) : Buffer => {
+  const targetFile = path.join(...fileNameParts)
+  const filePath = path.join(
+    resolveReplicantWorkDir(),
+    recipe.replicantName,
+    targetFile
+  )
+  return fs.readFileSync(filePath, { encoding:null })
 }
 
 
@@ -143,5 +164,7 @@ export {
   readTemplateFileContent,
   templateFileExists,
   deleteReplicantDirectory,
-  readReplicantFileContent
+  readReplicantFileContent,
+  readSampleBinaryFile,
+  readReplicantBinaryFile
 }
