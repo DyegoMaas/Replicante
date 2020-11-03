@@ -2,9 +2,6 @@ import {
   filesystem,
 } from 'gluegun'
   
-  // var cli = async cmd =>
-  //   system.run('node ' + filesystem.path(src, 'bin', 'replicante') + ` ${cmd}`)
-  
   import {
     createReplicant
   } from '../test-infrasctructure/replication'
@@ -13,31 +10,6 @@ import {
     resolveReplicantWorkDir
   } = require('../src/replication/replication-process')
   
-  // var createReplicant = async (
-  //   sampleDirectory,
-  //   fixtureRecipeToUse,
-  //   options?
-  // ) => {
-  //   await filesystem.removeAsync(resolveReplicantWorkDir())
-  
-  //   let samplePath = filesystem.resolve(
-  //     `./test-infrasctructure/fixtures/${sampleDirectory}`
-  //   )
-  //   let recipeFilePath = filesystem.resolve(
-  //     `./test-infrasctructure/fixtures/${fixtureRecipeToUse}`
-  //   )
-  //   return await cli(`create ${samplePath} ${recipeFilePath} ${options}`).then(
-  //     cliOutput => {
-  //       const recipe = loadRecipe(recipeFilePath)
-  //       return {
-  //         recipe,
-  //         output: cliOutput,
-  //         templateFiles: readTemplateForRecipe(recipe)
-  //       }
-  //     }
-  //   )
-  // }
-
 describe('Target option', () => {
   let targetDirectory = ''
 

@@ -1,7 +1,7 @@
 let { cli } = require('../test-infrasctructure/replication')
 
 describe('Versioning', () => {
-  const expectedVersion = '0.10.0'
+  const expectedVersion = '1.0.0'
 
   test('It should output version', async () => {
     const output = await cli('--version')
