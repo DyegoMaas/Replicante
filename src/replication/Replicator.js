@@ -8,8 +8,8 @@ class Replicator {
     this.replicationDirectory = path.join(replicationRecipe.templateDir, 'new') // TODO inject via constructor
     this.toolbox = toolbox
 
-    // const binaryFilesDescriptorPath = path.join(replicationRecipe.templateDir, 'files.json')
-    // this.pipelineData = PipelineData(binaryFilesDescriptorPath)
+    const binaryFilesDescriptorPath = path.join(replicationRecipe.templateDir, 'files.json')
+    this.pipelineData = new PipelineData(binaryFilesDescriptorPath, toolbox)
   }
 
   async processRecipeFiles(sampleDirectory) {
@@ -17,7 +17,8 @@ class Replicator {
       sampleDirectory,
       sampleDirectory
     )
-    // this.pipelineData.saveToDisk()
+    
+    this.pipelineData.saveToDisk()
   }
 
   async _processFilesInDirectoryRecursive(currentPath, rootPath) {
@@ -42,7 +43,7 @@ class Replicator {
         const destinationPath = path.join(this.replicationDirectory, virtualPath)
 
         if (this.toolbox.isBinaryFile(fullPath))
-          await this._justCopy(fullPath, destinationPath)
+          await this._justCopy(fullPath, destinationPath, relativePath)
         else
           await this._toTemplate(fullPath, destinationPath, relativePath)
     
@@ -120,15 +121,15 @@ class Replicator {
     await prependToFileAsync(filePath, `${contentToPrepend}\n`)
   }
 
-  async _justCopy(src, dest) {
+  async _justCopy(src, dest, relativePath) {
     const { copyFile } = this.toolbox
 
     const fullSourcePath = path.resolve(src)
     const fullDestinationPath = path.resolve(dest)
     copyFile(fullSourcePath, fullDestinationPath)
 
-    // const calculatedTargetPath = this._calculateTargetPath(relativePath)
-    // this.pipelineData.pushBinaryFile(fullDestinationPath, calculatedTargetPath)
+    const calculatedTargetPath = this._calculateTargetPath(relativePath)
+    this.pipelineData.pushBinaryFile(fullDestinationPath, calculatedTargetPath)
   }
 }
 

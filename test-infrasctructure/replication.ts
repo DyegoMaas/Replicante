@@ -121,7 +121,7 @@ const readReplicantBinaryFile = (recipe, fileNameParts) : Buffer => {
     recipe.replicantName,
     targetFile
   )
-  return fs.readFileSync(filePath, { encoding:null })
+  return fs.readFileSync(filePath, { encoding: null })
 }
 
 

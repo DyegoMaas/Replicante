@@ -53,7 +53,8 @@ const generateReplicantFromTemplate = (replicator, toolbox) => {
     writeFile,
     listFiles,
     stringCases: { lowerCase, kebabCase },
-    prints: { info }
+    prints: { info },
+    isBinaryFile
   } = toolbox
 
   const {
@@ -81,8 +82,12 @@ const generateReplicantFromTemplate = (replicator, toolbox) => {
   for (let i = 0; i < templateFiles.length; i++) {
     const fileName = templateFiles[i]
 
-    // renders new template with header patched
     const partialFilePath = path.join(tempDir, fileName)
+    if (isBinaryFile(path.join(realTemplateDir, fileName))) {
+      continue
+    } 
+
+    // renders new template with header patched
     generateFileFromTemplate(
       {
         template: fileName,
@@ -100,7 +105,24 @@ const generateReplicantFromTemplate = (replicator, toolbox) => {
     )
     writeFile(newTarget, content)
   }
+
+  const binaryFiles = replicator.pipelineData.loadFromDisk()
+  prepareAndCopyBinaryFiles(binaryFiles, view, toolbox)
 }
+
+const prepareAndCopyBinaryFiles = (binaryFiles, view, toolbox) => {
+  const { copyFile } = toolbox
+
+  for(let i = 0; i < binaryFiles.length; i++) {
+    const { from, to } = binaryFiles[i]
+   
+    var targetPath = path.join(
+      resolveReplicantWorkDir(),
+      mustache.render(to, view)
+    )
+    copyFile(from, targetPath)
+  }
+};
 
 const generateReplicant = async (replicationInstructions, toolbox) => {
   const { resetDirectory, makeDirectory } = toolbox

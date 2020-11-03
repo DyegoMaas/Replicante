@@ -74,12 +74,12 @@ describe('Replicant generation', () => {
     shouldProcessTextFilesNormally()
 
     const shouldJustCopyTheBinaryFile = (fileNameParts) => {
-      let content = readSampleBinaryFile(recipe, fileNameParts)
+      let content = readSampleBinaryFile(recipe, ['project-with-binary-files', ...fileNameParts])
       let contentTwo = readReplicantBinaryFile(recipe, fileNameParts)
 
-      expect(content).toBe(contentTwo)
+      expect(content).toEqual(contentTwo)
     }
-    shouldJustCopyTheBinaryFile(['project-with-binary-files', 'unicorn.jpg'])
-    shouldJustCopyTheBinaryFile(['project-with-binary-files', 'some-folder', 'deckard.jpg'])
+    shouldJustCopyTheBinaryFile(['unicorn.jpg'])
+    shouldJustCopyTheBinaryFile(['some-folder', 'deckard.jpg'])
   })
 })
