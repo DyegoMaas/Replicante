@@ -100,64 +100,64 @@ describe('Intermediate template generation', () => {
 describe('The template name is optional in the recipe', () => {
 
     test('If not informed, the template name will be the replicante name plus a timestamp', async () => {
-    const { recipe, } = await createReplicant(
-        'hello-world',
-        'helloworld-to-hithere-recipe-without-template-name.json'
-    )
+        const { recipe, } = await createReplicant(
+            'hello-world',
+            'helloworld-to-hithere-recipe-without-template-name.json'
+        )
 
-    const fileExists = templateFileExists(
-        recipe,
-        'HelloWorld.js.ejs.t'
-    )
+        const fileExists = templateFileExists(
+            recipe,
+            'HelloWorld.js.ejs.t'
+        )
 
-    expect(fileExists).toBeTruthy()
+        expect(fileExists).toBeTruthy()
     })
 })
 
 describe('Custom delimiter configuration', () => {
     test('Should use the custom delimiter from the recipeto avoid template inception, if informed', async () => {
-    const { recipe } = await createReplicant(
-        'hello-world',
-        'helloworld-to-hithere-recipe-with-custom-delimiter.json'
-    )
+        const { recipe } = await createReplicant(
+            'hello-world',
+            'helloworld-to-hithere-recipe-with-custom-delimiter.json'
+        )
 
-    let content = readTemplateFileContent(recipe, 'HelloWorld.js.ejs.t')
-    let lines = content.split('\n').map(x => x.trim())
-    expect(lines[3]).toEqual("console.log('Name = Special<!!! name !!!>')")
+        let content = readTemplateFileContent(recipe, 'HelloWorld.js.ejs.t')
+        let lines = content.split('\n').map(x => x.trim())
+        expect(lines[3]).toEqual("console.log('Name = Special<!!! name !!!>')")
 
-    content = readReplicantFileContent(recipe, ['HiThere.js'])
-    lines = content.split('\n').map(x => x.trim())
-    expect(lines[3]).toEqual("console.log('Name = SpecialHiThere')")
+        content = readReplicantFileContent(recipe, ['HiThere.js'])
+        lines = content.split('\n').map(x => x.trim())
+        expect(lines[3]).toEqual("console.log('Name = SpecialHiThere')")
     })
 
     test('Should warn use that custom delimiters must be of length two', async () => {
-    const { output } = await createReplicant(
-        'hello-world',
-        'helloworld-to-hithere-recipe-with-invalid-delimiter.json'
-    )
+        const { output } = await createReplicant(
+            'hello-world',
+            'helloworld-to-hithere-recipe-with-invalid-delimiter.json'
+        )
 
-    expect(output).toContain('An error has ocurred')
-    expect(output).toContain('Custom delimiters should have length of 2')
+        expect(output).toContain('An error has ocurred')
+        expect(output).toContain('Custom delimiters should have length of 2')
     })
 })
 
 describe('Handling template files in samples should not cause inception problems', () => {
     test('Should copy the final project into the target directory', async () => {
-    const { recipe } = await createReplicant(
-        'template-inception',
-        'template-inception-recipe.json'
-    )
+        const { recipe } = await createReplicant(
+            'template-inception',
+            'template-inception-recipe.json'
+        )
 
-    let content = readReplicantFileContent(recipe, [
-        'template-big-mustache.t'
-    ])
+        let content = readReplicantFileContent(recipe, [
+            'template-big-mustache.t'
+        ])
 
-    let lines = content.split('\n').map(x => x.trimRight())
-    expect(lines[0]).toEqual('This is a {{ adjective }} file inception;')
-    expect(lines[1]).toEqual('')
-    expect(lines[2]).toEqual('Some compliments for you:')
-    expect(lines[3]).toEqual('{{#compliments}}')
-    expect(lines[4]).toEqual(' - The compliment is {{.}}')
-    expect(lines[5]).toEqual('{{/compliments}}')
+        let lines = content.split('\n').map(x => x.trimRight())
+        expect(lines[0]).toEqual('This is a {{ adjective }} file inception;')
+        expect(lines[1]).toEqual('')
+        expect(lines[2]).toEqual('Some compliments for you:')
+        expect(lines[3]).toEqual('{{#compliments}}')
+        expect(lines[4]).toEqual(' - The compliment is {{.}}')
+        expect(lines[5]).toEqual('{{/compliments}}')
     })
 })
