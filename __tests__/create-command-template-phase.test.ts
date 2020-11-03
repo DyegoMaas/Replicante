@@ -152,7 +152,7 @@ describe('Handling template files in samples should not cause inception problems
         'template-big-mustache.t'
     ])
 
-    let lines = content.split('\n').map(x => x.trimEnd())
+    let lines = content.split('\n').map(x => x.trimRight())
     expect(lines[0]).toEqual('This is a {{ adjective }} file inception;')
     expect(lines[1]).toEqual('')
     expect(lines[2]).toEqual('Some compliments for you:')
