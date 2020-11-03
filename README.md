@@ -45,12 +45,6 @@ After performing these two steps, you should have a new project, completely oper
 
 ![Replication workflow](/docs/img/workflow.jpg)
 
-### Limitations
-
-Currently, Replicante does not support replication of samples containing binary files. So, directories containing binary files, such as images, should be excluded via the parameter `ignoreDirectories` in the recipe file.
-
-This limitation should be cared about in future releases.
-
 ## Roadmap
 
 Our roadmap is publicly avaiable in a [Trello board](https://trello.com/b/T9khQD2v/replicant-roadmap). Feel free to comment and suggest new features.
