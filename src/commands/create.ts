@@ -49,6 +49,7 @@ const command: GluegunCommand = {
   run: async toolbox => {
     const fs = require('fs')
     const path = require('path')
+    const { isBinary } = require('istextorbinary')
     const { generateReplicant } = require('../replication/replication-process')
     const {
       parameters,
@@ -130,6 +131,12 @@ const command: GluegunCommand = {
         return patching.prepend(filePath, contentToPrepend)
       }
 
+      const isBinaryFile = (fullPath) => {
+        const fileName = path.basename(fullPath)
+        const buffer = fs.readFileSync(fullPath, { encoding:null })
+        return isBinary(fileName, buffer)
+      }
+
       return {
         resetDirectory,
         makeDirectory,
@@ -143,7 +150,8 @@ const command: GluegunCommand = {
           lowerCase: strings.lowerCase,
           upperCase: strings.upperCase
         },
-        prints: { info, error, success }
+        prints: { info, error, success },
+        isBinaryFile
       }
     }
 
