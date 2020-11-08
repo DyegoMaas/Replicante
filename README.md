@@ -13,7 +13,7 @@ First thing, run `npm install -g replicante` to install *replicante CLI* globall
 
 You can also install it using Yarn by running `yarn global add replicante`.
 
-### Study case - a quick tutorial
+### Study case - copying a previous project
 
 Let's get to an example, and assume we are a freelancer. We've made a wonderful job for our last client, and a new job requires us to build a new site, very much like the last.
 
