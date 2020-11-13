@@ -2,10 +2,11 @@
 
 ![Build](https://github.com/DyegoMaas/Replicante/workflows/Build/badge.svg)
 
-> Ever needed to use a running application as template for a new project? **Replicante** makes it easy to morph any application into a completely new one.
+Replicante is a project template processor, completely agnostic of technology stack. It can process any software project as a template for a new one, just with a little configuration.
 
-The process is pretty straight forward. Replicante copies the application and applies some transformation rules to the source files.
-These rule sets are called a *Recipe*.
+The process is pretty straight forward. Replicante copies the application and applies some transformation rules to the source files and file tree structure.
+
+These rule sets are called *recipes*.
 
 ## Quick Tutorial
 
