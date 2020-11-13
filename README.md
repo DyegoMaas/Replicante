@@ -6,15 +6,13 @@ Replicante is a project template processor, completely agnostic of technology st
 
 The process is pretty straight forward. Replicante copies the application and applies some transformation rules to the source files and file tree structure.
 
-These rule sets are called *recipes*.
-
 ## Quick Tutorial
 
 First thing, run `npm install -g replicante` to install *replicante CLI* globally.
 
 You can also install it using Yarn by running `yarn global add replicante`.
 
-### Study case - copying a previous project
+### Study case - a quick tutorial
 
 Let's get to an example, and assume we are a freelancer. We've made a wonderful job for our last client, and a new job requires us to build a new site, very much like the last.
 
@@ -44,6 +42,10 @@ This file is called a **replication recipe**, and it contains some important inf
 - The name of the "replicant" (the new project)
 - The list of replacements to apply to names of folders and files
 - The list of replacements to apply to the files' contents
+
+It goes like this:
+
+![Replication workflow](/docs/img/process-simple.jpg)
 
 With this recipe in hands, you just tell Replicante to do the job using the `create` command:
 
@@ -118,9 +120,13 @@ If you run into some problems with this kind of files, you can always customize 
 }
 ```
 
-![Replication workflow](/docs/img/workflow.jpg)
+## Process Overview
 
-## Node Compatibility
+If you are interested in the inner workings of this tool, you can always inspect the source files, but following is a brief summary of the overall process.
+
+![Replication workflow](/docs/img/process-step-by-step.jpg)
+
+## NodeJS Compatibility
 
 From version 1.0 onwards, Replicante supports Node 14+.
 
