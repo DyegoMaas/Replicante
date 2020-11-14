@@ -5,6 +5,7 @@ on:
       - master
       - main
       - feature/*
+      - fix/*
       - dependabot/*
 
 jobs:
