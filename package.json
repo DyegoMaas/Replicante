@@ -1,6 +1,6 @@
 {
   "name": "replicante",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Replicante CLI: every project can be a template for a new one",
   "repository": "github:DyegoMaas/Replicante",
   "types": "build/types/types.d.ts",

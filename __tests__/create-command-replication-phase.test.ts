@@ -43,6 +43,20 @@ describe('Replicant generation', () => {
     expect(lines[1]).toEqual("console.log('HiThere...')")
   })
 
+  test('Should genereate nested files, with content properly replaced 2', async () => {
+    const { recipe } = await createReplicant(
+      'humanizer-sample',
+      'humanizer-to-martianizer-recipe.json'
+    )
+
+    let content = readReplicantFileContent(recipe, [
+      'CollectionMartianizeExtensions.cs'
+    ])
+
+    let stillContainsHumanizeTerm = content.toLowerCase().indexOf('humanize') > -1
+    expect(stillContainsHumanizeTerm).toBe(false)
+  })
+
   test('Should replace all default variables', async () => {
     const { recipe } = await createReplicant(
       'variables',

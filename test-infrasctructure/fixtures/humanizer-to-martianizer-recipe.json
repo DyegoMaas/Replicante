@@ -1,0 +1,10 @@
+{
+  "replicantName": "Martianizr",
+  "templateName": "the-titanic-generator",
+  "fileNameReplacements": [
+    { "from": "Humanize", "to": "Martianize" }
+  ],
+  "sourceCodeReplacements": [
+    { "from": "Humanize", "to": "Martianize" }
+  ]
+}
