@@ -1,10 +1,14 @@
 {
-  "replicantName": "Martianizr",
-  "templateName": "the-titanic-generator",
+  "replicantName": "Martianizer",
+  "templateName": "martianizr-generator",
   "fileNameReplacements": [
-    { "from": "Humanize", "to": "Martianize" }
+    { "from": "Human", "to": "Martian" },
+    { "from": "human", "to": "martian" }
   ],
   "sourceCodeReplacements": [
-    { "from": "Humanize", "to": "Martianize" }
+    { "from": "HUMAN", "to": "MARTIAN" },
+    { "from": "Human", "to": "Martian" },
+    { "from": "human", "to": "martian" },
+    { "from": "Humanizr", "to": "Martianizr" }
   ]
 }

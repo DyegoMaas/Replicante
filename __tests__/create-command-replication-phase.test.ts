@@ -53,8 +53,20 @@ describe('Replicant generation', () => {
       'CollectionMartianizeExtensions.cs'
     ])
 
-    let stillContainsHumanizeTerm = content.toLowerCase().indexOf('humanize') > -1
+    let stillContainsHumanizeTerm = content.toLowerCase().indexOf('human') > -1
     expect(stillContainsHumanizeTerm).toBe(false)
+    
+    let filesContents = [
+      readReplicantFileContent(recipe, ['DateMartianizeExtensions.cs']),
+      readReplicantFileContent(recipe, ['EnumDemartianizeExtensions.cs']),
+      readReplicantFileContent(recipe, ['EnumDemartianizeExtensions.cs'])
+    ]
+    
+    for (let i = 0; i < filesContents.length; i++) {
+      const content = filesContents[i];
+      const stillContainsHumanizeTerm = content.toLowerCase().indexOf('human') > -1
+      expect(stillContainsHumanizeTerm).toBe(false)
+    }
   })
 
   test('Should replace all default variables', async () => {
