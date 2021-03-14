@@ -27,7 +27,8 @@ module.exports = class ReplicationRecipe {
       .replace(/T/, '_')
       .replace(/\..+/, '')
       .replace(/:/g, '-')
-    const templateName = data.templateName || `${data.replicantName}_${timestamp}`
+    const templateName =
+      data.templateName || `${data.replicantName}_${timestamp}`
 
     return new ReplicationRecipe(
       data.replicantName,

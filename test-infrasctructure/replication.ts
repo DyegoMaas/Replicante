@@ -14,17 +14,21 @@ let loadRecipe = recipe => {
 
   if (recipeJson.templateName === undefined) {
     // this transformation relies on the fact that default template name is {replicanteName_timestamp}
-    const candidates = fs.readdirSync(`${resolveReplicantWorkDir()}/_templates`, { withFileTypes: true })
-        .filter(dir => dir.isDirectory())
-        .map(dir => path.basename(dir.name))
-        .filter(dir => dir.startsWith(recipeJson.replicantName))
-        .sort()
-        .reverse()
+    const candidates = fs
+      .readdirSync(`${resolveReplicantWorkDir()}/_templates`, {
+        withFileTypes: true
+      })
+      .filter(dir => dir.isDirectory())
+      .map(dir => path.basename(dir.name))
+      .filter(dir => dir.startsWith(recipeJson.replicantName))
+      .sort()
+      .reverse()
     if (candidates) {
       recipeJson.templateName = path.basename(candidates[0])
-    }
-    else
-      throw new Error(`Template not found for replicante ${recipeJson.replicantName} with timestamped directory`)
+    } else
+      throw new Error(
+        `Template not found for replicante ${recipeJson.replicantName} with timestamped directory`
+      )
   }
 
   return recipeJson
@@ -35,12 +39,11 @@ const readTemplateForRecipe = recipe => {
     recipe.templateName
   }/new`
 
-  if (fs.existsSync(templatePath))
-    return fs.readdirSync(templatePath)
+  if (fs.existsSync(templatePath)) return fs.readdirSync(templatePath)
   return ''
 }
 
-const templateFileExists =  (recipe, fileName) => {
+const templateFileExists = (recipe, fileName) => {
   const filePath = `${resolveReplicantWorkDir()}/_templates/${
     recipe.templateName
   }/new/${fileName}`
@@ -93,7 +96,7 @@ const deleteReplicantDirectory = () => {
   }
 }
 
-const readReplicantFileContent = (recipe, fileNameParts) : string => {
+const readReplicantFileContent = (recipe, fileNameParts): string => {
   const targetFile = path.join(...fileNameParts)
   const filePath = path.join(
     resolveReplicantWorkDir(),
@@ -103,18 +106,14 @@ const readReplicantFileContent = (recipe, fileNameParts) : string => {
   return filesystem.read(filePath)
 }
 
-const readSampleBinaryFile = (recipe, fileNameParts) : Buffer => {
+const readSampleBinaryFile = (recipe, fileNameParts): Buffer => {
   const targetFile = path.join(...fileNameParts)
-  const filePath = path.join(
-    `test-infrasctructure`,
-    `fixtures`,
-    targetFile
-  )
+  const filePath = path.join(`test-infrasctructure`, `fixtures`, targetFile)
   const fullPath = path.resolve(filePath)
-  return fs.readFileSync(fullPath, { encoding:null })
+  return fs.readFileSync(fullPath, { encoding: null })
 }
 
-const readReplicantBinaryFile = (recipe, fileNameParts) : Buffer => {
+const readReplicantBinaryFile = (recipe, fileNameParts): Buffer => {
   const targetFile = path.join(...fileNameParts)
   const filePath = path.join(
     resolveReplicantWorkDir(),
@@ -124,17 +123,14 @@ const readReplicantBinaryFile = (recipe, fileNameParts) : Buffer => {
   return fs.readFileSync(filePath, { encoding: null })
 }
 
-
 let cli = cmd => {
   let src = filesystem.path(__dirname, '..')
-  return system.run('node ' + filesystem.path(src, 'bin', 'replicante') + ` ${cmd}`)
+  return system.run(
+    'node ' + filesystem.path(src, 'bin', 'replicante') + ` ${cmd}`
+  )
 }
 
-let createReplicant = async (
-  sampleDirectory,
-  fixtureRecipeToUse,
-  options?
-) => {
+let createReplicant = async (sampleDirectory, fixtureRecipeToUse, options?) => {
   await filesystem.removeAsync(resolveReplicantWorkDir())
 
   let samplePath = filesystem.resolve(

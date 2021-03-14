@@ -32,11 +32,7 @@ describe('Replicant generation', () => {
       'helloworld-to-hithere-recipe.json'
     )
 
-    let content = readReplicantFileContent(recipe, [
-      'Hi',
-      'There',
-      'There.js'
-    ])
+    let content = readReplicantFileContent(recipe, ['Hi', 'There', 'There.js'])
 
     let lines = content.split('\n').map(x => x.trim())
     expect(lines[0]).toEqual("console.log('Hi My People')")
@@ -55,16 +51,17 @@ describe('Replicant generation', () => {
 
     let stillContainsHumanizeTerm = content.toLowerCase().indexOf('human') > -1
     expect(stillContainsHumanizeTerm).toBe(false)
-    
+
     let filesContents = [
       readReplicantFileContent(recipe, ['DateMartianizeExtensions.cs']),
       readReplicantFileContent(recipe, ['EnumDemartianizeExtensions.cs']),
       readReplicantFileContent(recipe, ['EnumDemartianizeExtensions.cs'])
     ]
-    
+
     for (let i = 0; i < filesContents.length; i++) {
-      const content = filesContents[i];
-      const stillContainsHumanizeTerm = content.toLowerCase().indexOf('human') > -1
+      const content = filesContents[i]
+      const stillContainsHumanizeTerm =
+        content.toLowerCase().indexOf('human') > -1
       expect(stillContainsHumanizeTerm).toBe(false)
     }
   })
@@ -93,14 +90,17 @@ describe('Replicant generation', () => {
 
     const shouldProcessTextFilesNormally = () => {
       let content = readReplicantFileContent(recipe, ['DeckardStory.txt'])
-      
+
       let lines = content.split('\n').map(x => x.trim())
-      expect(lines[0]).toEqual("This is the story of Replicant.")
+      expect(lines[0]).toEqual('This is the story of Replicant.')
     }
     shouldProcessTextFilesNormally()
 
-    const shouldJustCopyTheBinaryFile = (fileNameParts) => {
-      let content = readSampleBinaryFile(recipe, ['project-with-binary-files', ...fileNameParts])
+    const shouldJustCopyTheBinaryFile = fileNameParts => {
+      let content = readSampleBinaryFile(recipe, [
+        'project-with-binary-files',
+        ...fileNameParts
+      ])
       let contentTwo = readReplicantBinaryFile(recipe, fileNameParts)
 
       expect(content).toEqual(contentTwo)
