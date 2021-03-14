@@ -8,7 +8,8 @@ module.exports = class ReplicationRecipe {
     fileNameReplacements,
     sourceCodeReplacements,
     ignoreArtifacts,
-    delimiters
+    delimiters,
+    customVariables
   ) {
     this.replicantName = replicantName
     this.templateName = templateName
@@ -17,6 +18,7 @@ module.exports = class ReplicationRecipe {
     this.sourceCodeReplacements = sourceCodeReplacements
     this.ignoreArtifacts = ignoreArtifacts
     this.delimiters = delimiters
+    this.customVariables = customVariables
   }
 
   static fromRecipeJson(data, replicantWorkDir) {
@@ -34,7 +36,8 @@ module.exports = class ReplicationRecipe {
       data.fileNameReplacements,
       data.sourceCodeReplacements,
       data.ignoreArtifacts || [],
-      data.customDelimiters || ['<<:', ':>>']
+      data.customDelimiters || ['<<:', ':>>'],
+      data.customVariables || [] // TODO implicitly push replicante name as 'name' to the array
     )
   }
 }

@@ -48,7 +48,7 @@ const decomposeTemplateFile = (filePath, toolbox) => {
   }
 }
 
-const generateReplicantFromTemplate = (replicator, toolbox) => {
+const generateReplicantFromTemplate = (replicator, recipe, toolbox) => {
   const {
     writeFile,
     listFiles,
@@ -69,12 +69,21 @@ const generateReplicantFromTemplate = (replicator, toolbox) => {
   const fileList = listFiles(realTemplateDir)
   const templateFiles = fileList.map(child => child.name)
 
-  const view = {
+  const view = Object.create({
     name: replicantName,
     nameUpperCase: replicantName.toUpperCase(),
     nameLowerCase: replicantName.toLowerCase(),
     nameLowerDasherized: kebabCase(lowerCase(replicantName)),
     nameUpperDasherized: kebabCase(lowerCase(replicantName)).toUpperCase()
+  })
+  for (let i = 0; i < recipe.customVariables.length; i++) {
+    const {name, value} = recipe.customVariables[i];
+
+    view[name] = value
+    view[`${name}UpperCase`] = value.toUpperCase()
+    view[`${name}LowerCase`] = value.toLowerCase()
+    view[`${name}LowerDasherized`] = kebabCase(lowerCase(replicantName))
+    view[`${name}UpperDasherized`] = kebabCase(lowerCase(replicantName)).toUpperCase()
   }
 
   mustache.tags = delimiters
@@ -138,7 +147,7 @@ const generateReplicant = async (replicationInstructions, toolbox) => {
   const { sampleDirectory } = replicationInstructions
   await replicator.processRecipeFiles(sampleDirectory)
 
-  generateReplicantFromTemplate(replicator, toolbox)
+  generateReplicantFromTemplate(replicator, recipe, toolbox)
 
   return {
     recipeUsed: recipe,
