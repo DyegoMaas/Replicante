@@ -1,16 +1,25 @@
 let { cli } = require('../test-infrasctructure/replication')
+const semverRegex = require('semver-regex')
 
 describe('Versioning', () => {
-  const expectedVersion = '1.0.1'
 
   test('It should output version', async () => {
-    const output = await cli('--version')
-    expect(output).toContain(expectedVersion)
+    let output = await cli('--version')
+    output = output.trim().replace('[0m', '').replace('[0m', '');
+
+    const printedVersion = semverRegex().exec(output.trim())
+
+    const isSemVer = semverRegex().test(printedVersion);
+    expect(isSemVer).toEqual(true)
   })
 
   test('It should output help', async () => {
     // TODO improve this test
     const output = await cli('--help')
-    expect(output).toContain(expectedVersion)
+    
+    const printedVersion = semverRegex().exec(output.trim())
+
+    const isSemVer = semverRegex().test(printedVersion);
+    expect(isSemVer).toEqual(true)
   })
 })

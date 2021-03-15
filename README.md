@@ -76,30 +76,75 @@ You can do this by adding an `ignoreArtifacts` array to the recipe:
 }
 ```
 
-### Variables
+### Custom Variables
 
-By default, Replicante creates some variables that may prove useful in your recipes. Especially, it defines pre-processed variables for some variants of the "replicantName" property:
+You can define custom variables to use in the replacements, and **Replicante** will automatically generate useful variations for you.
 
-- `<<: name :>>` has the exact same value that the property `replicanteName`
-- `<<: nameLowerCase :>>` has this name converted to lower case
-- `<<: nameUpperCase :>>` has this name converted to upper case
-- `<<: nameLowerDasherized :>>` has the name converted to lower case and separated by hyphens
-- `<<: nameUpperDasherized :>>` has the name converted to upper case and separated by hyphens
+For example, you can define a custom variable named `myVariable` as follow:
+
+```javascript
+{
+  "replicantName": "NewProjectName",
+  "customVariables": [
+    { 
+      "name": "myVariable",
+      "value": "BigValue"
+    }
+  ]
+  "fileNameReplacements": [],
+  "sourceCodeReplacements": []
+}
+```
+
+And then, Replicante will create the following variables that you can use in your recipes:
+
+- `<<: myVariable :>>` has the exact same value that you defined (e.g. BigValue)
+- `<<: myVariableLowerCase :>>` has this name converted to lower case (e.g. bigvalue)
+- `<<: myVariableUpperCase :>>` has this name converted to upper case (e.g. BIGVALUE)
+- `<<: myVariableLowerDasherized :>>` has the name converted to lower case and separated by hyphens (e.g. big-value)
+- `<<: myVariableUpperDasherized :>>` has the name converted to upper case and separated by hyphens (e.g. BIG-VALUE)
 
 Following, you can see examples of all these variations:
 
 ```javascript
 {
-  "replicantName": "NewProjectModel", // will replace <<: name :>>
+  "replicantName": "BigProject",
+  "customVariables": [
+    { 
+      "name": "myVariable",
+      "value": "BigValue"
+    }
+  ]
   "fileNameReplacements": [
-    { "from": "Sample", "to": "<<: name :>>" } // Sample.Domain.Customer -> NewName.Domain.Customer
+    { "from": "Sample", "to": "<<: myVariable :>>" }
     // ... any other replacement your project needs
   ],
   "sourceCodeReplacements": [
-    { "from": "Sample", "to": "<<: name :>>" }, // using Sample.Domain; -> using NewName.Domain;
-    { "from": "sample", "to": "<<: nameLowerCase :>>" }, // return GetDatabase("sample"); -> return GetDatabase("newname");
-    { "from": "SAMPLE", "to": "<<: nameUpperCase :>>" } // return "SAMPLE"; -> return "NEWNAME";
-    { "from": "Some Term", "to": "New Hard Coded Term" } // return "Some Term"; -> return "New Hard Coded Term";
+    { "from": "oldValue", "to": "<<: myVariableLowerCase :>>" },
+    { "from": "OLDVALUE", "to": "<<: myVariableUpperCase :>>" }
+    { "from": "OLD-VALUE", "to": "<<: myVariableUpperDasherized :>>" }
+    // ... any other replacement your project needs
+  ]
+}
+```
+
+**And why not simply hard-code these values?** You definitively can, but there are use cases where they come in handy. One such case is when the recipe is dinamically built by some other tool in a continuous integration pipeline.
+
+### Default variables
+
+Even if you don't actually inform any *custom variables*, **Replicante** automatically creates one for you: `replicantName` and all its variations are available out of the box:
+
+```javascript
+{
+  "replicantName": "NewProjectModel",
+  "fileNameReplacements": [
+    { "from": "Sample", "to": "<<: replicantName :>>" }
+    // ... any other replacement your project needs
+  ],
+  "sourceCodeReplacements": [
+    { "from": "Sample", "to": "<<: replicantName :>>" }, 
+    { "from": "sample", "to": "<<: replicantNameLowerCase :>>" }, 
+    { "from": "SAMPLE", "to": "<<: replicantNameUpperCase :>>" }
     // ... any other replacement your project needs
   ]
 }

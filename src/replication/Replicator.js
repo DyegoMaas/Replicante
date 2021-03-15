@@ -8,7 +8,10 @@ class Replicator {
     this.replicationDirectory = path.join(replicationRecipe.templateDir, 'new') // TODO inject via constructor
     this.toolbox = toolbox
 
-    const binaryFilesDescriptorPath = path.join(replicationRecipe.templateDir, 'files.json')
+    const binaryFilesDescriptorPath = path.join(
+      replicationRecipe.templateDir,
+      'files.json'
+    )
     this.pipelineData = new PipelineData(binaryFilesDescriptorPath, toolbox)
   }
 
@@ -17,7 +20,7 @@ class Replicator {
       sampleDirectory,
       sampleDirectory
     )
-    
+
     this.pipelineData.saveToDisk()
   }
 
@@ -40,13 +43,15 @@ class Replicator {
           .join(middlePath, file)
           .replace(/\\/g, '-')
           .replace(/\//g, '-')
-        const destinationPath = path.join(this.replicationDirectory, virtualPath)
+        const destinationPath = path.join(
+          this.replicationDirectory,
+          virtualPath
+        )
 
         if (this.toolbox.isBinaryFile(fullPath))
           await this._justCopy(fullPath, destinationPath, relativePath)
-        else
-          await this._toTemplate(fullPath, destinationPath, relativePath)
-    
+        else await this._toTemplate(fullPath, destinationPath, relativePath)
+
         continue
       }
 
@@ -69,11 +74,7 @@ class Replicator {
     )
 
     let calculatedTargetPath = this._calculateTargetPath(relativePath)
-    let frontmatter = [
-      '---',
-      `to: "${calculatedTargetPath}"`,
-      '---'
-    ]
+    let frontmatter = ['---', `to: "${calculatedTargetPath}"`, '---']
 
     await this._prepareFiles(
       fullPathDest,

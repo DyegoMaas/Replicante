@@ -8,7 +8,8 @@ module.exports = class ReplicationRecipe {
     fileNameReplacements,
     sourceCodeReplacements,
     ignoreArtifacts,
-    delimiters
+    delimiters,
+    customVariables
   ) {
     this.replicantName = replicantName
     this.templateName = templateName
@@ -17,6 +18,7 @@ module.exports = class ReplicationRecipe {
     this.sourceCodeReplacements = sourceCodeReplacements
     this.ignoreArtifacts = ignoreArtifacts
     this.delimiters = delimiters
+    this.customVariables = customVariables
   }
 
   static fromRecipeJson(data, replicantWorkDir) {
@@ -25,8 +27,19 @@ module.exports = class ReplicationRecipe {
       .replace(/T/, '_')
       .replace(/\..+/, '')
       .replace(/:/g, '-')
-    const templateName = data.templateName || `${data.replicantName}_${timestamp}`
+    const templateName =
+      data.templateName || `${data.replicantName}_${timestamp}`
 
+    const customVariables = [
+      { 'name': 'name', 'value': data.replicantName }, // kept for retro-compatibility
+      { 'name': 'replicantName', 'value': data.replicantName }
+    ]
+    if (data.customVariables) {
+      for (let i = 0; i < data.customVariables.length; i++) {
+        customVariables.push(data.customVariables[i])
+      }
+    }
+    
     return new ReplicationRecipe(
       data.replicantName,
       templateName,
@@ -34,7 +47,8 @@ module.exports = class ReplicationRecipe {
       data.fileNameReplacements,
       data.sourceCodeReplacements,
       data.ignoreArtifacts || [],
-      data.customDelimiters || ['<<:', ':>>']
+      data.customDelimiters || ['<<:', ':>>'],
+      customVariables
     )
   }
 }
