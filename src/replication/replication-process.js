@@ -69,13 +69,7 @@ const generateReplicantFromTemplate = (replicator, recipe, toolbox) => {
   const fileList = listFiles(realTemplateDir)
   const templateFiles = fileList.map(child => child.name)
 
-  const view = Object.create({
-    name: replicantName,
-    nameUpperCase: replicantName.toUpperCase(),
-    nameLowerCase: replicantName.toLowerCase(),
-    nameLowerDasherized: kebabCase(lowerCase(replicantName)),
-    nameUpperDasherized: kebabCase(lowerCase(replicantName)).toUpperCase()
-  })
+  const view = Object.create({})
   for (let i = 0; i < recipe.customVariables.length; i++) {
     const { name, value } = recipe.customVariables[i]
 

@@ -30,6 +30,15 @@ module.exports = class ReplicationRecipe {
     const templateName =
       data.templateName || `${data.replicantName}_${timestamp}`
 
+    const customVariables = [
+      { 'name': 'name', 'value': data.replicantName }
+    ]
+    if (data.customVariables) {
+      for (let i = 0; i < data.customVariables.length; i++) {
+        customVariables.push(data.customVariables[i])
+      }
+    }
+    
     return new ReplicationRecipe(
       data.replicantName,
       templateName,
@@ -38,7 +47,7 @@ module.exports = class ReplicationRecipe {
       data.sourceCodeReplacements,
       data.ignoreArtifacts || [],
       data.customDelimiters || ['<<:', ':>>'],
-      data.customVariables || [] // TODO implicitly push replicante name as 'name' to the array
+      customVariables
     )
   }
 }
