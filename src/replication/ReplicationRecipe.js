@@ -31,7 +31,8 @@ module.exports = class ReplicationRecipe {
       data.templateName || `${data.replicantName}_${timestamp}`
 
     const customVariables = [
-      { 'name': 'name', 'value': data.replicantName }
+      { 'name': 'name', 'value': data.replicantName }, // kept for retro-compatibility
+      { 'name': 'replicantName', 'value': data.replicantName }
     ]
     if (data.customVariables) {
       for (let i = 0; i < data.customVariables.length; i++) {
