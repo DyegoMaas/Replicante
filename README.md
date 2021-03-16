@@ -2,55 +2,178 @@
 
 ![Build](https://github.com/DyegoMaas/Replicante/workflows/Build/badge.svg)
 
-> Ever needed to use a running application as template for a new project? **Replicante** makes it easy to morph a living application into a completely new one.
+Replicante is a project template processor, completely agnostic of technology stack. It can process any software project as a template for a new one, just with a little configuration.
+
+The process is pretty straight forward. Replicante copies the application and applies some transformation rules to the source files and file tree structure.
 
 ## Quick Tutorial
 
 First thing, run `npm install -g replicante` to install *replicante CLI* globally.
 
-### Defining the sample for replication
+You can also install it using Yarn by running `yarn global add replicante`.
 
-If you want to turn an existing application into a new one, you will inevitably need to rename a lot of things. From file names, to folders, modules names, namespaces, package references and the source code itself, its a lot of work, and Replicante can help you with that. You just need to feed it with two things: the directory of the sample application, and the **replication recipe**.
+### Study case - a quick tutorial
 
-All those details above, the things we want to change, need to be captured in a recipe file. It is JSON file with the following structure:
+Let's get to an example, and assume we are a freelancer. We've made a wonderful job for our last client, and a new job requires us to build a new site, very much like the last.
+
+But our source folders contain the name of the last client, and it also appears in almost every file as an organizing namespace or package. So we will have to rename some folders and files, and apply some *search and replace* operations. But this is an error prone process, and must be a better way to do this operation.
+
+Replicante makes this very easy. The only thing you must do is to identify what terms (or words) you want replaced, and add them to a simple recipe JSON file, as the following:
 
 ```javascript
 {
-  "replicantName": "NewProjectModel", // will replace <<: name :>>
-  "templateName": "NexusModel", // temporary work directory
+  "replicantName": "NewSuperProject",
   "fileNameReplacements": [
-    { "from": "Sample", "to": "<<: name :>>" } // Sample.Domain.Customer -> NewName.Domain.Customer
+    { "from": "OldClientName", "to": "NewClientName" },
+    { "from": "oldClientName", "to": "newClientName" } // it is case-sensitive
     // ... any other replacement your project needs
   ],
   "sourceCodeReplacements": [
-    { "from": "Sample", "to": "<<: name :>>" }, // using Sample.Domain; -> using NewName.Domain;
-    { "from": "sample", "to": "<<: nameLowerCase :>>" }, // return GetDatabase("sample"); -> return GetDatabase("newname");
-    { "from": "SAMPLE", "to": "<<: nameUpperCase :>>" } // return "SAMPLE"; -> return "NEWNAME";
-    { "from": "Some Term", "to": "New Hard Coded Term" } // return "Some Term"; -> return "New Hard Coded Term";
+    { "from": "OldClientName", "to": "NewClientName" },
+    { "from": "oldClientName", "to": "newClientName" } // it is case-sensitive
+    { "from": "some-other-term", "to": "new-term" }
     // ... any other replacement your project needs
-  ],
-  "ignoreArtifacts": [".git", ".idea", "bin", "obj", "somefile.dll"], // usually, binary directories
-  "customDelimiters": ["<<:", ":>>"] // [optional] you can customize the delimiter to avoid interference with template files in your sample apps
+  ]
 }
 ```
 
-With the recipe defined, we are ready to execute the replication process.
+This file is called a **replication recipe**, and it contains some important information:
 
-Run `replicante create <path-to-sample-app> <path-to-recipe.json>`. You will se that Replicante generated your new project inside the folder `<USER_HOME>/.replicante/<replicantName>`, with the `replicantName` defined in the recipe.
+- The name of the "replicant" (the new project)
+- The list of replacements to apply to names of folders and files
+- The list of replacements to apply to the files' contents
 
-You may also customize where your replicant you be created by adding the option `--target=<target-directory>`. The target directory is the container inside of which your replicant will be created. It will be something like this: `<target-directory>/<replicantName>`.
+It goes like this:
 
-If you are feeling curious or need to troubleshoot something, you can always inspect the Hygen template created for you based on the sample and the recipe. You can find it in the folder `<USER_HOME>/.replicante/_templates/<templateName>`.
+![Replication workflow](/docs/img/process-simple.jpg)
 
-After performing these two steps, you should have a new project, completely operational, plus a Hygen template that allows reuse to generate new projects from it in the future.
+With this recipe in hands, you just tell Replicante to do the job using the `create` command:
 
-![Replication workflow](/docs/img/workflow.jpg)
+`replicante create ./path-to-the-old-project ./path-to-the-recipe-above`
 
-### Limitations
+By default, the new project will be created inside the folder `<USER_HOME>/.replicante/<replicant-name>` the your user folder, and the path is printed in the terminal at the end of the process.
 
-Currently, Replicante does not support replication of samples containing binary files. So, directories containing binary files, such as images, should be excluded via the parameter `ignoreDirectories` in the recipe file.
+You can override the path where the new project should be create with the `--target` parameter:
 
-This limitation should be cared about in future releases.
+`replicante create ./path-to-the-old-project ./path-to-the-recipe-above --target=./path-to-create-new-project`
+
+## Advanced features
+
+Replicante also allows you to further customize the replication behaviour. It does so through some features that we'll explore in the following sections.
+
+### Ignoring folders and files
+
+When creating your new project, you probably will need to ignore some special folders, like `.git` or binaries.
+
+You can do this by adding an `ignoreArtifacts` array to the recipe:
+
+```javascript
+{
+  "replicantName": "NewProjectName",
+  "fileNameReplacements": [],
+  "sourceCodeReplacements": [],
+  "ignoreArtifacts": [".git", ".idea", "bin", "obj", "somefile.dll"]
+}
+```
+
+### Custom Variables
+
+You can define custom variables to use in the replacements, and **Replicante** will automatically generate useful variations for you.
+
+For example, you can define a custom variable named `myVariable` as follow:
+
+```javascript
+{
+  "replicantName": "NewProjectName",
+  "customVariables": [
+    { 
+      "name": "myVariable",
+      "value": "BigValue"
+    }
+  ]
+  "fileNameReplacements": [],
+  "sourceCodeReplacements": []
+}
+```
+
+And then, Replicante will create the following variables that you can use in your recipes:
+
+- `<<: myVariable :>>` has the exact same value that you defined (e.g. BigValue)
+- `<<: myVariableLowerCase :>>` has this name converted to lower case (e.g. bigvalue)
+- `<<: myVariableUpperCase :>>` has this name converted to upper case (e.g. BIGVALUE)
+- `<<: myVariableLowerDasherized :>>` has the name converted to lower case and separated by hyphens (e.g. big-value)
+- `<<: myVariableUpperDasherized :>>` has the name converted to upper case and separated by hyphens (e.g. BIG-VALUE)
+
+Following, you can see examples of all these variations:
+
+```javascript
+{
+  "replicantName": "BigProject",
+  "customVariables": [
+    { 
+      "name": "myVariable",
+      "value": "BigValue"
+    }
+  ]
+  "fileNameReplacements": [
+    { "from": "Sample", "to": "<<: myVariable :>>" }
+    // ... any other replacement your project needs
+  ],
+  "sourceCodeReplacements": [
+    { "from": "oldValue", "to": "<<: myVariableLowerCase :>>" },
+    { "from": "OLDVALUE", "to": "<<: myVariableUpperCase :>>" }
+    { "from": "OLD-VALUE", "to": "<<: myVariableUpperDasherized :>>" }
+    // ... any other replacement your project needs
+  ]
+}
+```
+
+**And why not simply hard-code these values?** You definitively can, but there are use cases where they come in handy. One such case is when the recipe is dinamically built by some other tool in a continuous integration pipeline.
+
+### Default variables
+
+Even if you don't actually inform any *custom variables*, **Replicante** automatically creates one for you: `replicantName` and all its variations are available out of the box:
+
+```javascript
+{
+  "replicantName": "NewProjectModel",
+  "fileNameReplacements": [
+    { "from": "Sample", "to": "<<: replicantName :>>" }
+    // ... any other replacement your project needs
+  ],
+  "sourceCodeReplacements": [
+    { "from": "Sample", "to": "<<: replicantName :>>" }, 
+    { "from": "sample", "to": "<<: replicantNameLowerCase :>>" }, 
+    { "from": "SAMPLE", "to": "<<: replicantNameUpperCase :>>" }
+    // ... any other replacement your project needs
+  ]
+}
+```
+
+### Custom delimiters for variables
+
+The default delimiters used for these variables are `<<:` and `:>>`. This is to prevent messing you real template files inside projects.
+
+If you run into some problems with this kind of files, you can always customize de delimiters by adding the `customDelimiters` property. It should always contain a pair of delimiters, responsible for identifying the start and end of a variable:
+
+```javascript
+{
+  "replicantName": "NewProjectName",
+  "fileNameReplacements": [],
+  "sourceCodeReplacements": [],
+  "customDelimiters": ["<<!", "!>>"]
+}
+```
+
+## Process Overview
+
+If you are interested in the inner workings of this tool, you can always inspect the source files, but following is a brief summary of the overall process.
+
+![Replication workflow](/docs/img/process-step-by-step.jpg)
+
+## NodeJS Compatibility
+
+From version 1.0 onwards, Replicante supports Node 14+.
 
 ## Roadmap
 

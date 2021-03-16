@@ -1,0 +1,14 @@
+{
+  "replicantName": "Martianizer",
+  "templateName": "martianizr-generator",
+  "fileNameReplacements": [
+    { "from": "Human", "to": "Martian" },
+    { "from": "human", "to": "martian" }
+  ],
+  "sourceCodeReplacements": [
+    { "from": "HUMAN", "to": "MARTIAN" },
+    { "from": "Human", "to": "Martian" },
+    { "from": "human", "to": "martian" },
+    { "from": "Humanizr", "to": "Martianizr" }
+  ]
+}

@@ -1,11 +1,18 @@
 const fs = require('fs')
 const path = require('path')
+const PipelineData = require('./PipelineData')
 
 class Replicator {
   constructor(replicationRecipe, toolbox) {
     this.replicationRecipe = replicationRecipe
     this.replicationDirectory = path.join(replicationRecipe.templateDir, 'new') // TODO inject via constructor
     this.toolbox = toolbox
+
+    const binaryFilesDescriptorPath = path.join(
+      replicationRecipe.templateDir,
+      'files.json'
+    )
+    this.pipelineData = new PipelineData(binaryFilesDescriptorPath, toolbox)
   }
 
   async processRecipeFiles(sampleDirectory) {
@@ -13,6 +20,8 @@ class Replicator {
       sampleDirectory,
       sampleDirectory
     )
+
+    this.pipelineData.saveToDisk()
   }
 
   async _processFilesInDirectoryRecursive(currentPath, rootPath) {
@@ -34,12 +43,15 @@ class Replicator {
           .join(middlePath, file)
           .replace(/\\/g, '-')
           .replace(/\//g, '-')
-
-        await this._toTemplate(
-          fullPath,
-          path.join(this.replicationDirectory, virtualPath),
-          relativePath
+        const destinationPath = path.join(
+          this.replicationDirectory,
+          virtualPath
         )
+
+        if (this.toolbox.isBinaryFile(fullPath))
+          await this._justCopy(fullPath, destinationPath, relativePath)
+        else await this._toTemplate(fullPath, destinationPath, relativePath)
+
         continue
       }
 
@@ -61,13 +73,25 @@ class Replicator {
       this.replicationRecipe.fileNameReplacements
     )
 
-    let delimiters = this.replicationRecipe.delimiters
-    let frontmatter = ['---', `to: "${delimiters[0]} name ${delimiters[1]}/${targetPath}"`, '---']
-    await this._prepareFile(
+    let calculatedTargetPath = this._calculateTargetPath(relativePath)
+    let frontmatter = ['---', `to: "${calculatedTargetPath}"`, '---']
+
+    await this._prepareFiles(
       fullPathDest,
       frontmatter,
       this.replicationRecipe.sourceCodeReplacements
     )
+  }
+
+  _calculateTargetPath(relativePath) {
+    let targetPath = relativePath.replace(/\\/g, '/')
+    targetPath = this._replaceTermsInText(
+      targetPath,
+      this.replicationRecipe.fileNameReplacements
+    )
+
+    let delimiters = this.replicationRecipe.delimiters
+    return `${delimiters[0]} name ${delimiters[1]}/${targetPath}`
   }
 
   _replaceTermsInText(text, replacements) {
@@ -78,8 +102,7 @@ class Replicator {
     return text
   }
 
-  // TODO rename to prepareFiles
-  async _prepareFile(filePath, metadataLines, sourceCodeReplacements) {
+  async _prepareFiles(filePath, metadataLines, sourceCodeReplacements) {
     const { readFile, writeFile, prependToFileAsync } = this.toolbox
 
     // refactor to avoid three operations on the same file
@@ -91,12 +114,23 @@ class Replicator {
     writeFile(filePath, adjustedContent)
 
     let contentToPrepend = metadataLines
-      .map(line => { 
+      .map(line => {
         return line
         // return this._replaceTermsInText(line, sourceCodeReplacements) // why?
       })
       .join('\n')
     await prependToFileAsync(filePath, `${contentToPrepend}\n`)
+  }
+
+  async _justCopy(src, dest, relativePath) {
+    const { copyFile } = this.toolbox
+
+    const fullSourcePath = path.resolve(src)
+    const fullDestinationPath = path.resolve(dest)
+    copyFile(fullSourcePath, fullDestinationPath)
+
+    const calculatedTargetPath = this._calculateTargetPath(relativePath)
+    this.pipelineData.pushBinaryFile(fullDestinationPath, calculatedTargetPath)
   }
 }
 

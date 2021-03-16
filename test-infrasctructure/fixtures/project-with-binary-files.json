@@ -1,0 +1,6 @@
+{
+  "replicantName": "BladeRunner",
+  "templateName": "the-bladerunner-generator",
+  "fileNameReplacements": [],
+  "sourceCodeReplacements": [{ "from": "Deckard", "to": "Replicant" }]
+}

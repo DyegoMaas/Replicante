@@ -1,9 +1,11 @@
 import { GluegunCommand, filesystem, strings } from 'gluegun'
 
-const printHelp = (toolbox) => {
-  const { print: { info, table } } = toolbox
+const printHelp = toolbox => {
+  const {
+    print: { info, table }
+  } = toolbox
 
-  const printInstructionLines = (instructions) => {
+  const printInstructionLines = instructions => {
     instructions.forEach(instructionLine => info(instructionLine))
   }
 
@@ -13,10 +15,16 @@ const printHelp = (toolbox) => {
     'These are the available options:'
   ])
 
-  table([
-    ['Option', 'Description'],
-    ['--target', 'The directory where the Replicant should be created. Default value: <USER-HOME>/.replicante/<replicant-name>']
-  ], { format: 'markdown' })
+  table(
+    [
+      ['Option', 'Description'],
+      [
+        '--target',
+        'The directory where the Replicant should be created. Default value: <USER-HOME>/.replicante/<replicant-name>'
+      ]
+    ],
+    { format: 'markdown' }
+  )
 
   printInstructionLines([
     '',
@@ -41,6 +49,7 @@ const command: GluegunCommand = {
   run: async toolbox => {
     const fs = require('fs')
     const path = require('path')
+    const { isBinary } = require('istextorbinary')
     const { generateReplicant } = require('../replication/replication-process')
     const {
       parameters,
@@ -122,6 +131,12 @@ const command: GluegunCommand = {
         return patching.prepend(filePath, contentToPrepend)
       }
 
+      const isBinaryFile = fullPath => {
+        const fileName = path.basename(fullPath)
+        const buffer = fs.readFileSync(fullPath, { encoding: null })
+        return isBinary(fileName, buffer)
+      }
+
       return {
         resetDirectory,
         makeDirectory,
@@ -135,7 +150,8 @@ const command: GluegunCommand = {
           lowerCase: strings.lowerCase,
           upperCase: strings.upperCase
         },
-        prints: { info, error, success }
+        prints: { info, error, success },
+        isBinaryFile
       }
     }
 
