@@ -12,7 +12,7 @@
     "format": "prettier --write **/*.{js,ts,tsx,json}",
     "lint": "tslint -p .",
     "clean-build": "rm -rf ./build",
-    "compile": "tsc -p .",
+    "compile": "tsc -p . --skipLibCheck",
     "copy-templates": "if [ -e ./src/templates ]; then cp -a ./src/templates ./build/; fi",
     "copy-replication-js": "cp -a ./src/replication ./build/",
     "build": "yarn format && yarn lint && yarn clean-build && yarn compile && yarn copy-templates && yarn copy-replication-js",
