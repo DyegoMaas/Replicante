@@ -70,7 +70,7 @@ const readTemplateFileHeader = async (recipe, fileName) => {
     if (dividerCount == 2) break
   }
   fileStream.close()
-  return yaml.safeLoad(header)
+  return yaml.load(header)
 }
 
 const readFileDiscardingHeader = fullPath => {
