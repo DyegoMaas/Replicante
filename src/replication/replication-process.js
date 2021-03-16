@@ -43,7 +43,7 @@ const decomposeTemplateFile = (filePath, toolbox) => {
   const content = readFile(filePath)
   let parts = content.split('---\n')
   return {
-    header: yaml.safeLoad(parts[1]),
+    header: yaml.load(parts[1]),
     content: parts[2].trimEnd()
   }
 }
