@@ -1,15 +1,11 @@
-import {
-  filesystem,
-} from 'gluegun'
-  
-  import {
-    createReplicant
-  } from '../test-infrasctructure/replication'
-  
-  const {
-    resolveReplicantWorkDir
-  } = require('../src/replication/replication-process')
-  
+import { filesystem } from 'gluegun'
+
+import { createReplicant } from '../test-infrasctructure/replication'
+
+const {
+  resolveReplicantWorkDir
+} = require('../src/replication/replication-process')
+
 describe('Target option', () => {
   let targetDirectory = ''
 
@@ -19,14 +15,14 @@ describe('Target option', () => {
 
   test('Should copy the final project into the target directory', async () => {
     const { recipe } = await createReplicant(
-        'hello-world',
-        'helloworld-to-hithere-recipe.json',
-        `--target="${targetDirectory}"`
+      'hello-world',
+      'helloworld-to-hithere-recipe.json',
+      `--target="${targetDirectory}"`
     )
 
     let targetedReplicantDir = filesystem.path(
-        targetDirectory,
-        recipe.replicantName
+      targetDirectory,
+      recipe.replicantName
     )
 
     const replicantDirExists = !!filesystem.exists(targetedReplicantDir)

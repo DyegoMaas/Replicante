@@ -48,7 +48,7 @@ const decomposeTemplateFile = (filePath, toolbox) => {
   }
 }
 
-const generateReplicantFromTemplate = (replicator, toolbox) => {
+const generateReplicantFromTemplate = (replicator, recipe, toolbox) => {
   const {
     writeFile,
     listFiles,
@@ -69,12 +69,17 @@ const generateReplicantFromTemplate = (replicator, toolbox) => {
   const fileList = listFiles(realTemplateDir)
   const templateFiles = fileList.map(child => child.name)
 
-  const view = {
-    name: replicantName,
-    nameUpperCase: replicantName.toUpperCase(),
-    nameLowerCase: replicantName.toLowerCase(),
-    nameLowerDasherized: kebabCase(lowerCase(replicantName)),
-    nameUpperDasherized: kebabCase(lowerCase(replicantName)).toUpperCase()
+  const view = Object.create({})
+  for (let i = 0; i < recipe.customVariables.length; i++) {
+    const { name, value } = recipe.customVariables[i]
+
+    view[name] = value
+    view[`${name}UpperCase`] = value.toUpperCase()
+    view[`${name}LowerCase`] = value.toLowerCase()
+    view[`${name}LowerDasherized`] = kebabCase(lowerCase(replicantName))
+    view[`${name}UpperDasherized`] = kebabCase(
+      lowerCase(replicantName)
+    ).toUpperCase()
   }
 
   mustache.tags = delimiters
@@ -85,7 +90,7 @@ const generateReplicantFromTemplate = (replicator, toolbox) => {
     const partialFilePath = path.join(tempDir, fileName)
     if (isBinaryFile(path.join(realTemplateDir, fileName))) {
       continue
-    } 
+    }
 
     // renders new template with header patched
     generateFileFromTemplate(
@@ -113,16 +118,16 @@ const generateReplicantFromTemplate = (replicator, toolbox) => {
 const prepareAndCopyBinaryFiles = (binaryFiles, view, toolbox) => {
   const { copyFile } = toolbox
 
-  for(let i = 0; i < binaryFiles.length; i++) {
+  for (let i = 0; i < binaryFiles.length; i++) {
     const { from, to } = binaryFiles[i]
-   
+
     var targetPath = path.join(
       resolveReplicantWorkDir(),
       mustache.render(to, view)
     )
     copyFile(from, targetPath)
   }
-};
+}
 
 const generateReplicant = async (replicationInstructions, toolbox) => {
   const { resetDirectory, makeDirectory } = toolbox
@@ -138,7 +143,7 @@ const generateReplicant = async (replicationInstructions, toolbox) => {
   const { sampleDirectory } = replicationInstructions
   await replicator.processRecipeFiles(sampleDirectory)
 
-  generateReplicantFromTemplate(replicator, toolbox)
+  generateReplicantFromTemplate(replicator, recipe, toolbox)
 
   return {
     recipeUsed: recipe,

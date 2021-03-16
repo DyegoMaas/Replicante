@@ -131,9 +131,9 @@ const command: GluegunCommand = {
         return patching.prepend(filePath, contentToPrepend)
       }
 
-      const isBinaryFile = (fullPath) => {
+      const isBinaryFile = fullPath => {
         const fileName = path.basename(fullPath)
-        const buffer = fs.readFileSync(fullPath, { encoding:null })
+        const buffer = fs.readFileSync(fullPath, { encoding: null })
         return isBinary(fileName, buffer)
       }
 

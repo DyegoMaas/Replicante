@@ -1,5 +1,5 @@
 module.exports = class PipelineData {
-  constructor(descriptorPath, toolbox) {    
+  constructor(descriptorPath, toolbox) {
     this.descriptorPath = descriptorPath
     this.toolbox = toolbox
 
@@ -9,7 +9,7 @@ module.exports = class PipelineData {
   // saves a binary file descriptor to later copy to the right place
   pushBinaryFile(source, targetDestination) {
     this.binaryFiles.push({
-      from: source, 
+      from: source,
       to: targetDestination
     })
   }
