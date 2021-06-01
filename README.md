@@ -90,7 +90,7 @@ For example, you can define a custom variable named `myVariable` as follow:
       "name": "myVariable",
       "value": "BigValue"
     }
-  ]
+  ],
   "fileNameReplacements": [],
   "sourceCodeReplacements": []
 }
@@ -114,7 +114,7 @@ Following, you can see examples of all these variations:
       "name": "myVariable",
       "value": "BigValue"
     }
-  ]
+  ],
   "fileNameReplacements": [
     { "from": "Sample", "to": "<<: myVariable :>>" }
     // ... any other replacement your project needs
