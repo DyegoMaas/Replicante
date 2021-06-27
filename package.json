@@ -54,13 +54,13 @@
   },
   "jest": {
     "preset": "ts-jest",
-    "testEnvironment": "node"
-  },
-  "prettier": {
-    "semi": false,
-    "singleQuote": true,
+    "testEnvironment": "node",
     "coverageDirectory": "./coverage/",
     "collectCoverage": true,
     "collectCoverageFrom": ["src/**/*.js", "src/**/*.ts"]
+  },
+  "prettier": {
+    "semi": false,
+    "singleQuote": true   
   }
 }
