@@ -5,9 +5,9 @@ on:
 jobs:
   tests:
     name: Run tests
-    runs-on: ubuntu-latest
     strategy:
       matrix:
+        os: [ubuntu-latest]
         node-version: [14.x, 15.x]
     steps:
       - uses: actions/checkout@v2
@@ -20,4 +20,7 @@ jobs:
       - name: Run integration tests
         run: yarn test
       - name: Upload code coverage to codecov.io
-        run: ./scripts/publish-coverage.sh ${{ secrets.CODECOV_TOKEN }}
+        if: matrix.os == 'ubuntu-latest' && matrix.node-version == '14.x'
+        run: |
+          chmod +x ./scripts/publish-coverage.sh
+          ./scripts/publish-coverage.sh ${{ secrets.CODECOV_TOKEN }}
