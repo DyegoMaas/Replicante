@@ -26,6 +26,10 @@ jobs:
         run: yarn install
       - name: Run integration tests
         run: yarn test
+      - name: Upload code coverage to codecov.io
+        run: |
+          curl -s https://codecov.io/bash > ./codecov
+          ./codecov
 
   release:
     if: github.ref == 'refs/heads/master'

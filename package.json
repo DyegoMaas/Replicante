@@ -17,10 +17,9 @@
     "copy-replication-js": "cp -a ./src/replication ./build/",
     "build": "yarn format && yarn lint && yarn clean-build && yarn compile && yarn copy-templates && yarn copy-replication-js",
     "prepublishOnly": "yarn build",
-    "test": "jest --runInBand",
+    "test": "jest --runInBand --coverage",
     "watch": "jest --watch",
-    "snapupdate": "jest --updateSnapshot",
-    "coverage": "jest --coverage"
+    "snapupdate": "jest --updateSnapshot"
   },
   "files": [
     "tsconfig.json",
@@ -59,6 +58,9 @@
   },
   "prettier": {
     "semi": false,
-    "singleQuote": true
+    "singleQuote": true,
+    "coverageDirectory": "./coverage/",
+    "collectCoverage": true,
+    "collectCoverageFrom": ["src/**/*.js", "src/**/*.ts"]
   }
 }
