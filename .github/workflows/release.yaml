@@ -35,7 +35,7 @@ jobs:
         with:
           node-version: 14.x
       - name: Set npm version
-        run: npm --no-git-tag-version version from-git
+        run: npm version $(git describe --abbrev=0 --tags)
 
       # - name: yarn install
       #   run: yarn install      
