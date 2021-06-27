@@ -1,6 +1,18 @@
 name: Build and Test
 on:
+  workflow_dispatch:
   push:
+    branches: 
+      - master
+    paths-ignore:
+      - 'LICENSE'
+      - 'README.md'
+  pull_request:
+    branches:
+      - master
+    paths-ignore:
+      - 'LICENSE'
+      - 'README.md'
 
 jobs:
   tests:
