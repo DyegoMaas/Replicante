@@ -102,10 +102,10 @@ For example, you can define a custom variable named `myVariable` as follow:
 And then, Replicante will create the following variables that you can use in your recipes:
 
 - `<<: myVariable :>>` has the exact same value that you defined (e.g. BigValue)
-- `<<: myVariableLowerCase :>>` has this name converted to lower case (e.g. bigvalue)
-- `<<: myVariableUpperCase :>>` has this name converted to upper case (e.g. BIGVALUE)
-- `<<: myVariableLowerDasherized :>>` has the name converted to lower case and separated by hyphens (e.g. big-value)
-- `<<: myVariableUpperDasherized :>>` has the name converted to upper case and separated by hyphens (e.g. BIG-VALUE)
+- `<<: myVariable.toLowerCase() :>>` has this name converted to lower case (e.g. bigvalue)
+- `<<: myVariable.toUpperCase() :>>` has this name converted to upper case (e.g. BIGVALUE)
+- `<<: myVariable.toLowerDasherized() :>>` has the name converted to lower case and separated by hyphens (e.g. big-value)
+- `<<: myVariable.toUpperDasherized() :>>` has the name converted to upper case and separated by hyphens (e.g. BIG-VALUE)
 
 Following, you can see examples of all these variations:
 
