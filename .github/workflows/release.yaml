@@ -34,8 +34,7 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 14.x
-      - name: Get the version from triggering tag
-        id: set npm version
+      - name: Set npm version
         run: npm --no-git-tag-version version from-git
 
       # - name: yarn install
