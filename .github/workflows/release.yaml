@@ -37,8 +37,9 @@ jobs:
       - name: Get the version from triggering tag
         id: get_version
         run: |
-          VERSION=$(echo $GITHUB_REF | cut -d / -f 3)
-          npm version $VERSION
+# VERSION=$(echo $GITHUB_REF | cut -d / -f 3)
+          npm --no-git-tag-version version from-git
+          
       # - name: yarn install
       #   run: yarn install      
       # - uses: JS-DevTools/npm-publish@v1
