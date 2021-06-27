@@ -57,10 +57,13 @@
     "testEnvironment": "node",
     "coverageDirectory": "./coverage/",
     "collectCoverage": true,
-    "collectCoverageFrom": ["src/**/*.js", "src/**/*.ts"]
+    "collectCoverageFrom": [
+      "src/**/*.js",
+      "src/**/*.ts"
+    ]
   },
   "prettier": {
     "semi": false,
-    "singleQuote": true   
+    "singleQuote": true
   }
 }

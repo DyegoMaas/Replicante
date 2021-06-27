@@ -37,14 +37,8 @@ jobs:
       - name: Get the version from triggering tag
         id: get_version
         run: |
-          echo $(echo $GITHUB_REF | cut -d / -f 3)
-          echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3)
-      - name: 'change version'
-        uses: reedyuk/npm-version@1.1.1
-        with:
-          version: '${{ steps.get_version.outputs.VERSION }}'
-          package: '.'
-          git-tag-version: 'true'
+          VERSION=$(echo $GITHUB_REF | cut -d / -f 3)
+          npm version $VERSION
       # - name: yarn install
       #   run: yarn install      
       # - uses: JS-DevTools/npm-publish@v1
