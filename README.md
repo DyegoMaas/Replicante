@@ -1,6 +1,9 @@
 # Replicante
 
-![Build](https://github.com/DyegoMaas/Replicante/workflows/Build/badge.svg)
+![License](https://img.shields.io/github/license/DyegoMaas/ForeverFactory.svg)
+![tests](https://github.com/DyegoMaas/Replicante/workflows/Build/badge.svg)
+![npm](https://img.shields.io/npm/v/replicante)
+![npm](https://img.shields.io/npm/dm/replicante)
 
 Replicante is a project template processor, completely agnostic of technology stack. It can process any software project as a template for a new one, just with a little configuration.
 
