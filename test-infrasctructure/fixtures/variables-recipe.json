@@ -9,17 +9,18 @@
   "fileNameReplacements": [],
   "sourceCodeReplacements": [
     { "from": "TheBoat", "to": "<<: name :>>" },
-    { "from": "theboat", "to": "<<: nameLowerCase :>>" },
-    { "from": "THEBOAT", "to": "<<: nameUpperCase :>>" },
-    { "from": "the-boat", "to": "<<: nameLowerDasherized :>>" },
-    { "from": "THE-BOAT", "to": "<<: nameUpperDasherized :>>" },
+    { "from": "theboat", "to": "<<: name.toLowerCase() :>>" },
+    { "from": "THEBOAT", "to": "<<: name.toUpperCase() :>>" },
+    { "from": "the-boat", "to": "<<: name.toLowerDasherized() :>>" },
+    { "from": "THE-BOAT", "to": "<<: name.toUpperDasherized() :>>" },
 
     { "from": "Pencil", "to": "<<: object :>>" },
-    { "from": "pencil", "to": "<<: objectLowerCase :>>" },
-    { "from": "PENCIL", "to": "<<: objectUpperCase :>>" },
+    { "from": "pencil", "to": "<<: object.toLowerCase() :>>" },
+    { "from": "PENCIL", "to": "<<: object.toUpperCase() :>>" },
 
     { "from": "Jack", "to": "<<: character :>>" },
-    { "from": "jack", "to": "<<: characterLowerCase :>>" },
-    { "from": "JACK", "to": "<<: characterUpperCase :>>" }
+    { "from": "jack", "to": "<<: character.toLowerCase() :>>" },
+    { "from": "jack", "to": "<<: charactertoLowerCase :>>" },
+    { "from": "JACK", "to": "<<: character.toUpperCase() :>>" }
   ]
 }

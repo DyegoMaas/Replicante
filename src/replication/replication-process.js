@@ -74,12 +74,21 @@ const generateReplicantFromTemplate = (replicator, recipe, toolbox) => {
     const { name, value } = recipe.customVariables[i]
 
     view[name] = value
-    view[`${name}UpperCase`] = value.toUpperCase()
-    view[`${name}LowerCase`] = value.toLowerCase()
-    view[`${name}LowerDasherized`] = kebabCase(lowerCase(replicantName))
-    view[`${name}UpperDasherized`] = kebabCase(
+
+    let valueUpperCase = value.toUpperCase()
+    view[`${name}UpperCase`] = valueUpperCase
+
+    let valueLowerCase = value.toLowerCase()
+    view[`${name}LowerCase`] = valueLowerCase
+
+    let valueLowerDasherized = kebabCase(lowerCase(replicantName))
+    view[`${name}LowerDasherized`] = valueLowerDasherized
+    view[`${name}charactertoLowerCase`] = valueLowerDasherized // testing
+
+    let valueUpperDasherized = kebabCase(
       lowerCase(replicantName)
     ).toUpperCase()
+    view[`${name}UpperDasherized`] = valueUpperDasherized
   }
 
   mustache.tags = delimiters

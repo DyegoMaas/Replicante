@@ -123,9 +123,10 @@ Following, you can see examples of all these variations:
     // ... any other replacement your project needs
   ],
   "sourceCodeReplacements": [
-    { "from": "oldValue", "to": "<<: myVariableLowerCase :>>" },
-    { "from": "OLDVALUE", "to": "<<: myVariableUpperCase :>>" }
-    { "from": "OLD-VALUE", "to": "<<: myVariableUpperDasherized :>>" }
+    { "from": "oldValue", "to": "<<: myVariable.toLowerCase() :>>" },
+    { "from": "OLDVALUE", "to": "<<: myVariable.toUpperCase() :>>" }
+    { "from": "old-value", "to": "<<: myVariable.toLowerDasherized() :>>" }
+    { "from": "OLD-VALUE", "to": "<<: myVariable.toUpperDasherized() :>>" }
     // ... any other replacement your project needs
   ]
 }
@@ -146,8 +147,8 @@ Even if you don't actually inform any *custom variables*, **Replicante** automat
   ],
   "sourceCodeReplacements": [
     { "from": "Sample", "to": "<<: replicantName :>>" }, 
-    { "from": "sample", "to": "<<: replicantNameLowerCase :>>" }, 
-    { "from": "SAMPLE", "to": "<<: replicantNameUpperCase :>>" }
+    { "from": "sample", "to": "<<: replicantName.toLowerCase() :>>" }, 
+    { "from": "SAMPLE", "to": "<<: replicantName.toUpperCase() :>>" }
     // ... any other replacement your project needs
   ]
 }

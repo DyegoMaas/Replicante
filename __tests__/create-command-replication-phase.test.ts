@@ -66,7 +66,23 @@ describe('Replicant generation', () => {
     }
   })
 
-  test('Should replace all custom variables', async () => {
+  test('Should replace all custom variables using old syntax', async () => {
+    const { recipe } = await createReplicant(
+      'variables',
+      'variables-recipe-old-syntax.json'
+    )
+
+    let content = readReplicantFileContent(recipe, ['all-the-variables.js'])
+
+    let lines = content.split('\n').map(x => x.trim())
+    expect(lines[0]).toEqual("console.log('Rose has a Diamond in TheTitanic')")
+    expect(lines[1]).toEqual("console.log('rose has a diamond in thetitanic')")
+    expect(lines[2]).toEqual("console.log('ROSE HAS A DIAMOND IN THETITANIC')")
+    expect(lines[3]).toEqual("console.log('rose-has-a-diamond-in-the-titanic')")
+    expect(lines[4]).toEqual("console.log('ROSE-HAS-A-DIAMOND-IN-THE-TITANIC')")
+  })
+
+  test('Should replace all custom variables using new syntax', async () => {
     const { recipe } = await createReplicant(
       'variables',
       'variables-recipe.json'

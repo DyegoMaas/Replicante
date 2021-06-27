@@ -14,11 +14,31 @@ module.exports = class ReplicationRecipe {
     this.replicantName = replicantName
     this.templateName = templateName
     this.templateDir = templateDir
-    this.fileNameReplacements = fileNameReplacements
-    this.sourceCodeReplacements = sourceCodeReplacements
+    this.fileNameReplacements = this._makeSyntaxCompatibleWithMustacheView(fileNameReplacements)
+    this.sourceCodeReplacements = this._makeSyntaxCompatibleWithMustacheView(sourceCodeReplacements)
     this.ignoreArtifacts = ignoreArtifacts
     this.delimiters = delimiters
     this.customVariables = customVariables
+  }
+
+  _makeSyntaxCompatibleWithMustacheView(array) {
+    let modifiedArray = []
+    array.forEach(transformation => {
+      let {from, to} = transformation
+      
+      let modifiedTo = to
+        .replace('.toLowerCase()', 'LowerCase')
+        .replace('.toUpperCase()', 'UpperCase')
+        .replace('.toLowerDasherized()', 'LowerDasherized')
+        .replace('.toUpperDasherized()', 'UpperDasherized');
+
+      modifiedArray.push({
+        from: from,
+        to: modifiedTo
+      })
+    });
+    
+    return modifiedArray
   }
 
   static fromRecipeJson(data, replicantWorkDir) {

@@ -1,0 +1,25 @@
+{
+  "replicantName": "TheTitanic",
+  "templateName": "the-titanic-generator",
+  "customVariables": [
+    { "name": "name", "value": "TheTitanic" },
+    { "name": "object", "value": "Diamond" },
+    { "name": "character", "value": "Rose" }
+  ],
+  "fileNameReplacements": [],
+  "sourceCodeReplacements": [
+    { "from": "TheBoat", "to": "<<: name :>>" },
+    { "from": "theboat", "to": "<<: nameLowerCase :>>" },
+    { "from": "THEBOAT", "to": "<<: nameUpperCase :>>" },
+    { "from": "the-boat", "to": "<<: nameLowerDasherized :>>" },
+    { "from": "THE-BOAT", "to": "<<: nameUpperDasherized :>>" },
+
+    { "from": "Pencil", "to": "<<: object :>>" },
+    { "from": "pencil", "to": "<<: objectLowerCase :>>" },
+    { "from": "PENCIL", "to": "<<: objectUpperCase :>>" },
+
+    { "from": "Jack", "to": "<<: character :>>" },
+    { "from": "jack", "to": "<<: characterLowerCase :>>" },
+    { "from": "JACK", "to": "<<: characterUpperCase :>>" }
+  ]
+}
