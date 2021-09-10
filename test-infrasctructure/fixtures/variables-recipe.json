@@ -13,6 +13,8 @@
     { "from": "THEBOAT", "to": "<<: name.toUpperCase() :>>" },
     { "from": "the-boat", "to": "<<: name.toLowerDasherized() :>>" },
     { "from": "THE-BOAT", "to": "<<: name.toUpperDasherized() :>>" },
+    { "from": "the_boat", "to": "<<: name.toLowerUnderscored() :>>" },
+    { "from": "THE_BOAT", "to": "<<: name.toUpperUnderscored() :>>" },
 
     { "from": "Pencil", "to": "<<: object :>>" },
     { "from": "pencil", "to": "<<: object.toLowerCase() :>>" },
@@ -20,7 +22,6 @@
 
     { "from": "Jack", "to": "<<: character :>>" },
     { "from": "jack", "to": "<<: character.toLowerCase() :>>" },
-    { "from": "jack", "to": "<<: charactertoLowerCase :>>" },
     { "from": "JACK", "to": "<<: character.toUpperCase() :>>" }
   ]
 }

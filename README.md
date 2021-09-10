@@ -106,6 +106,10 @@ And then, Replicante will create the following variables that you can use in you
 - `<<: myVariable.toUpperCase() :>>` has this name converted to upper case (e.g. BIGVALUE)
 - `<<: myVariable.toLowerDasherized() :>>` has the name converted to lower case and separated by hyphens (e.g. big-value)
 - `<<: myVariable.toUpperDasherized() :>>` has the name converted to upper case and separated by hyphens (e.g. BIG-VALUE)
+- `<<: myVariable.toLowerUnderscored() :>>` has the name converted to lower case and separated by underscores (e.g. big_value)
+- `<<: myVariable.toUpperUnderscored() :>>` has the name converted to upper case and separated by underscores (e.g. BIG_VALUE)
+
+Underscored
 
 Following, you can see examples of all these variations:
 
@@ -124,9 +128,11 @@ Following, you can see examples of all these variations:
   ],
   "sourceCodeReplacements": [
     { "from": "oldValue", "to": "<<: myVariable.toLowerCase() :>>" },
-    { "from": "OLDVALUE", "to": "<<: myVariable.toUpperCase() :>>" }
-    { "from": "old-value", "to": "<<: myVariable.toLowerDasherized() :>>" }
-    { "from": "OLD-VALUE", "to": "<<: myVariable.toUpperDasherized() :>>" }
+    { "from": "OLDVALUE", "to": "<<: myVariable.toUpperCase() :>>" },
+    { "from": "old-value", "to": "<<: myVariable.toLowerDasherized() :>>" },
+    { "from": "OLD-VALUE", "to": "<<: myVariable.toUpperDasherized() :>>" },
+    { "from": "old-value", "to": "<<: myVariable.toLowerUnderscored() :>>" },
+    { "from": "OLD-VALUE", "to": "<<: myVariable.toUpperUnderscored() :>>" }
     // ... any other replacement your project needs
   ]
 }

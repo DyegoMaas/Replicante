@@ -30,7 +30,9 @@ module.exports = class ReplicationRecipe {
         .replace('.toLowerCase()', 'LowerCase')
         .replace('.toUpperCase()', 'UpperCase')
         .replace('.toLowerDasherized()', 'LowerDasherized')
-        .replace('.toUpperDasherized()', 'UpperDasherized');
+        .replace('.toUpperDasherized()', 'UpperDasherized')
+        .replace('.toLowerUnderscored()', 'LowerUnderscored')
+        .replace('.toUpperUnderscored()', 'UpperUnderscored');
 
       modifiedArray.push({
         from: from,

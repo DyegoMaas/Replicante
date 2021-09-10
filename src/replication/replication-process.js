@@ -83,12 +83,14 @@ const generateReplicantFromTemplate = (replicator, recipe, toolbox) => {
 
     let valueLowerDasherized = kebabCase(lowerCase(replicantName))
     view[`${name}LowerDasherized`] = valueLowerDasherized
-    view[`${name}charactertoLowerCase`] = valueLowerDasherized // testing
 
     let valueUpperDasherized = kebabCase(
       lowerCase(replicantName)
     ).toUpperCase()
     view[`${name}UpperDasherized`] = valueUpperDasherized
+
+    view[`${name}LowerUnderscored`] = valueLowerDasherized.replace(/-/g, '_')
+    view[`${name}UpperUnderscored`] = valueUpperDasherized.replace(/-/g, '_')
   }
 
   mustache.tags = delimiters
