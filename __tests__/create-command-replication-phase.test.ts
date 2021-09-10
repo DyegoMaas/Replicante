@@ -80,6 +80,8 @@ describe('Replicant generation', () => {
     expect(lines[2]).toEqual("console.log('ROSE HAS A DIAMOND IN THETITANIC')")
     expect(lines[3]).toEqual("console.log('rose-has-a-diamond-in-the-titanic')")
     expect(lines[4]).toEqual("console.log('ROSE-HAS-A-DIAMOND-IN-THE-TITANIC')")
+    expect(lines[5]).toEqual("console.log('rose_has_a_diamond_in_the_titanic')")
+    expect(lines[6]).toEqual("console.log('ROSE_HAS_A_DIAMOND_IN_THE_TITANIC')")
   })
 
   test('Should replace all custom variables using new syntax', async () => {

@@ -13,6 +13,8 @@
     { "from": "THEBOAT", "to": "<<: nameUpperCase :>>" },
     { "from": "the-boat", "to": "<<: nameLowerDasherized :>>" },
     { "from": "THE-BOAT", "to": "<<: nameUpperDasherized :>>" },
+    { "from": "the_boat", "to": "<<: nameLowerUnderscored :>>" },
+    { "from": "THE_BOAT", "to": "<<: nameUpperUnderscored :>>" },
 
     { "from": "Pencil", "to": "<<: object :>>" },
     { "from": "pencil", "to": "<<: objectLowerCase :>>" },
