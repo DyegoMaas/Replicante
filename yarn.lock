@@ -1622,9 +1622,9 @@ globals@^11.1.0:
   integrity sha512-WOBp/EEGUiIsJSp7wcv/y6MO+lV9UoncWqxuFfm8eBwzWNgyfBd6Gz+IeKQ9jCmyhoH99g15M3T+QaVHFjizVA==
 
 gluegun@latest:
-  version "4.6.1"
-  resolved "https://registry.npmjs.org/gluegun/-/gluegun-4.6.1.tgz"
-  integrity sha512-Jd5hV1Uku2rjBg59mYA/bnwLwynK7u9A1zmK/LIb/p5d3pzjDCKRjWFuxZXyPwl9rsvKGhJUQxkFo2HEy8crKQ==
+  version "4.7.0"
+  resolved "https://registry.yarnpkg.com/gluegun/-/gluegun-4.7.0.tgz#d1e88828ec6737d966619fff07c04f7e689dc59e"
+  integrity sha512-St+J/rly0FoWLeISgBGDuymwF3/b8OdmxBCbSvK1hXEoRbaaATiRpPepJSJWuRYR7cGR7Hy9drgQwGFBAolhbQ==
   dependencies:
     apisauce "^2.0.1"
     app-module-path "^2.2.0"
