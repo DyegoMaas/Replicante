@@ -131,8 +131,8 @@ Following, you can see examples of all these variations:
     { "from": "OLDVALUE", "to": "<<: myVariable.toUpperCase() :>>" },
     { "from": "old-value", "to": "<<: myVariable.toLowerDasherized() :>>" },
     { "from": "OLD-VALUE", "to": "<<: myVariable.toUpperDasherized() :>>" },
-    { "from": "old-value", "to": "<<: myVariable.toLowerUnderscored() :>>" },
-    { "from": "OLD-VALUE", "to": "<<: myVariable.toUpperUnderscored() :>>" }
+    { "from": "old_value", "to": "<<: myVariable.toLowerUnderscored() :>>" },
+    { "from": "OLD_VALUE", "to": "<<: myVariable.toUpperUnderscored() :>>" }
     // ... any other replacement your project needs
   ]
 }
