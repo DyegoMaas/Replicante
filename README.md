@@ -1,6 +1,6 @@
 # Replicante
 
-![License](https://img.shields.io/github/license/DyegoMaas/ForeverFactory.svg)
+![License](https://img.shields.io/github/license/DyegoMaas/Replicante.svg)
 ![tests](https://github.com/DyegoMaas/Replicante/workflows/Build/badge.svg)
 ![npm](https://img.shields.io/npm/v/replicante)
 ![npm](https://img.shields.io/npm/dm/replicante)
