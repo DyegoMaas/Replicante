@@ -44,7 +44,7 @@
     "@types/node": "^16.9.1",
     "jest": "^24.1.0",
     "prettier": "^2.2.1",
-    "semver-regex": "^3.1.2",
+    "semver-regex": "^4.0.5",
     "ts-jest": "^24.1.0",
     "ts-node": "^10.2.1",
     "tslint": "^6.1.3",
